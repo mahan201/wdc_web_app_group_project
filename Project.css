@@ -6,6 +6,7 @@
     }
     #login_logo{
         font-size: 190px;
+        color: white;
     }
     .login-page{                         /*color for log-in page */
         background-color:#606ca6;
@@ -43,6 +44,7 @@
         border:1px solid #ccc;
         padding:6px 15px;
         margin: 8px 0;
+<<<<<<< HEAD
         width:auto;
     }
 
@@ -50,3 +52,32 @@
         color: #ffc107;
     }
 
+=======
+    }
+
+    h1{
+        color: white;
+    }
+
+    div#nav-bar{
+        background-color: #606ca6;
+
+    }
+
+    div#nav-bar ul li{
+        display: inline;
+        padding: 10px 0px;
+        margin-left: 10px;
+    }
+
+
+
+    div#nav-bar ul li a{
+        color: white;
+        text-decoration: none;
+    }
+
+    div#nav-bar ul li a:hover{
+        background-color: #8a9bed;
+    }
+>>>>>>> 770dd90ada14fabb2f905d13a73e26dc76a59c29
