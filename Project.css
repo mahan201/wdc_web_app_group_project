@@ -120,7 +120,7 @@
         color: white;
     }
 
-    ul#nav-bar{
+    ul{
         list-style-type: none;
         margin: 0;
         padding: 0;
@@ -129,13 +129,21 @@
 
     }
 
+    #dashboardContent{
+        margin-top: 20px;
+    }
+
+    ul#dashboardNav{
+        width: 10%;
+    }
+
     ul#nav-bar li{
         float: left;
     }
 
 
 
-    ul#nav-bar li a{
+    ul li a{
         color: white;
         text-decoration: none;
         display: block;
@@ -148,11 +156,11 @@
         float: right;
     }
 
-    ul#nav-bar li a.active{
+    ul li a.active{
         background-color: #8a9bed;
     }
 
-    ul#nav-bar li a:hover{
+    ul li a:hover{
         background-color: #8a9bed;
     }
 
