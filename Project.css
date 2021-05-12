@@ -1,6 +1,16 @@
 
 
     /*                                          Annie                                    */
+    body{
+        font-family: "Times New Roman", Helvetica, sans-serif;
+    }
+    .background_Color{
+        background-image: linear-gradient(#606ca6, #ccccff);                      /*color for log-in page */
+        height: 100%;
+        margin: 0;
+        background-repeat: no-repeat;
+        background-attachment: fixed;
+    }
     * {
         box-sizing:border-box;
     }
@@ -8,9 +18,10 @@
         font-size: 190px;
         color: white;
     }
-    .login-page{                         /*color for log-in page */
-        background-color:#606ca6;
+    .login-page h1{
+        color:black;
     }
+
     .login-page input[type=text], input[type=password] {                   /*edit for email and password boxes*/
         color: grey;
         border-radius: 4px;
@@ -43,17 +54,52 @@
         background-color: #8a9bed;
         border:1px solid #ccc;
         padding:6px 15px;
-        margin: 8px 0;
-<<<<<<< HEAD
+        margin: 10px 0;
+
         width:auto;
     }
 
-    .login-page a:hover{
+    .login-page a:hover{                   /*Forgot password*/
         color: #ffc107;
     }
 
-=======
+    /*                                             Login                                               */
+
+         /*                                        Signup                                       */
+
+    .signup-page h1{
+        color:black;
     }
+    .signup-page input[type=text], input[type=password]{
+        color: grey;
+        border-radius: 4px;
+        border: 1px solid #ccc;
+        padding: 10px 9px;
+        margin: 8px 0;
+        box-sizing: border-box;
+        width: 15%;
+    }
+    .facebook{
+        background-color: #3B5998;
+        color: white;
+        margin: 20px;
+        padding: 10px;
+    }
+    .twitter{
+        background-color: #55ACEE;
+        color: white;
+        margin: 20px;
+        padding: 10px;
+    }
+    .google{
+        background-color: #dd4b39;
+        color: white;
+        margin: 20px;
+        padding: 10px;
+    }
+/*                                                  Annie                                                */
+
+
 
     h1{
         color: white;
