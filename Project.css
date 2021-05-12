@@ -1,14 +1,23 @@
+
+
+    /*                                          Annie                                    */
+    * {
+        box-sizing:border-box;
+    }
     #login_logo{
         font-size: 190px;
     }
     .login-page{                         /*color for log-in page */
         background-color:#606ca6;
     }
-    input[type=text] {                   /*edit for email and password boxes*/
+    .login-page input[type=text], input[type=password] {                   /*edit for email and password boxes*/
+        color: grey;
         border-radius: 4px;
         border: 1px solid #ccc;
-        padding: 10px 20px;
+        padding: 10px 9px;
         margin: 8px 0;
+        box-sizing: border-box;
+        width: 15%;
     }
 
     button{                             /*for all buttons*/
@@ -19,18 +28,25 @@
         font-weight: bold;
     }
 
-    #login_button{                     /*edit for login-button*/
+    #login_button:hover{                     /*edit for login-button*/
         color: white;
         background-color: #8a9bed;
         border:1px solid #ccc;
         padding:6px 15px;
         margin: 8px 0;
+        width:80px;
     }
 
-    #signup_button{                   /*edit for signup-button */
+    #signup_button:hover{                   /*edit for signup-button */
         color: white;
         background-color: #8a9bed;
         border:1px solid #ccc;
         padding:6px 15px;
         margin: 8px 0;
+        width:auto;
     }
+
+    .login-page a:hover{
+        color: #ffc107;
+    }
+
