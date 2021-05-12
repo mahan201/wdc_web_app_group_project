@@ -35,3 +35,29 @@
         padding:6px 15px;
         margin: 8px 0;
     }
+
+    h1{
+        color: white;
+    }
+
+    div#nav-bar{
+        background-color: #606ca6;
+
+    }
+
+    div#nav-bar ul li{
+        display: inline;
+        padding: 10px 0px;
+        margin-left: 10px;
+    }
+
+
+
+    div#nav-bar ul li a{
+        color: white;
+        text-decoration: none;
+    }
+
+    div#nav-bar ul li a:hover{
+        background-color: #8a9bed;
+    }
