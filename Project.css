@@ -105,25 +105,38 @@
         color: white;
     }
 
-    div#nav-bar{
+    ul#nav-bar{
+        list-style-type: none;
+        margin: 0;
+        padding: 0;
+        overflow: hidden;
         background-color: #606ca6;
 
     }
 
-    div#nav-bar ul li{
-        display: inline;
-        padding: 10px 0px;
-        margin-left: 10px;
+    ul#nav-bar li{
+        float: left;
     }
 
 
 
-    div#nav-bar ul li a{
+    ul#nav-bar li a{
         color: white;
         text-decoration: none;
+        display: block;
+        text-align: center;
+        font-size: 20px;
+        padding: 14px 16px;
     }
 
-    div#nav-bar ul li a:hover{
+    ul#nav-bar li.login{
+        float: right;
+    }
+
+    ul#nav-bar li a.active{
         background-color: #8a9bed;
     }
->>>>>>> 770dd90ada14fabb2f905d13a73e26dc76a59c29
+
+    ul#nav-bar li a:hover{
+        background-color: #8a9bed;
+    }
