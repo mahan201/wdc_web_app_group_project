@@ -1,0 +1,37 @@
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Hotspot Map</title>
+    <script src="https://kit.fontawesome.com/e45ce6bf31.js" crossorigin="anonymous"></script>
+    <link rel ="stylesheet" href="Project.css">
+</head>
+<body>
+    <div id="app">
+      <ul id="nav-bar">
+          <li><a href="/">LOGO</a></li>
+          <li><a class="active" href="hotspot-map.html">Hotspot Map</a></li>
+          <li><a href="check-in.html">Check-in</a></li>
+          <li><a href="dashboard.html">Dashboard</a></li>
+          <li class="login"><a href="login.html">Login</a></li>
+      </ul>
+
+    <h1 class="pageHeader">Hotspot Map</h1>
+
+    <div id="googleMap"></div>
+
+  </div>
+</body>
+
+<script>
+function myMap() {
+var mapProp= {
+  center:new google.maps.LatLng(-34.920603,138.6062277),
+  zoom:12,
+};
+var map = new google.maps.Map(document.getElementById("googleMap"),mapProp);
+}
+</script>
+
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyChmuaviYmPxfsPVJN8kZafW16rX3zjYmU&callback=myMap"></script>
+
+</html>
