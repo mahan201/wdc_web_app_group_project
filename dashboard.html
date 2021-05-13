@@ -4,6 +4,8 @@
     <meta charset="UTF-8">
     <title>Dashboard</title>
     <script src="https://kit.fontawesome.com/e45ce6bf31.js" crossorigin="anonymous"></script>
+        <script src="https://cdn.jsdelivr.net/npm/vue@2.6.12/dist/vue.js"></script>
+    <script src="dashboard.js" defer></script>
     <link rel ="stylesheet" href="Project.css">
 </head>
 <body>
@@ -19,60 +21,51 @@
       <div id="dashboardContent">
 
         <ol id="dashboardNav">
-          <li><a href="#">Profile</a></li>
-          <li><a href="#">Hotspots</a></li>
-          <li><a href="#">Venues</a></li>
-          <li><a href="#">Users</a></li>
-          <li><a href="#">Signup an Admin</a></li>
-          <li><a href="#">User History</a></li>
-          <li><a href="#">Have I been to a Hotspot?</a></li>
-          <li><a href="#">Email Subscription</a></li>
-          <li><a href="#">Venue History</a></li>
-          <li><a href="#">Venue Check-In Code</a></li>
+            <li v-for="(item,index) in tabs"><a href="#" v-on:click="selectedTab=index">{{item}}</a></li>
         </ol>
 
 
         <div id="dashboardMenu">
-            <div id="profile">
+            <div v-if="tabsBool[0]" id="profile">
               <h1 class="dashboardMenuTitle">Profile</h1>
-            <div class="menuInfo">
-                <button class="dashboardButton Right">Edit</button>
-                <br>
-              <div id="profFirstName" class="profileItem Left">
-                <h3>First Name</h3>
-                  <input id="profFNEdit" value="Mahan" disabled/>
-              </div>
-              <div id="profLastName" class="profileItem">
-                <h3>Last Name</h3>
-                  <input id="profLNEdit" value="Noorbahr" disabled/>
-              </div>
-              <div id="profPhoneNo" class="profileItem Left">
-                <h3>Phone Number</h3>
-                  <input id="profPNEdit" value="0123456789" disabled/>
-              </div>
+                <div class="menuInfo">
+                    <button class="dashboardButton Right">Edit</button>
+                    <br>
+                  <div id="profFirstName" class="profileItem Left">
+                    <h3>First Name</h3>
+                      <input id="profFNEdit" value="Mahan" disabled/>
+                  </div>
+                  <div id="profLastName" class="profileItem">
+                    <h3>Last Name</h3>
+                      <input id="profLNEdit" value="Noorbahr" disabled/>
+                  </div>
+                  <div id="profPhoneNo" class="profileItem Left">
+                    <h3>Phone Number</h3>
+                      <input id="profPNEdit" value="0123456789" disabled/>
+                  </div>
 
-              <div id="profEmail" class="profileItem">
-                <h3>Email:</h3>
-                  <input id="profEmEdit" value="abc@gmail.com" disabled/>
-              </div>
+                  <div id="profEmail" class="profileItem">
+                    <h3>Email:</h3>
+                      <input id="profEmEdit" value="abc@gmail.com" disabled/>
+                  </div>
 
-                <div id="profBusinessName" class="profileItem Left">
-                    <h3>Business Name:</h3>
-                    <input id="profBNEdit" value="McDonalds" disabled/>
+                    <div id="profBusinessName" class="profileItem Left">
+                        <h3>Business Name:</h3>
+                        <input id="profBNEdit" value="McDonalds" disabled/>
+                    </div>
+
+                    <div id="profAddress" class="profileItem">
+                        <h3>Address:</h3>
+                        <input id="profAddEdit" value="123 Clown Street, Adelaide" disabled/>
+                    </div>
+                  <div>
+                      <button >Reset Password</button>
+                  </div>
+
                 </div>
-
-                <div id="profAddress" class="profileItem">
-                    <h3>Address:</h3>
-                    <input id="profAddEdit" value="123 Clown Street, Adelaide" disabled/>
-                </div>
-              <div>
-                  <button >Reset Password</button>
-              </div>
-
             </div>
-          </div>
 
-            <div id="hotspotManager">
+            <div v-else-if="tabsBool[1]" id="hotspotManager">
                 <h1 class="dashboardMenuTitle">Manage Hotspots</h1>
                 <div class="menuInfo">
                     <input class="searchBar" class="Left" placeholder="Search..."/>
@@ -84,7 +77,7 @@
                 </div>
             </div>
 
-            <div id="venueManager">
+            <div v-else-if="tabsBool[2]" id="venueManager">
                 <h1 class="dashboardMenuTitle">Manage Venues</h1>
                 <div class="menuInfo">
                     <input class="searchBar" class="Left" placeholder="Search..."/>
@@ -95,8 +88,8 @@
                 </div>
             </div>
 
-            <div id="userManager">
-                <h1 class="dashboardMenuTitle">Manage Hotspots</h1>
+            <div v-else-if="tabsBool[3]" id="userManager">
+                <h1 class="dashboardMenuTitle">Manage Users</h1>
                 <div class="menuInfo">
                     <input class="searchBar" class="Left" placeholder="Search..."/>
                     <br>
@@ -106,7 +99,7 @@
                 </div>
             </div>
 
-            <div id="adminSignUp">
+            <div v-else-if="tabsBool[4]" id="adminSignUp">
                 <h1 class="dashboardMenuTitle">Sign up an Admin / Health Official</h1>
                 <div class="menuInfo">
                     <form class="centered" action="/checkin.ajax">
@@ -122,7 +115,7 @@
                 </div>
             </div>
 
-            <div id="userHistory">
+            <div v-else-if="tabsBool[5]" id="userHistory">
                 <h1 class="dashboardMenuTitle">User Check-In History</h1>
                 <div class="menuInfo">
                     <h3>Search</h3>
@@ -135,7 +128,7 @@
                 </div>
             </div>
 
-            <div id="hotspotVisited">
+            <div v-else-if="tabsBool[6]" id="hotspotVisited">
                 <h1 class="dashboardMenuTitle">Have I been to a Hotspot?</h1>
                 <div class="menuInfo centered">
                     <div id="googleMap"></div>
@@ -143,7 +136,7 @@
                 </div>
             </div>
 
-            <div id="emailSubs">
+            <div v-else-if="tabsBool[7]" id="emailSubs">
                 <h1 class="dashboardMenuTitle">Email Subscriptions</h1>
                 <div class="menuInfo centered">
                     <h3>IDK HOW TO MAKE THIS PAGE HELP</h3>
@@ -151,7 +144,7 @@
                 </div>
             </div>
 
-            <div id="venueHistory">
+            <div v-else-if="tabsBool[8]" id="venueHistory">
                 <h1 class="dashboardMenuTitle">Venue Check-In History</h1>
                 <div class="menuInfo">
                     <h3>Search</h3>
@@ -163,7 +156,7 @@
                 </div>
             </div>
 
-            <div id="venueCode">
+            <div v-else-if="tabsBool[9]" id="venueCode">
                 <h1 class="dashboardMenuTitle">Venue Check-In Code</h1>
                 <div class="menuInfo centered">
                     <h2>Check-In Code</h2>
