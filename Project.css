@@ -302,3 +302,12 @@
         width:50%;
         height:300px;
     }
+
+   .menuInfo centered{
+       text-align: center;
+   }
+
+   #email_logo{
+       font-size: 150px;
+   }
+
