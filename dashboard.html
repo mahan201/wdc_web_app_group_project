@@ -4,7 +4,9 @@
     <meta charset="UTF-8">
     <title>Dashboard</title>
     <script src="https://kit.fontawesome.com/e45ce6bf31.js" crossorigin="anonymous"></script>
-        <script src="https://cdn.jsdelivr.net/npm/vue@2.6.12/dist/vue.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.6.12/dist/vue.js"></script>
+    <script src='https://api.mapbox.com/mapbox-gl-js/v2.1.1/mapbox-gl.js'></script>
+    <link href='https://api.mapbox.com/mapbox-gl-js/v2.1.1/mapbox-gl.css' rel='stylesheet' />
     <script src="dashboard.js" defer></script>
     <link rel ="stylesheet" href="Project.css">
 </head>
@@ -134,7 +136,8 @@
             <div v-else-if="tabsBool[6]" id="hotspotVisited">
                 <h1 class="dashboardMenuTitle">Have I been to a Hotspot?</h1>
                 <div class="menuInfo centered">
-                    <div id="googleMap"></div>
+                    <button class="dashboardButton" v-on:click="loadMap">Load Map</button>
+                    <div  id='map' style='width: 80%; height: 600px;'></div>
 
                 </div>
             </div>
@@ -178,17 +181,7 @@
   </div>
 </body>
 
-<script>
-    function myMap() {
-        var mapProp= {
-            center:new google.maps.LatLng(-34.920603,138.6062277),
-            zoom:12,
-        };
-        var map = new google.maps.Map(document.getElementById("googleMap"),mapProp);
-    }
-</script>
 
-<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyChmuaviYmPxfsPVJN8kZafW16rX3zjYmU&callback=myMap"></script>
 
 
 </html>
