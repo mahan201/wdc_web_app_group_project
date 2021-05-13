@@ -18,7 +18,7 @@
 
       <div id="dashboardContent">
 
-        <ul id="dashboardNav">
+        <ol id="dashboardNav">
           <li><a href="#">Profile</a></li>
           <li><a href="#">Hotspots</a></li>
           <li><a href="#">Venues</a></li>
@@ -29,35 +29,151 @@
           <li><a href="#">Email Subscription</a></li>
           <li><a href="#">Venue History</a></li>
           <li><a href="#">Venue Check-In Code</a></li>
-        </ul>
+        </ol>
+
+
         <div id="dashboardMenu">
-          <div id="profile">
-            <h1 class="dashboardMenuTitle">Profile</h1>
-
+            <div id="profile">
+              <h1 class="dashboardMenuTitle">Profile</h1>
             <div class="menuInfo">
-              <div class="profileItem Left">
+                <button class="dashboardButton Right">Edit</button>
+                <br>
+              <div id="profFirstName" class="profileItem Left">
                 <h3>First Name</h3>
-                <p>Mahan</p>
+                  <input id="profFNEdit" value="Mahan" disabled/>
               </div>
-
-              <div class="profileItem">
+              <div id="profLastName" class="profileItem">
                 <h3>Last Name</h3>
-                <p>Noorbahr</p>
+                  <input id="profLNEdit" value="Noorbahr" disabled/>
               </div>
-              <br>
-              <div class="profileItem Left">
+              <div id="profPhoneNo" class="profileItem Left">
                 <h3>Phone Number</h3>
-                <p>01231023123</p>
+                  <input id="profPNEdit" value="0123456789" disabled/>
               </div>
 
-              <div class="profileItem">
+              <div id="profEmail" class="profileItem">
                 <h3>Email:</h3>
-                <p>abc.efg@gmail.com</p>
+                  <input id="profEmEdit" value="abc@gmail.com" disabled/>
               </div>
 
-              <button>Reset Password</button>
+                <div id="profBusinessName" class="profileItem Left">
+                    <h3>Business Name:</h3>
+                    <input id="profBNEdit" value="McDonalds" disabled/>
+                </div>
+
+                <div id="profAddress" class="profileItem">
+                    <h3>Address:</h3>
+                    <input id="profAddEdit" value="123 Clown Street, Adelaide" disabled/>
+                </div>
+              <div>
+                  <button >Reset Password</button>
+              </div>
+
             </div>
           </div>
+
+            <div id="hotspotManager">
+                <h1 class="dashboardMenuTitle">Manage Hotspots</h1>
+                <div class="menuInfo">
+                    <input class="searchBar" class="Left" placeholder="Search..."/>
+                    <button class="dashboardButton Right">+ Add</button>
+                    <br>
+
+                    <div style="height: 300px;">LIST OF HOTSPOTS</div>
+
+                </div>
+            </div>
+
+            <div id="venueManager">
+                <h1 class="dashboardMenuTitle">Manage Venues</h1>
+                <div class="menuInfo">
+                    <input class="searchBar" class="Left" placeholder="Search..."/>
+                    <br>
+
+                    <div style="height: 300px;">LIST OF VENUES</div>
+
+                </div>
+            </div>
+
+            <div id="userManager">
+                <h1 class="dashboardMenuTitle">Manage Hotspots</h1>
+                <div class="menuInfo">
+                    <input class="searchBar" class="Left" placeholder="Search..."/>
+                    <br>
+
+                    <div style="height: 300px;">LIST OF USERS</div>
+
+                </div>
+            </div>
+
+            <div id="adminSignUp">
+                <h1 class="dashboardMenuTitle">Sign up an Admin / Health Official</h1>
+                <div class="menuInfo">
+                    <form class="centered" action="/checkin.ajax">
+                        <input type="text" id="firstName" name="firstName" placeholder="First Name" required >
+                        <input type="text" id="lastName" name="lastName" placeholder ="Last Name" required><br>
+                        <input type="text" id="phoneNo" name="phoneNo" placeholder="Phone Number" required >
+                        <input type="text" id="identity" name="identity" placeholder ="Email Address" required><br>
+                        <input type="password" id="Psw" name="Psw" placeholder ="Password: " required>
+                        <input type="password" id="CPsw" name="CPsw" placeholder ="Confirm Password: " required><br>
+                        <button type="submit" class="bold" id="submit_button">Sign Up</button>
+                    </form>
+
+                </div>
+            </div>
+
+            <div id="userHistory">
+                <h1 class="dashboardMenuTitle">User Check-In History</h1>
+                <div class="menuInfo">
+                    <h3>Search</h3>
+                    <input class="searchBar" placeholder="Venue Code"/>
+                    <button class="dashboardButton Right">Map View</button>
+                    <br>
+
+                    <div style="height: 300px;">LIST OF LOCATIONS USER HAS CHECKED INTO</div>
+
+                </div>
+            </div>
+
+            <div id="hotspotVisited">
+                <h1 class="dashboardMenuTitle">Have I been to a Hotspot?</h1>
+                <div class="menuInfo centered">
+                    <div id="googleMap"></div>
+
+                </div>
+            </div>
+
+            <div id="emailSubs">
+                <h1 class="dashboardMenuTitle">Email Subscriptions</h1>
+                <div class="menuInfo centered">
+                    <h3>IDK HOW TO MAKE THIS PAGE HELP</h3>
+
+                </div>
+            </div>
+
+            <div id="venueHistory">
+                <h1 class="dashboardMenuTitle">Venue Check-In History</h1>
+                <div class="menuInfo">
+                    <h3>Search</h3>
+                    <input class="searchBar" placeholder="User Name"/>
+                    <br>
+
+                    <div style="height: 300px;">LIST OF LOCATIONS USER HAS CHECKED INTO</div>
+
+                </div>
+            </div>
+
+            <div id="venueCode">
+                <h1 class="dashboardMenuTitle">Venue Check-In Code</h1>
+                <div class="menuInfo centered">
+                    <h2>Check-In Code</h2>
+                    <h3 id="checkinCode">MCD1231234</h3>
+
+                    <h2>URL Check-In</h2>
+                    <h3><a href="check-in.html?code=MCD1231234">https://project.com/check-in.html?code=MCD1231234</a> </h3>
+
+                </div>
+            </div>
 
         </div>
 
@@ -65,4 +181,18 @@
 
   </div>
 </body>
+
+<script>
+    function myMap() {
+        var mapProp= {
+            center:new google.maps.LatLng(-34.920603,138.6062277),
+            zoom:12,
+        };
+        var map = new google.maps.Map(document.getElementById("googleMap"),mapProp);
+    }
+</script>
+
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyChmuaviYmPxfsPVJN8kZafW16rX3zjYmU&callback=myMap"></script>
+
+
 </html>
