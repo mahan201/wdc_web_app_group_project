@@ -1,9 +1,9 @@
 
-var codes = ["ABC123","XYZ456","JQK789"]
 
 var appdiv = new Vue({
     el: "#app",
     data: {
+        codes: [],
         failed: false,
         passed: false,
         code: "",
@@ -14,15 +14,21 @@ var appdiv = new Vue({
     },
     methods: {
         checkIn: function(event){
-            if(codes.includes(this.code)){
-                if(this.fname !== "" && this.lname !== "" && this.pNum !== "" && this.IDNum !== ""){
-                    this.passed = true;
-                    this.failed = false;
-                    return;
-                }
+            if(this.codes.includes(this.code)){
+
+                this.passed = true;
+                this.failed = false;
+                return;
             }
             this.failed = true;
             this.passed = false;
         }
     }
-})
+});
+
+function getCodes(){
+    //Will be replaced with server code to get a list of valid venue check-in codes.
+    appdiv.codes = ["ABC123","XYZ456","JQK789"];
+}
+
+getCodes();

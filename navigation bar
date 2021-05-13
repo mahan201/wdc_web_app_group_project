@@ -1,7 +1,0 @@
-<ul id="nav-bar">
-          <li><a href="/">LOGO</a></li>
-          <li><a href="hotspot-map.html">Hotspot Map</a></li>
-          <li><a href="check-in.html">Check-in</a></li>
-          <li><a class="active" href="dashboard.html">Dashboard</a></li>
-          <li class="login"><a href="login.html">Login</a></li>
-      </ul>

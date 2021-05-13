@@ -3,7 +3,8 @@
     <meta charset="UTF-8">
     <title>Check-In</title>
     <script src="https://kit.fontawesome.com/e45ce6bf31.js" crossorigin="anonymous"></script>
-    <script src="check-in.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.6.12/dist/vue.js"></script>
+    <script src="check-in.js" defer></script>
     <link rel ="stylesheet" href="Project.css">
 </head>
 <body>
@@ -19,13 +20,13 @@
             <h1 class="pageHeader">Check-In</h1>
             <p v-if="failed" id="errorMess" class="failed">Invalid Check-In Code</p>
             <p v-if="passed" id="successMess" class="passed">Successfully Checked In!</p>
-            <form action="/checkin.ajax">
+            <form @submit.prevent="checkIn">
                     <input type="text" id="checkinCode" name="checkInCode" v-model="code" placeholder="Enter Venue Check-In Code..." required ><br>
                     <input type="text" id="firstName" name="firstName" v-model="fName" placeholder="First Name" required >
                     <input type="text" id="lastName" name="lastName" v-model="lName" placeholder ="Last Name" required><br>
                     <input type="text" id="phoneNo" name="phoneNo" v-model="pNum" placeholder="Phone Number" required >
                     <input type="text" id="identity" name="identity" v-model="IDNum" placeholder ="ID Number" required><br>
-                    <button type="submit" class="bold" id="submit_button":click="checkIn">Submit</button>
+                    <button type="submit" class="bold" id="submit_button">Submit</button>
             </form>
         </div>
 
