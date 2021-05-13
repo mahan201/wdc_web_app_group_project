@@ -302,3 +302,11 @@
         width:50%;
         height:300px;
     }
+
+    .passed{
+        color: green;
+    }
+
+    .failed{
+        color: red;
+    }
