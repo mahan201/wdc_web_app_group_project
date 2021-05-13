@@ -20,9 +20,12 @@
 
       <div id="dashboardContent">
 
-        <ol id="dashboardNav">
-            <li v-for="(item,index) in tabs"><a href="#" v-on:click="selectedTab=index">{{item}}</a></li>
-        </ol>
+        <div id="dashboardNav">
+            <ol>
+                <li v-for="item in tabs"><a href="#" v-on:click="selectedTab=item">{{item}}</a></li>
+            </ol>
+        </div>
+
 
 
         <div id="dashboardMenu">
