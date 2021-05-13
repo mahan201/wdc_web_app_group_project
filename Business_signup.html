@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang ="en">
+    <head>
+        <title> Business Signup</title>
+        <meta charset ="UTF-8">
+        <script src="https://kit.fontawesome.com/e45ce6bf31.js" crossorigin="anonymous"></script>
+        <link rel ="stylesheet" href="Project.css">
+    </head>
+    <body class="background_Color">
+        <div class ="business_signup-page">
+
+            <center>
+                <h1> Create a new business account</h1>
+                <form>                                                                                               <!--Creating signup inputs -->
+                    <input type="text" id="fname" name="fname" placeholder="First name* : " required >
+                    <input type="text" id="lname" name="lname" placeholder ="Last name* : " required><br>
+                    <input type="text" id="company_name" name="company_name" placeholder="Company name* : " required >
+                    <input type="text" id="ph" name="ph" placeholder="Phone number* : " required ><br>
+                    <input type="text" id="address" name="address" placeholder="Address* : " required >
+                    <input type="text" id="city" name="city" placeholder="City* : " required ><br>
+                    <input type="text" id="country" name="country" placeholder="Country* : " required >
+                    <input type="text" id="Email" name="Email" placeholder="Email* : " required ><br>
+                    <input type="password" id="Psw" name="Psw" placeholder ="Password* : " required>
+                    <input type="password" id="CPsw" name="CPsw" placeholder ="Comfirm Password* : " required><br>
+                    <button id="signup_button" class="bold" type="submit" formaction="https://ide-5f49077538f44d678830a9d8fa9d7636-8081.cs50.ws/login.html">Sign Up</button><br>                          <!--Signup button. After signup, go to th login page again -->
+                </form>
+                <br>
+
+                <div class="social_media">                                          <!-- Login through social medias -->
+                    <a href="#" class="facebook">
+                    <i class="fa fa-facebook fa-fw"></i> Login with Facebook
+                    </a>
+                    <a href="#" class="twitter">
+                    <i class="fa fa-twitter fa-fw"></i> Login with Twitter
+                    </a>
+                    <a href="#" class="google"><i class="fa fa-google fa-fw">
+                    </i> Login with Google+
+                    </a>
+                </div>
+            </center>
+        </div>
+    </body>
