@@ -4,7 +4,7 @@ var allTabs = ["Profile","Hotspots","Venues","Users","Signup an Admin","User His
 var appdiv = new Vue({
     el: "#app",
     data: {
-        accountType: "venue",
+        accountType: "user",
         selectedTab: "Profile"
     },
     computed: {
