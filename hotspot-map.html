@@ -6,7 +6,7 @@
     <script src='https://api.mapbox.com/mapbox-gl-js/v2.1.1/mapbox-gl.js'></script>
     <link href='https://api.mapbox.com/mapbox-gl-js/v2.1.1/mapbox-gl.css' rel='stylesheet' />
     <link rel ="stylesheet" href="Project.css">
-    <script src="hotspot-map.js" deferred></script>
+    <script src="hotspot-map.js" defer></script>
 </head>
 <body>
     <div id="app">
@@ -25,15 +25,5 @@
 
   </div>
 </body>
-
-<script>
-    mapboxgl.accessToken = 'pk.eyJ1IjoibWFoYW4yMDEiLCJhIjoiY2tvbXZwcmZ2MGFycjJvcG81dHFvbjI4dyJ9.YRrp93j6OerxskDUK17mWg';
-var map = new mapboxgl.Map({
-container: 'map',
-style: 'mapbox://styles/mapbox/streets-v11',
-center: [138.6062277,-34.920603],
-zoom: 11
-});
-</script>
 
 </html>

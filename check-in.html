@@ -22,10 +22,10 @@
             <p v-if="passed" id="successMess" class="passed">Successfully Checked In!</p>
             <form @submit.prevent="checkIn">
                     <input type="text" id="checkinCode" name="checkInCode" v-model="code" placeholder="Enter Venue Check-In Code..." required ><br>
-                    <input type="text" id="firstName" name="firstName" v-model="fName" placeholder="First Name" required >
-                    <input type="text" id="lastName" name="lastName" v-model="lName" placeholder ="Last Name" required><br>
-                    <input type="text" id="phoneNo" name="phoneNo" v-model="pNum" placeholder="Phone Number" required >
-                    <input type="text" id="identity" name="identity" v-model="IDNum" placeholder ="ID Number" required><br>
+                    <input v-if="!signedIn" type="text" id="firstName" name="firstName" v-model="fName" placeholder="First Name" required >
+                    <input v-if="!signedIn" type="text" id="lastName" name="lastName" v-model="lName" placeholder ="Last Name" required><br>
+                    <input v-if="!signedIn" type="text" id="phoneNo" name="phoneNo" v-model="pNum" placeholder="Phone Number" required >
+                    <input v-if="!signedIn" type="text" id="identity" name="identity" v-model="IDNum" placeholder ="ID Number" required><br>
                     <button type="submit" class="bold" id="submit_button">Submit</button>
             </form>
         </div>
