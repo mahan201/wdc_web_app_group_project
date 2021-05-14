@@ -3,7 +3,7 @@
 var appdiv = new Vue({
     el: "#app",
     data: {
-        signedIn: false,
+        signedIn: true,
         codes: [],
         failed: false,
         passed: false,

@@ -4,7 +4,7 @@ var allTabs = ["Profile","Hotspots","Venues","Users","Signup an Admin","User His
 var appdiv = new Vue({
     el: "#app",
     data: {
-        accountType: "admin",
+        accountType: "venue",
         selectedTab: "Profile",
         editing: false,
         firstName: "Talhah",
@@ -13,7 +13,7 @@ var appdiv = new Vue({
         email: "abc@gmail.com",
         businessName: "McDonalds",
         address: "123 Clown Street, Adelaide"
-        
+
     },
     computed: {
         tabs: function (){
