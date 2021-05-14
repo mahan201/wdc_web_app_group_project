@@ -214,6 +214,7 @@
 
     #dashboardNav{
         width: 10%;
+        height: 100%;
         float: left;
         margin-right: 20px;
     }
@@ -303,6 +304,7 @@
         height:300px;
     }
 
+<<<<<<< HEAD
    .menuInfo centered{
        text-align: center;
    }
@@ -311,3 +313,12 @@
        font-size: 150px;
    }
 
+=======
+    .passed{
+        color: green;
+    }
+
+    .failed{
+        color: red;
+    }
+>>>>>>> 7ce541abf04262ede391810b10b595aafba3c246
