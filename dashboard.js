@@ -4,7 +4,7 @@ var allTabs = ["Profile","Hotspots","Venues","Users","Signup an Admin","User His
 var appdiv = new Vue({
     el: "#app",
     data: {
-        accountType: "venue",
+        accountType: "user",
         selectedTab: "Profile"
     },
     computed: {
@@ -23,11 +23,22 @@ var appdiv = new Vue({
             allTabs.forEach(_ => temp.push(false));
 
             temp[allTabs.indexOf(this.selectedTab)] = true;
-            console.log(temp);
             return temp;
         }
     },
     methods: {
+        loadMap: function(){
+            console.log("HELLO");
+                mapboxgl.accessToken = 'pk.eyJ1IjoibWFoYW4yMDEiLCJhIjoiY2tvbXZwcmZ2MGFycjJvcG81dHFvbjI4dyJ9.YRrp93j6OerxskDUK17mWg';
+                var map = new mapboxgl.Map({
+                container: 'map',
+                style: 'mapbox://styles/mapbox/streets-v11',
+                center: [138.6062277,-34.920603],
+                zoom: 11
+                });
+        }
 
     }
 });
+
+
