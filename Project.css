@@ -22,7 +22,7 @@
         color:black;
     }
 
-    input[type=text], input[type=password] {                   /*edit for email and password boxes*/
+   .login-page input[type=text], input[type=password] {                   /*edit for email and password boxes*/
         color: grey;
         border-radius: 4px;
         border: 1px solid #ccc;
@@ -150,7 +150,7 @@
         color:black;
     }
 
-    .business_signup-page [type=text], input[type=password]{
+    .business_signup-page input[type=text], input[type=password]{
         color: grey;
         border-radius: 4px;
         border: 1px solid #ccc;
@@ -160,6 +160,68 @@
         width: 15%;
     }
 
+                                      /* Done Business Signup */
+
+                      /*                    Forgot password            */
+    .form_container{
+        width: 600px;
+        border: 1px solid #ccc;
+        background-color: white;
+        text-align: center;
+        margin: auto;
+        position:relative;
+
+
+    }
+    .form_container hr{
+        background-color: #ccc;
+    }
+
+    .form_container #password_logo{
+        font-size: 190px;
+        color:#606ca6;
+    }
+
+    .form_container input[type=text], input[type=password]{                  /*edit for signup-button*/
+        color: grey;
+        border-radius: 4px;
+        border: 1px solid #ccc;
+        padding: 10px 9px;
+        margin: 8px 0;
+        box-sizing: border-box;
+
+    }
+    .form_container #email, #validation_code, #new_password, #confirm_password{
+        width: 40%;
+    }
+    .form_container p{
+        color:#606ca6;
+        font-size: 15px;
+    }
+    #reset_button{
+        color: white;
+        background-color: #8a9bed;
+        border:1px solid #ccc;
+        padding:6px 15px;
+        margin: 10px 0;
+        width:auto;
+    }
+    #reset_button:hover{
+        background-color: #606ca6;
+    }
+
+    /*test */
+    #Continue_button{
+        color: white;
+        background-color: #8a9bed;
+        border:1px solid #ccc;
+        padding:6px 15px;
+        margin: 10px 0;
+        width:auto;
+    }
+     #Continue_button:hover{
+        background-color: #606ca6;
+    }
 
 /*                                                  Annie       Annie       Annie        Annie        Annie       (sorry to make this lol. Just to make it easier for me to see) will delete later ^ ^    */
 
