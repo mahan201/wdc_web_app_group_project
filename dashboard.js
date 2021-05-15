@@ -18,6 +18,16 @@ var userHistoryFull= [
     {checkInCode: "MCD12387", businessName: "McDonald's",phoneNo: "0123456789",time: "10-5-2021 13:05", isHotspot: false}
     ];
 
+var venueData= [
+    {email:"abc123@gmail.com",fName:"Bill",lName:"Gates",bName:"McDonald's",phoneNum:"+112312312",checkInCode:"MCD12321",address:"123 clown street, Adelaide", edited: false},
+    {email:"abc123@gmail.com",fName:"Bill",lName:"Gates",bName:"McDonald's",phoneNum:"+112312312",checkInCode:"MCD12321",address:"123 clown street, Adelaide", edited: false},
+    {email:"abc123@gmail.com",fName:"Bill",lName:"Gates",bName:"McDonald's",phoneNum:"+112312312",checkInCode:"MCD12321",address:"123 clown street, Adelaide", edited: false},
+    {email:"abc123@gmail.com",fName:"Bill",lName:"Gates",bName:"McDonald's",phoneNum:"+112312312",checkInCode:"MCD12321",address:"123 clown street, Adelaide", edited: false},
+    {email:"abc123@gmail.com",fName:"Bill",lName:"Gates",bName:"McDonald's",phoneNum:"+112312312",checkInCode:"MCD12321",address:"123 clown street, Adelaide", edited: false},
+    {email:"abc123@gmail.com",fName:"Bill",lName:"Gates",bName:"McDonald's",phoneNum:"+112312312",checkInCode:"MCD12321",address:"123 clown street, Adelaide", edited: false},
+    {email:"abc123@gmail.com",fName:"Bill",lName:"Gates",bName:"McDonald's",phoneNum:"+112312312",checkInCode:"MCD12321",address:"123 clown street, Adelaide", edited: false}
+    ];
+
 var appdiv = new Vue({
     el: "#app",
     data: {
@@ -40,7 +50,22 @@ var appdiv = new Vue({
         visitedHotspotNoti: true,
 
         //Venue Data
-        venueCheckInCode: "MCD1231234"
+        venueCheckInCode: "MCD1231234",
+
+        //Admin Data
+        //VenueEdits
+        venfNameEdit: "",
+        venlNameEdit: "",
+        venbNameEdit: "",
+        venemailEdit: "",
+        venPhoneNumEdit: "",
+        venAddressEdit: "",
+        //
+        venueSearch: "",
+        userSearch: "",
+        hotspotSearch: "",
+        editingDivOpen: false,
+        editingVenueIndex: 0,
     },
     computed: {
         tabs: function (){
@@ -85,6 +110,19 @@ var appdiv = new Vue({
                }
             });
             return temp;
+        },
+
+        //Admin venue list
+        venueDatabase: function(){
+            var search = this.venueSearch;
+            var temp = [];
+            venueData.forEach(function (venue){
+                var mixed = venue.fName.toLowerCase() + venue.lName.toLowerCase() + venue.bName.toLowerCase() + venue.checkInCode.toLowerCase() + venue.address.toLowerCase();
+                if (mixed.includes(search.toLowerCase())){
+                    temp.push(venue);
+                }
+            });
+            return temp;
         }
     },
     methods: {
@@ -109,6 +147,11 @@ var appdiv = new Vue({
 
         updateEmailInfo: function(){
           //Code to send the email preferences to the server.
+        },
+
+        updateVenueInfo: function(index){
+            this.editingDivOpen = false;
+            //Code to have the server update the information of venue at index index.
         }
 
     }

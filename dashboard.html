@@ -86,10 +86,46 @@
             <div v-else-if="tabsBool[2]" id="venueManager">
                 <h1 class="dashboardMenuTitle">Manage Venues</h1>
                 <div class="menuInfo">
-                    <input class="searchBar" class="Left" placeholder="Search..."/>
+                    <input class="searchBar" class="Left" v-model="venueSearch"/>
                     <br>
 
-                    <div style="height: 300px;">LIST OF VENUES</div>
+                    <div v-if="editingDivOpen" class="editMenu">
+                          <div class="profileItem Left">
+                            <h3>First Name</h3>
+                              <input id="venueFNEdit" v-bind:value="venueDatabase[editingVenueIndex].fName" />
+                          </div>
+                          <div class="profileItem">
+                            <h3>Last Name</h3>
+                              <input id="venueLNEdit" v-bind:value="venueDatabase[editingVenueIndex].lName"/>
+                          </div>
+                          <div class="profileItem Left">
+                            <h3>Phone Number</h3>
+                              <input id="venuePNEdit" v-bind:value="venueDatabase[editingVenueIndex].phoneNum"/>
+                          </div>
+
+                          <div class="profileItem">
+                            <h3>Email:</h3>
+                              <input id="venueEmEdit" v-bind:value="venueDatabase[editingVenueIndex].email"/>
+                          </div>
+
+                            <div class="profileItem Left">
+                                <h3>Business Name:</h3>
+                                <input id="venueBNEdit" v-bind:value="venueDatabase[editingVenueIndex].bName" />
+                            </div>
+
+                            <div class="profileItem">
+                                <h3>Address:</h3>
+                                <input id="venueAddEdit" v-bind:value="venueDatabase[editingVenueIndex].address"/>
+                            </div>
+
+                            <button v-on:click="updateVenueInfo(editingVenueIndex)" class="Left">Save</button>
+                            <button v-on:click="editingDivOpen = false">Close</button>
+                    </div>
+
+                    <ul class="historyList">
+                        <li v-for="(venue,index) in venueDatabase" v-on:click="editingDivOpen = true; editingVenueIndex = index">{{venue.checkInCode}} | {{venue.bName}} | {{venue.email}}</li>
+                        <li v-if="venueDatabase.length == 0">No results</li>
+                    </ul>
 
                 </div>
             </div>
