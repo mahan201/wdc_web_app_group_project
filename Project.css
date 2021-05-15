@@ -34,13 +34,13 @@
 
 
     button{                             /*for all buttons*/
-        border-radius: 4px;
         background-color: #606ca6;
         color: white;
         border:1px solid #ccc;
         padding:6px 15px;
         margin: 8px 0;
         width:80px;
+        border-radius: 4px;
     }
 
     button:hover{
@@ -50,6 +50,7 @@
         padding:6px 15px;
         margin: 8px 0;
         width:80px;
+        border-radius: 4px;
     }
 
     .bold{
@@ -276,15 +277,21 @@
 
     #dashboardNav{
         width: 10%;
-        height: 100%;
+        height: 500px;
         float: left;
         margin-right: 20px;
+        color: white;
+        background-color: #606ca6;
     }
 
     .dashboardMenuTitle, .menuInfo{
         color: white;
         background-color: #606ca6;
+        border-radius: 20px;
+    }
 
+    .menuInfo{
+        padding: 10px;
     }
 
 
@@ -380,4 +387,21 @@
 
     .failed{
         color: red;
+    }
+
+    .historyList{
+        background-color: grey;
+        width: 80%;
+        height: 300px;
+        border: 2px solid white;
+        border-radius: 5px;
+        overflow-y: scroll;
+
+    }
+
+    .historyList li{
+        margin: 10px 5px;
+        border: 1px solid white;
+        padding: 5px;
+        font-size: 20px;
     }

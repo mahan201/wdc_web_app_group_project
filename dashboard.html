@@ -157,10 +157,13 @@
                 <h1 class="dashboardMenuTitle">Venue Check-In History</h1>
                 <div class="menuInfo">
                     <h3>Search</h3>
-                    <input class="searchBar" placeholder="User Name"/>
+                    <input class="searchBar" placeholder="User Name" v-model="searchTerm"/>
                     <br>
+                    <ul class="historyList">
+                        <li v-for="checkIn in venueHistory">{{checkIn}}</li>
+                        <li v-if="venueHistory.length == 0">No results</li>
+                    </ul>
 
-                    <div style="height: 300px;">LIST OF LOCATIONS USER HAS CHECKED INTO</div>
 
                 </div>
             </div>
@@ -169,10 +172,10 @@
                 <h1 class="dashboardMenuTitle">Venue Check-In Code</h1>
                 <div class="menuInfo centered">
                     <h2>Check-In Code</h2>
-                    <h3 id="checkinCode">MCD1231234</h3>
+                    <h3 id="checkinCode">{{venueCheckInCode}}</h3>
 
                     <h2>URL Check-In</h2>
-                    <h3><a href="check-in.html?code=MCD1231234">https://project.com/check-in.html?code=MCD1231234</a> </h3>
+                    <h3><a href="check-in.html?code=MCD1231234">https://project.com/check-in.html?code={{venueCheckInCode}}</a> </h3>
 
                 </div>
             </div>
