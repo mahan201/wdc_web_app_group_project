@@ -310,12 +310,15 @@
     }
 
 
-
-    li a{
+    a{
         color: white;
         text-decoration: none;
         display: block;
         text-align: center;
+    }
+
+
+    li a{
         font-size: 20px;
         padding: 14px 16px;
     }
@@ -404,4 +407,13 @@
         border: 1px solid white;
         padding: 5px;
         font-size: 20px;
+    }
+
+    label{
+        font-size: 20px;
+    }
+
+    input[type=checkbox]{
+        font-size: 20px;
+        margin: 10px;
     }

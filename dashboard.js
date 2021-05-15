@@ -10,19 +10,19 @@ var venueHistoryFull= [
     ];
 
 var userHistoryFull= [
-    {firstName: "Mahan",lastName: "Noorbahr",phoneNo: "0123456789",time: "10-5-2021 13:05"},
-    {firstName: "Mahan",lastName: "Noorbahr",phoneNo: "0123456789",time: "10-5-2021 13:05"},
-    {firstName: "Mahan",lastName: "Noorbahr",phoneNo: "0123456789",time: "10-5-2021 13:05"},
-    {firstName: "Mahan",lastName: "Noorbahr",phoneNo: "0123456789",time: "10-5-2021 13:05"},
-    {firstName: "Mahan",lastName: "Noorbahr",phoneNo: "0123456789",time: "10-5-2021 13:05"},
-    {firstName: "Mahan",lastName: "Noorbahr",phoneNo: "0123456789",time: "10-5-2021 13:05"}
+    {checkInCode: "MCD12387", businessName: "McDonald's",phoneNo: "0123456789",time: "10-5-2021 13:05", isHotspot: true},
+    {checkInCode: "MCD12387", businessName: "McDonald's",phoneNo: "0123456789",time: "10-5-2021 13:05", isHotspot: false},
+    {checkInCode: "MCD12387", businessName: "McDonald's",phoneNo: "0123456789",time: "10-5-2021 13:05", isHotspot: true},
+    {checkInCode: "MCD12387", businessName: "McDonald's",phoneNo: "0123456789",time: "10-5-2021 13:05", isHotspot: false},
+    {checkInCode: "MCD12387", businessName: "McDonald's",phoneNo: "0123456789",time: "10-5-2021 13:05", isHotspot: true},
+    {checkInCode: "MCD12387", businessName: "McDonald's",phoneNo: "0123456789",time: "10-5-2021 13:05", isHotspot: false}
     ];
 
 var appdiv = new Vue({
     el: "#app",
     data: {
         //Profile Data
-        accountType: "venue",
+        accountType: "admin",
         selectedTab: "Profile",
         editing: false,
         firstName: "Talhah",
@@ -33,8 +33,13 @@ var appdiv = new Vue({
         address: "123 Clown Street, Adelaide",
 
 
-        //Venue History Data
         searchTerm: "",
+
+        //User Data
+        weeklyNotifications: true,
+        visitedHotspotNoti: true,
+
+        //Venue Data
         venueCheckInCode: "MCD1231234"
     },
     computed: {
@@ -56,17 +61,29 @@ var appdiv = new Vue({
             return temp;
         },
 
+        //User Data
+        userHistory: function(){
+            var search = this.searchTerm;
+            var temp = [];
+            userHistoryFull.forEach(function (checkIn) {
+               if ((checkIn.checkInCode.toLowerCase().includes(search.toLowerCase())) || (checkIn.businessName.toLowerCase().includes(search.toLowerCase()))){
+                   var formatted = checkIn.checkInCode + " | " + checkIn.businessName + " | " + checkIn.phoneNo + " | " + checkIn.time + " | " + (checkIn.isHotspot ? "HOTSPOT" : "");
+                   temp.push(formatted);
+               }
+            });
+            return temp;
+        },
+
         //Venue Data
         venueHistory: function(){
             var search = this.searchTerm;
             var temp = [];
             venueHistoryFull.forEach(function (checkIn) {
                if ((checkIn.firstName.toLowerCase().includes(search.toLowerCase())) || (checkIn.lastName.toLowerCase().includes(search.toLowerCase()))){
-                   var formatted = checkIn.firstName + " " + checkIn.lastName + " " + checkIn.phoneNo + " " + checkIn.time;
+                   var formatted = checkIn.firstName + " | " + checkIn.lastName + " | " + checkIn.phoneNo + " | " + checkIn.time;
                    temp.push(formatted);
                }
             });
-            console.log(temp);
             return temp;
         }
     },
@@ -79,6 +96,19 @@ var appdiv = new Vue({
                 center: [138.6062277,-34.920603],
                 zoom: 11
                 });
+        },
+
+        historyMapView: function(){
+          window.location.href = '/historyMapView.html';
+        },
+
+        updateInfo: function(){
+            this.editing = false;
+            //Code to send the changed info to the server.
+        },
+
+        updateEmailInfo: function(){
+          //Code to send the email preferences to the server.
         }
 
     }

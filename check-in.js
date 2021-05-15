@@ -16,7 +16,7 @@ var appdiv = new Vue({
     methods: {
         checkIn: function(event){
             if(this.codes.includes(this.code)){
-
+                //Code to send the data to the server.
                 this.passed = true;
                 this.failed = false;
                 return;
