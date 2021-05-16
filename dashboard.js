@@ -57,7 +57,7 @@ var appdiv = new Vue({
         venfNameEdit: "",
         venlNameEdit: "",
         venbNameEdit: "",
-        venemailEdit: "",
+        venEmailEdit: "",
         venPhoneNumEdit: "",
         venAddressEdit: "",
         //
@@ -149,8 +149,27 @@ var appdiv = new Vue({
           //Code to send the email preferences to the server.
         },
 
-        updateVenueInfo: function(index){
+        editVenueAt: function(index){
+            this.venfNameEdit = this.venueDatabase[index].fName;
+            this.venlNameEdit = this.venueDatabase[index].lName;
+            this.venbNameEdit = this.venueDatabase[index].bName;
+            this.venEmailEdit = this.venueDatabase[index].email;
+            this.venPhoneNumEdit = this.venueDatabase[index].phoneNum;
+            this.venAddressEdit = this.venueDatabase[index].address;
+            this.editingMenuIndex = index;
+            this.editingDivOpen = true;
+
+        },
+
+        updateVenueInfo: function(){
             this.editingDivOpen = false;
+            var index = this.editingMenuIndex;
+            this.venueDatabase[index].fName = this.venfNameEdit;
+            this.venueDatabase[index].lName = this.venlNameEdit;
+            this.venueDatabase[index].bName = this.venbNameEdit;
+            this.venueDatabase[index].email = this.venEmailEdit;
+            this.venueDatabase[index].phoneNum = this.venPhoneNumEdit;
+            this.venueDatabase[index].address = this.venAddressEdit;
             //Code to have the server update the information of venue at index index.
         }
 
