@@ -32,6 +32,19 @@
         width: 15%;
     }
 
+    .Full{
+        width: 80%;
+    }
+
+    .itemEdit{
+        padding: 2px 10px;
+    }
+
+    .itemEdit:hover{
+
+        background-color: #aba9a9;
+    }
+
 
     button{                             /*for all buttons*/
         background-color: #606ca6;
@@ -417,7 +430,7 @@
         font-size: 20px;
         margin: 10px;
     }
-    
+
     .liEdit{
           cursor: pointer;
           position: absolute;

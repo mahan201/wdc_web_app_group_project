@@ -19,13 +19,22 @@ var userHistoryFull= [
     ];
 
 var venueData= [
-    {email:"abc123@gmail.com",fName:"Bill",lName:"Gates",bName:"McDonald's",phoneNum:"+112312312",checkInCode:"MCD12321",address:"123 clown street, Adelaide", edited: false},
-    {email:"abc123@gmail.com",fName:"Bill",lName:"Gates",bName:"McDonald's",phoneNum:"+112312312",checkInCode:"MCD12321",address:"123 clown street, Adelaide", edited: false},
-    {email:"abc123@gmail.com",fName:"Bill",lName:"Gates",bName:"McDonald's",phoneNum:"+112312312",checkInCode:"MCD12321",address:"123 clown street, Adelaide", edited: false},
-    {email:"abc123@gmail.com",fName:"Bill",lName:"Gates",bName:"McDonald's",phoneNum:"+112312312",checkInCode:"MCD12321",address:"123 clown street, Adelaide", edited: false},
-    {email:"abc123@gmail.com",fName:"Bill",lName:"Gates",bName:"McDonald's",phoneNum:"+112312312",checkInCode:"MCD12321",address:"123 clown street, Adelaide", edited: false},
-    {email:"abc123@gmail.com",fName:"Bill",lName:"Gates",bName:"McDonald's",phoneNum:"+112312312",checkInCode:"MCD12321",address:"123 clown street, Adelaide", edited: false},
-    {email:"abc123@gmail.com",fName:"Bill",lName:"Gates",bName:"McDonald's",phoneNum:"+112312312",checkInCode:"MCD12321",address:"123 clown street, Adelaide", edited: false}
+    {email:"abc123@gmail.com",fName:"Bill",lName:"Gates",bName:"McDonald's",phoneNum:"+112312312",checkInCode:"MCD12321",address:"123 clown street, Adelaide"},
+    {email:"abc123@gmail.com",fName:"Bill",lName:"Gates",bName:"McDonald's",phoneNum:"+112312312",checkInCode:"MCD12321",address:"123 clown street, Adelaide"},
+    {email:"abc123@gmail.com",fName:"Bill",lName:"Gates",bName:"McDonald's",phoneNum:"+112312312",checkInCode:"MCD12321",address:"123 clown street, Adelaide"},
+    {email:"abc123@gmail.com",fName:"Bill",lName:"Gates",bName:"McDonald's",phoneNum:"+112312312",checkInCode:"MCD12321",address:"123 clown street, Adelaide"},
+    {email:"abc123@gmail.com",fName:"Bill",lName:"Gates",bName:"McDonald's",phoneNum:"+112312312",checkInCode:"MCD12321",address:"123 clown street, Adelaide"},
+    {email:"abc123@gmail.com",fName:"Bill",lName:"Gates",bName:"McDonald's",phoneNum:"+112312312",checkInCode:"MCD12321",address:"123 clown street, Adelaide"},
+    {email:"abc123@gmail.com",fName:"Bill",lName:"Gates",bName:"McDonald's",phoneNum:"+112312312",checkInCode:"MCD12321",address:"123 clown street, Adelaide"}
+    ];
+
+var userData= [
+    {email:"abc123@gmail.com",fName:"Bill",lName:"Gates",phoneNum:"+112312312",ID:"IC12321313"},
+    {email:"abc123@gmail.com",fName:"Bill",lName:"Gates",phoneNum:"+112312312",ID:"IC12321313"},
+    {email:"abc123@gmail.com",fName:"Bill",lName:"Gates",phoneNum:"+112312312",ID:"IC12321313"},
+    {email:"abc123@gmail.com",fName:"Bill",lName:"Gates",phoneNum:"+112312312",ID:"IC12321313"},
+    {email:"abc123@gmail.com",fName:"Bill",lName:"Gates",phoneNum:"+112312312",ID:"IC12321313"},
+    {email:"abc123@gmail.com",fName:"Bill",lName:"Gates",phoneNum:"+112312312",ID:"IC12321313"}
     ];
 
 var appdiv = new Vue({
@@ -60,6 +69,12 @@ var appdiv = new Vue({
         venEmailEdit: "",
         venPhoneNumEdit: "",
         venAddressEdit: "",
+        //UserEdits
+        usIdEdit: "",
+        usfNameEdit: "",
+        uslNameEdit: "",
+        usEmailEdit: "",
+        usPhoneNumEdit: "",
         //
         venueSearch: "",
         userSearch: "",
@@ -123,6 +138,18 @@ var appdiv = new Vue({
                 }
             });
             return temp;
+        },
+
+        userDatabase: function(){
+            var search = this.userSearch;
+            var temp = [];
+            userData.forEach(function (user){
+                var mixed = user.fName.toLowerCase() + user.lName.toLowerCase() + user.ID.toLowerCase() + user.email.toLowerCase().substring(0,user.email.indexOf("@"));
+                if (mixed.includes(search.toLowerCase())){
+                    temp.push(user);
+                }
+            });
+            return temp;
         }
     },
     methods: {
@@ -170,6 +197,28 @@ var appdiv = new Vue({
             this.venueDatabase[index].email = this.venEmailEdit;
             this.venueDatabase[index].phoneNum = this.venPhoneNumEdit;
             this.venueDatabase[index].address = this.venAddressEdit;
+            //Code to have the server update the information of venue at index index.
+        },
+
+        editUserAt: function(index){
+            this.usIdEdit = this.userDatabase[index].ID;
+            this.usfNameEdit = this.userDatabase[index].fName;
+            this.uslNameEdit = this.userDatabase[index].lName;
+            this.usEmailEdit = this.userDatabase[index].email;
+            this.usPhoneNumEdit = this.userDatabase[index].phoneNum;
+            this.editingMenuIndex = index;
+            this.editingDivOpen = true;
+
+        },
+
+        updateUserInfo: function(){
+            this.editingDivOpen = false;
+            var index = this.editingMenuIndex;
+            this.userDatabase[index].ID = this.usIdEdit;
+            this.userDatabase[index].fName = this.usfNameEdit;
+            this.userDatabase[index].lName = this.uslNameEdit;
+            this.userDatabase[index].email = this.usEmailEdit;
+            this.userDatabase[index].phoneNum = this.usPhoneNumEdit;
             //Code to have the server update the information of venue at index index.
         }
 

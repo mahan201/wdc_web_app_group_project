@@ -24,7 +24,7 @@
 
         <div id="dashboardNav">
             <ol>
-                <li v-for="(item,index) in tabs"><a href="#" v-on:click="selectedTab=item" v-bind:class="{'active':selectedTab == item}">{{item}}</a></li>
+                <li v-for="(item,index) in tabs"><a href="#" v-on:click="selectedTab=item; editingDivOpen = false;" v-bind:class="{'active':selectedTab == item}">{{item}}</a></li>
             </ol>
         </div>
 
@@ -86,8 +86,6 @@
             <div v-else-if="tabsBool[2]" id="venueManager">
                 <h1 class="dashboardMenuTitle">Manage Venues</h1>
                 <div class="menuInfo">
-                    <input class="searchBar" class="Left" v-model="venueSearch"/>
-                    <br>
 
                     <div v-if="editingDivOpen" class="editMenu">
 
@@ -95,7 +93,7 @@
                             <h3>First Name</h3>
                               <input id="venueFNEdit" v-model="venfNameEdit" />
                           </div>
-                          <div class="profileItem">
+                          <div class="profileItem Left">
                             <h3>Last Name</h3>
                               <input id="venueLNEdit" v-model="venlNameEdit"/>
                           </div>
@@ -105,7 +103,7 @@
                                 <input id="venueBNEdit" v-model="venbNameEdit" />
                             </div>
 
-                          <div class="profileItem">
+                          <div class="profileItem Left">
                             <h3>Phone Number</h3>
                               <input id="venuePNEdit" v-model="venPhoneNumEdit"/>
                           </div>
@@ -117,15 +115,20 @@
 
                             <div class="profileItem">
                                 <h3>Address:</h3>
-                                <input id="venueAddEdit" v-modele="venAddressEdit"/>
+                                <input class="Full" id="venueAddEdit" v-model="venAddressEdit"/>
                             </div>
 
-                            <button v-on:click="updateVenueInfo" class="Left">Save</button>
-                            <button v-on:click="editingDivOpen = false">Close</button>
+                            <div>
+                                <button v-on:click="updateVenueInfo" class="Left">Save</button>
+                                <button v-on:click="editingDivOpen = false">Close</button>
+                            </div>
+
                     </div>
 
+                    <input class="searchBar" class="Left" v-model="venueSearch" placeholder="Search..."/>
+
                     <ul class="historyList">
-                        <li v-for="(venue,index) in venueDatabase" v-on:click="editVenueAt(index)">{{venue.checkInCode}} | {{venue.bName}} | {{venue.email}}</li>
+                        <li v-for="(venue,index) in venueDatabase">{{venue.checkInCode}} | {{venue.bName}} | {{venue.email}} <span class="itemEdit Right" v-on:click="editVenueAt(index)">Edit</span></li>
                         <li v-if="venueDatabase.length == 0">No results</li>
                     </ul>
 
@@ -135,10 +138,45 @@
             <div v-else-if="tabsBool[3]" id="userManager">
                 <h1 class="dashboardMenuTitle">Manage Users</h1>
                 <div class="menuInfo">
-                    <input class="searchBar" class="Left" placeholder="Search..."/>
-                    <br>
 
-                    <div style="height: 300px;">LIST OF USERS</div>
+                    <div v-if="editingDivOpen" class="editMenu">
+                            <div class="profileItem">
+                            <h3>ID</h3>
+                              <input v-model="usIdEdit" />
+                          </div>
+
+                          <div class="profileItem Left">
+                            <h3>First Name</h3>
+                              <input v-model="usfNameEdit" />
+                          </div>
+                          <div class="profileItem">
+                            <h3>Last Name</h3>
+                              <input v-model="uslNameEdit"/>
+                          </div>
+
+                          <div class="profileItem Left">
+                            <h3>Phone Number</h3>
+                              <input v-model="usPhoneNumEdit"/>
+                          </div>
+
+                          <div class="profileItem">
+                            <h3>Email:</h3>
+                              <input v-model="usEmailEdit"/>
+                          </div>
+
+                            <div>
+                                <button v-on:click="updateUserInfo" class="Left">Save</button>
+                                <button v-on:click="editingDivOpen = false">Close</button>
+                            </div>
+
+                    </div>
+
+                    <input class="searchBar" class="Left" v-model="userSearch" placeholder="Search..."/>
+
+                    <ul class="historyList">
+                        <li v-for="(venue,index) in userDatabase">{{venue.ID}} | {{venue.fName}} | {{venue.lName}} | {{venue.email}} <span class="itemEdit Right" v-on:click="editUserAt(index)">Edit</span></li>
+                        <li v-if="userDatabase.length == 0">No results</li>
+                    </ul>
 
                 </div>
             </div>
@@ -146,7 +184,7 @@
             <div v-else-if="tabsBool[4]" id="adminSignUp">
                 <h1 class="dashboardMenuTitle">Sign up an Admin / Health Official</h1>
                 <div class="menuInfo">
-                    <form class="centered" action="/checkin.ajax">
+                    <form class="centered" action="/signUpAdmin.ajax">
                         <input type="text" id="firstName" name="firstName" placeholder="First Name" required >
                         <input type="text" id="lastName" name="lastName" placeholder ="Last Name" required><br>
                         <input type="text" id="phoneNo" name="phoneNo" placeholder="Phone Number" required >
