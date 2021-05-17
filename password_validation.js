@@ -1,3 +1,5 @@
+
+//PASSWORD VALIDATION
 var myInput = document.getElementById("Psw");
 var letter = document.getElementById("letter");
 var capital = document.getElementById("capital");
@@ -53,3 +55,18 @@ myInput.onkeyup = function() {
     length.classList.add("invalid");
   }
 }
+
+
+// MATCHING PASSWORDS (password and confirm password)
+// function matching_Password(){
+//   var password = document.getElementById("Psw").value;
+//   var comfirmPassword =document.getElementById("CPsw").value;
+//   if( password!= comfirmPassword){
+//     alert ("Passwords did not match. Please try again");
+//   }
+//   else if( password== comfirmPassword){
+//     alert ("Passwords match");
+//   }
+// }
+
+

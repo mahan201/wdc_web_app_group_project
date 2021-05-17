@@ -8,11 +8,12 @@
          <script src="password_validation.js" defer></script>
     </head>
     <body class="background_Color">                               <!-- Set the whole page's background color -->
-        <div class ="signup-page centered">
-            <p><a class="bold"  href="Business_signup.html" id ="business_signup">Create a new business account?</a></p>
-            <hr>
-                <h1> Create a new account</h1>
 
+        <div class ="form_container">                             <!--Making a white container -->
+            <div class ="signup-page">
+                <p><a class="bold Right"  href="Business_signup.html" id ="business_signup">Create a new business account?</a></p><br>
+                <hr>
+                <h1> Create a new account</h1>
                 <form>                                                                                               <!--Creating signup inputs -->
                     <input type="text" id="fname" name="fname" placeholder="First name* : " required ><br>
                     <input type="text" id="lname" name="lname" placeholder ="Last name* : " required><br>
@@ -21,7 +22,7 @@
                     <input type="text" id="Email" name="Email" placeholder="Email* : " required ><br>
                     <input type="password" id="Psw" name="Psw" placeholder ="Password* : " pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}" title="Must contain at least one number and one uppercase and lowercase letter, and at least 8 or more characters" required><br>
                     <input type="password" id="CPsw" name="CPsw" placeholder ="Comfirm Password* : " required><br>
-                    <button id="signup_button" class="bold" type="submit" formaction="login.html">Sign Up</button><br>                          <!--Signup button. After signup, go to the login page again-->
+                    <button id="signup_button" class="bold" type="submit" formaction="login.html" >Sign Up</button><br>                          <!--Signup button. After signup, go to the login page again-->
                 </form>
                 <br>
                 <div id="message">                                                                           <!-- Info for Password validation -->
@@ -42,6 +43,6 @@
                     </i> Login with Google+
                     </a>
                 </div>
+            </div>
         </div>
-
     </body>
