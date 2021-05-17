@@ -34,7 +34,7 @@
             <div v-if="tabsBool[0]" id="profile">
                 <h1 class="dashboardMenuTitle">Profile</h1>
                 <div class="menuInfo">
-                    <button class="dashboardButton Right" v-on:click="editing = !editing">Edit</button>
+                    <button v-if="!editing" class="dashboardButton Right" v-on:click="editing = true;">Edit</button>
                     <br>
                   <div id="profFirstName" class="profileItem Left">
                     <h3>First Name</h3>

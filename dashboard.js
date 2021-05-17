@@ -206,9 +206,22 @@ var appdiv = new Vue({
           window.location.href = '/historyMapView.html';
         },
 
+        anyEmpty: function(){
+            var mixed = [this.firstName,this.lastName,this.phoneNum,this.email,this.businessName,this.building,this.street,this.zip,this.city,this.country];
+            if(mixed.includes("")){
+                return true;
+            } else {
+                return false;
+            }
+
+        },
+
         updateInfo: function(){
-            this.editing = false;
-            //Code to send the changed info to the server.
+            if(!this.anyEmpty()){
+                this.editing = false;
+                //Code to send the changed info to the server.
+            }
+
         },
 
         updateEmailInfo: function(){
