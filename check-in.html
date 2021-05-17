@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -20,7 +21,7 @@
             <h1 class="pageHeader">Check-In</h1>
             <p v-if="failed" id="errorMess" class="failed">Invalid Check-In Code</p>
             <p v-if="passed" id="successMess" class="passed">Successfully Checked In!</p>
-            <form @submit.prevent="checkIn">
+            <form v-on:submit.prevent="checkIn">
                     <input type="text" id="checkinCode" name="checkInCode" v-model="code" placeholder="Enter Venue Check-In Code..." required ><br>
                     <input v-if="!signedIn" type="text" id="firstName" name="firstName" v-model="fName" placeholder="First Name" required >
                     <input v-if="!signedIn" type="text" id="lastName" name="lastName" v-model="lName" placeholder ="Last Name" required><br>
