@@ -18,6 +18,7 @@
           <li><a href="/check-in">Check-in</a></li>
           <li><a class="active" href="/dashboard">Dashboard</a></li>
           <li class="login"><a href="login.html">{{firstName}}</a></li>
+          <li class="login"><a v-on:click="typeIndex += 1">Switch Account Type (Now: {{accountType}}) #DEMO ONLY#</a></li>
       </ul>
 
       <div id="dashboardContent">

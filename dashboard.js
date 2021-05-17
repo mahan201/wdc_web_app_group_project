@@ -52,8 +52,9 @@ var hotspotData = [
 var appdiv = new Vue({
     el: "#app",
     data: {
+        //Demonstration Data
+        typeIndex: 0,
         //Profile Data
-        accountType: "admin",
         selectedTab: "Profile",
         editing: false,
         firstName: "Talhah",
@@ -110,6 +111,12 @@ var appdiv = new Vue({
         editingDivOpen: false
     },
     computed: {
+
+        accountType: function(){
+            var lst = ["user","venue","admin"];
+            return lst[this.typeIndex%lst.length];
+        },
+
         tabs: function (){
             switch(this.accountType){
                 case "user":
