@@ -17,7 +17,8 @@
           <li><a href="hotspot-map.html">Hotspot Map</a></li>
           <li><a href="/check-in">Check-in</a></li>
           <li><a class="active" href="/dashboard">Dashboard</a></li>
-          <li class="login"><a href="login.html">Login</a></li>
+          <li class="login"><a href="login.html">{{firstName}}</a></li>
+          <li class="login"><a v-on:click="typeIndex += 1">Switch Account Type (Now: {{accountType}}) #DEMO ONLY#</a></li>
       </ul>
 
       <div id="dashboardContent">
@@ -34,35 +35,56 @@
             <div v-if="tabsBool[0]" id="profile">
                 <h1 class="dashboardMenuTitle">Profile</h1>
                 <div class="menuInfo">
-                    <button class="dashboardButton Right" v-on:click="editing = !editing">Edit</button>
+                    <button v-if="!editing" class="dashboardButton Right" v-on:click="editing = true;">Edit</button>
                     <br>
                   <div id="profFirstName" class="profileItem Left">
                     <h3>First Name</h3>
-                      <input id="profFNEdit" v-bind:value="firstName" v-bind:disabled="!editing"/>
+                      <input id="profFNEdit" v-model="firstName" v-bind:disabled="!editing" required/>
                   </div>
                   <div id="profLastName" class="profileItem">
                     <h3>Last Name</h3>
-                      <input id="profLNEdit" v-bind:value="lastName" v-bind:disabled="!editing"/>
+                      <input id="profLNEdit" v-model="lastName" v-bind:disabled="!editing" required/>
                   </div>
                   <div v-if="accountType!=='admin'" id="profPhoneNo" class="profileItem Left">
                     <h3>Phone Number</h3>
-                      <input id="profPNEdit" v-bind:value="phoneNum" v-bind:disabled="!editing"/>
+                      <input id="profPNEdit" v-model="phoneNum" v-bind:disabled="!editing" required/>
                   </div>
 
                   <div id="profEmail" class="profileItem">
                     <h3>Email:</h3>
-                      <input id="profEmEdit" v-bind:value="email" v-bind:disabled="!editing"/>
+                      <input id="profEmEdit" v-model="email" v-bind:disabled="!editing" required/>
                   </div>
 
                     <div v-if="accountType==='venue'" id="profBusinessName" class="profileItem Left">
                         <h3>Business Name:</h3>
-                        <input id="profBNEdit" v-bind:value="businessName" v-bind:disabled="!editing"/>
+                        <input id="profBNEdit" v-model="businessName" v-bind:disabled="!editing" required/>
                     </div>
 
                     <div v-if="accountType==='venue'" id="profAddress" class="profileItem">
-                        <h3>Address:</h3>
-                        <input id="profAddEdit" v-bind:value="address" v-bind:disabled="!editing"/>
+                        <h3>Building Name:</h3>
+                        <input id="profAddEdit" v-model="building" v-bind:disabled="!editing" required/>
                     </div>
+
+                    <div v-if="accountType==='venue'" id="profAddress" class="profileItem Left">
+                        <h3>Street:</h3>
+                        <input id="profAddEdit" v-model="street" v-bind:disabled="!editing" required/>
+                    </div>
+
+                    <div v-if="accountType==='venue'" id="profAddress" class="profileItem">
+                        <h3>Zip Code:</h3>
+                        <input id="profAddEdit" v-model="zip" v-bind:disabled="!editing" required/>
+                    </div>
+
+                    <div v-if="accountType==='venue'" id="profAddress" class="profileItem Left">
+                        <h3>City:</h3>
+                        <input id="profAddEdit" v-model="city" v-bind:disabled="!editing" required/>
+                    </div>
+
+                    <div v-if="accountType==='venue'" id="profAddress" class="profileItem">
+                        <h3>Country:</h3>
+                        <input id="profAddEdit" v-model="country" v-bind:disabled="!editing" required/>
+                    </div>
+
                   <div>
                       <button><a href="forgot_password.html">Reset Password</a></button>
                       <button v-if="editing" v-on:click="updateInfo">Save</button>
@@ -74,11 +96,50 @@
             <div v-else-if="tabsBool[1]" id="hotspotManager">
                 <h1 class="dashboardMenuTitle">Manage Hotspots</h1>
                 <div class="menuInfo">
-                    <input class="searchBar" class="Left" placeholder="Search..."/>
-                    <button class="dashboardButton Right">+ Add</button>
+
+                    <div v-if="editingDivOpen" class="editMenu">
+
+                      <div v-if="!isAddingHot" class="profileItem">
+                            <h3>Creator:</h3>
+                            <input v-model="hsCreatorEdit" required disabled/>
+                        </div>
+
+                       <div class="profileItem">
+                            <h3>Street Name:</h3>
+                            <input v-model="hsStreetEdit" required/>
+                        </div>
+
+                        <div class="profileItem Left">
+                            <h3>Zip Code:</h3>
+                            <input v-model="hsZipEdit" required/>
+                        </div>
+
+                        <div class="profileItem">
+                            <h3>City:</h3>
+                            <input v-model="hsCityEdit" required/>
+                        </div>
+
+                        <div class="profileItem">
+                            <h3>Country:</h3>
+                            <input v-model="hsCountryEdit" required/>
+                        </div>
+
+                        <div>
+                            <button v-if="!isAddingHot" v-on:click="updateHotspotInfo" class="Left">Save</button>
+                            <button v-else-if="isAddingHot" v-on:click="finishAddingHotspot" class="Left">Add</button>
+                            <button v-on:click="editingDivOpen = false">Close</button>
+                        </div>
+                    </div>
+
+                    <input class="searchBar" class="Left" v-model="hotspotSearch" placeholder="Search..."/>
+                    <button class="dashboardButton Right" v-on:click="startAddingHotspot">+ Add</button>
                     <br>
 
-                    <div style="height: 300px;">LIST OF HOTSPOTS</div>
+
+                    <ul class="historyList">
+                        <li v-for="(hotspot,index) in hotspotDatabase">{{hotspot.street}} | {{hotspot.zip}} | {{hotspot.city}} | {{hotspot.country}} <span class="itemEdit Right" v-on:click="editHotspotAt(index)">Edit</span></li>
+                        <li v-if="hotspotDatabase.length == 0">No results</li>
+                    </ul>
 
                 </div>
             </div>
@@ -91,31 +152,51 @@
 
                           <div class="profileItem">
                             <h3>First Name</h3>
-                              <input id="venueFNEdit" v-model="venfNameEdit" />
+                              <input v-model="venfNameEdit" required />
                           </div>
                           <div class="profileItem Left">
                             <h3>Last Name</h3>
-                              <input id="venueLNEdit" v-model="venlNameEdit"/>
+                              <input v-model="venlNameEdit" required/>
                           </div>
 
                           <div class="profileItem">
                                 <h3>Business Name:</h3>
-                                <input id="venueBNEdit" v-model="venbNameEdit" />
+                                <input v-model="venbNameEdit" required />
                             </div>
 
                           <div class="profileItem Left">
                             <h3>Phone Number</h3>
-                              <input id="venuePNEdit" v-model="venPhoneNumEdit"/>
+                              <input v-model="venPhoneNumEdit" required/>
                           </div>
 
                           <div class="profileItem">
                             <h3>Email:</h3>
-                              <input id="venueEmEdit" v-model="venEmailEdit"/>
+                              <input v-model="venEmailEdit" required/>
                           </div>
 
+                            <div class="profileItem Left">
+                                <h3>Building Name:</h3>
+                                <input v-model="venBuildingEdit" required/>
+                            </div>
+
                             <div class="profileItem">
-                                <h3>Address:</h3>
-                                <input class="Full" id="venueAddEdit" v-model="venAddressEdit"/>
+                                <h3>Street Name:</h3>
+                                <input id="venueAddEdit" v-model="venStreetEdit" required/>
+                            </div>
+
+                            <div class="profileItem Left">
+                                <h3>Zip Code:</h3>
+                                <input v-model="venZipCodeEdit" required/>
+                            </div>
+
+                            <div class="profileItem">
+                                <h3>City:</h3>
+                                <input v-model="venCityEdit" required/>
+                            </div>
+
+                            <div class="profileItem">
+                                <h3>Country:</h3>
+                                <input v-model="venCountryEdit" required/>
                             </div>
 
                             <div>
@@ -142,26 +223,26 @@
                     <div v-if="editingDivOpen" class="editMenu">
                             <div class="profileItem">
                             <h3>ID</h3>
-                              <input v-model="usIdEdit" />
+                              <input v-model="usIdEdit"  required/>
                           </div>
 
                           <div class="profileItem Left">
                             <h3>First Name</h3>
-                              <input v-model="usfNameEdit" />
+                              <input v-model="usfNameEdit"  required/>
                           </div>
                           <div class="profileItem">
                             <h3>Last Name</h3>
-                              <input v-model="uslNameEdit"/>
+                              <input v-model="uslNameEdit" required/>
                           </div>
 
                           <div class="profileItem Left">
                             <h3>Phone Number</h3>
-                              <input v-model="usPhoneNumEdit"/>
+                              <input v-model="usPhoneNumEdit" required/>
                           </div>
 
                           <div class="profileItem">
                             <h3>Email:</h3>
-                              <input v-model="usEmailEdit"/>
+                              <input v-model="usEmailEdit" required/>
                           </div>
 
                             <div>
@@ -200,8 +281,7 @@
             <div v-else-if="tabsBool[5]" id="userHistory">
                 <h1 class="dashboardMenuTitle">User Check-In History</h1>
                 <div class="menuInfo">
-                    <h3>Search</h3>
-                    <input class="searchBar" placeholder="Venue Code" v-model="searchTerm"/>
+                    <input class="searchBar" placeholder="Search..." v-model="searchTerm"/>
                     <button class="dashboardButton Right" v-on:click="historyMapView">Map View</button>
                     <br>
                     <ul class="historyList">
@@ -212,16 +292,8 @@
                 </div>
             </div>
 
-            <div v-else-if="tabsBool[6]" id="hotspotVisited">
-                <h1 class="dashboardMenuTitle">Have I been to a Hotspot?</h1>
-                <div class="menuInfo centered">
-                    <button class="dashboardButton" v-on:click="loadMap">Load Map</button>
-                    <div  id='map' style='width: 80%; height: 600px;'></div>
 
-                </div>
-            </div>
-
-            <div v-else-if="tabsBool[7]" id="emailSubs">
+            <div v-else-if="tabsBool[6]" id="emailSubs">
                 <h1 class="dashboardMenuTitle">Email Subscriptions</h1>
                 <div class="menuInfo" >
                     <i class="fas fa-envelope-open-text" id="email_logo"></i>
@@ -237,11 +309,10 @@
                 </div>
             </div>
 
-            <div v-else-if="tabsBool[8]" id="venueHistory">
+            <div v-else-if="tabsBool[7]" id="venueHistory">
                 <h1 class="dashboardMenuTitle">Venue Check-In History</h1>
                 <div class="menuInfo">
-                    <h3>Search</h3>
-                    <input class="searchBar" placeholder="User Name" v-model="searchTerm"/>
+                    <input class="searchBar" placeholder="Search..." v-model="searchTerm"/>
                     <br>
                     <ul class="historyList">
                         <li v-for="checkIn in venueHistory">{{checkIn}}</li>
@@ -252,7 +323,7 @@
                 </div>
             </div>
 
-            <div v-else-if="tabsBool[9]" id="venueCode">
+            <div v-else-if="tabsBool[8]" id="venueCode">
                 <h1 class="dashboardMenuTitle">Venue Check-In Code</h1>
                 <div class="menuInfo centered">
                     <h2>Check-In Code</h2>
