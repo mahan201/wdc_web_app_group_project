@@ -16,7 +16,7 @@
     }
     #login_logo{
         font-size: 190px;
-        color: white;
+        color: black;
     }
     .login-page h1{
         color:black;
@@ -97,6 +97,7 @@
     }
 
     .login-page a {
+        color:#8a9bed;
         font-size: 15px;
     }
     .login-page a:hover{                   /*Forgot password*/
@@ -108,6 +109,9 @@
          /*                                 User- Signup                                       */
 
     .signup-page h1{
+        width: 80%;
+        text-align: center;
+        margin: 20px 50px;
         color:black;
     }
 
@@ -115,17 +119,21 @@
         text-align: right;
         font-size: 20px;
     }
-    .signup-page #business_signup:hover{
+    .signup-page #business_signup{
         color: #8a9bed;
+
     }
-    .signup-page input[type=text], input[type=password]{                  /*edit for signup-button*/
+    .signup-page #business_signup:hover{
+         color:#606ca6;
+    }
+    .signup-page input[type=text], input[type=password] {                  /*edit for signup-button*/
         color: grey;
         border-radius: 4px;
         border: 1px solid #ccc;
         padding: 10px 9px;
         margin: 8px 0;
         box-sizing: border-box;
-        width: 15%;
+        width: 40%;
     }
 
     .facebook{                                            /*Facebook */
@@ -204,7 +212,7 @@
         padding: 10px 9px;
         margin: 8px 0;
         box-sizing: border-box;
-        width: 15%;
+        width: 40%;
     }
 
 
@@ -267,7 +275,7 @@
 
 
 
-    h1{
+    .dashboardMenuTitle h1{
         color: white;
     }
 
