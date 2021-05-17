@@ -159,6 +159,39 @@
     .google:hover{
         opacity:0.6;
     }
+
+     #message h3{
+         font-size: 15px;
+         color: black;
+
+     }
+     #message p{
+        text-align:center;
+        width:50%;
+        padding: 10px 35px;
+        font-size: 13px;
+    }
+
+    /* Add a green text color and a checkmark when the requirements are right */
+    .valid {
+        color: green;
+    }
+
+    .valid:before {
+        position: relative;
+        left: -35px;
+        content: "✔";
+    }
+    /* Add a red text color and an "x" when the requirements are wrong */
+    .invalid {
+        color: red;
+    }
+
+    .invalid:before {
+        position: relative;
+        left: -35px;
+        content: "✖";
+}
                              /*                                   Business- signup                                */
     .business_signup-page h1{
         color:black;
@@ -173,6 +206,7 @@
         box-sizing: border-box;
         width: 15%;
     }
+
 
                                       /* Done Business Signup */
 
@@ -205,12 +239,15 @@
         box-sizing: border-box;
 
     }
-    .form_container #email, #validation_code, #new_password, #confirm_password{
+    .form_container #email, #validation_code, #Psw, #confirm_password{
         width: 40%;
     }
-    .form_container p{
+    .form_container .bold p{
         color:#606ca6;
         font-size: 15px;
+    }
+    .form_container #message p {
+        margin:auto;
     }
     #reset_button{
         color: white;
@@ -224,18 +261,7 @@
         background-color: #606ca6;
     }
 
-    /*test */
-    #Continue_button{
-        color: white;
-        background-color: #8a9bed;
-        border:1px solid #ccc;
-        padding:6px 15px;
-        margin: 10px 0;
-        width:auto;
-    }
-     #Continue_button:hover{
-        background-color: #606ca6;
-    }
+
 
 /*                                                  Annie       Annie       Annie        Annie        Annie       (sorry to make this lol. Just to make it easier for me to see) will delete later ^ ^    */
 
