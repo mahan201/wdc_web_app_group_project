@@ -1,4 +1,4 @@
-var allTabs = ["Profile","Hotspots","Venues","Users","Signup an Admin","User History","Have I been to a Hotspot?","Email Subscription","Venue History","Venue Check-In Code"];
+var allTabs = ["Profile","Hotspots","Venues","Users","Signup an Admin","User History","Email Subscription","Venue History","Venue Check-In Code"];
 
 var venueHistoryFull= [
     {firstName: "Mahan",lastName: "Noorbahr",phoneNo: "0123456789",time: "10-5-2021 13:05"},
@@ -19,13 +19,13 @@ var userHistoryFull= [
     ];
 
 var venueData= [
-    {email:"abc123@gmail.com",fName:"Bill",lName:"Gates",bName:"McDonald's",phoneNum:"+112312312",checkInCode:"MCD12321",address:"123 clown street, Adelaide"},
-    {email:"abc123@gmail.com",fName:"Bill",lName:"Gates",bName:"McDonald's",phoneNum:"+112312312",checkInCode:"MCD12321",address:"123 clown street, Adelaide"},
-    {email:"abc123@gmail.com",fName:"Bill",lName:"Gates",bName:"McDonald's",phoneNum:"+112312312",checkInCode:"MCD12321",address:"123 clown street, Adelaide"},
-    {email:"abc123@gmail.com",fName:"Bill",lName:"Gates",bName:"McDonald's",phoneNum:"+112312312",checkInCode:"MCD12321",address:"123 clown street, Adelaide"},
-    {email:"abc123@gmail.com",fName:"Bill",lName:"Gates",bName:"McDonald's",phoneNum:"+112312312",checkInCode:"MCD12321",address:"123 clown street, Adelaide"},
-    {email:"abc123@gmail.com",fName:"Bill",lName:"Gates",bName:"McDonald's",phoneNum:"+112312312",checkInCode:"MCD12321",address:"123 clown street, Adelaide"},
-    {email:"abc123@gmail.com",fName:"Bill",lName:"Gates",bName:"McDonald's",phoneNum:"+112312312",checkInCode:"MCD12321",address:"123 clown street, Adelaide"}
+    {email:"abc123@gmail.com",fName:"Bill",lName:"Gates",bName:"McDonald's",phoneNum:"+112312312",checkInCode:"MCD12321",building:"Clown Tower",street:"123 Clown Street",zip:"52876",city:"Adelaide",country:"Australia"},
+    {email:"abc123@gmail.com",fName:"Bill",lName:"Gates",bName:"McDonald's",phoneNum:"+112312312",checkInCode:"MCD12321",building:"Clown Tower",street:"123 Clown Street",zip:"52876",city:"Adelaide",country:"Australia"},
+    {email:"abc123@gmail.com",fName:"Bill",lName:"Gates",bName:"McDonald's",phoneNum:"+112312312",checkInCode:"MCD12321",building:"Clown Tower",street:"123 Clown Street",zip:"52876",city:"Adelaide",country:"Australia"},
+    {email:"abc123@gmail.com",fName:"Bill",lName:"Gates",bName:"McDonald's",phoneNum:"+112312312",checkInCode:"MCD12321",building:"Clown Tower",street:"123 Clown Street",zip:"52876",city:"Adelaide",country:"Australia"},
+    {email:"abc123@gmail.com",fName:"Bill",lName:"Gates",bName:"McDonald's",phoneNum:"+112312312",checkInCode:"MCD12321",building:"Clown Tower",street:"123 Clown Street",zip:"52876",city:"Adelaide",country:"Australia"},
+    {email:"abc123@gmail.com",fName:"Bill",lName:"Gates",bName:"McDonald's",phoneNum:"+112312312",checkInCode:"MCD12321",building:"Clown Tower",street:"123 Clown Street",zip:"52876",city:"Adelaide",country:"Australia"},
+    {email:"abc123@gmail.com",fName:"Bill",lName:"Gates",bName:"McDonald's",phoneNum:"+112312312",checkInCode:"MCD12321",building:"Clown Tower",street:"123 Clown Street",zip:"52876",city:"Adelaide",country:"Australia"}
     ];
 
 var userData= [
@@ -35,6 +35,18 @@ var userData= [
     {email:"abc123@gmail.com",fName:"Bill",lName:"Gates",phoneNum:"+112312312",ID:"IC12321313"},
     {email:"abc123@gmail.com",fName:"Bill",lName:"Gates",phoneNum:"+112312312",ID:"IC12321313"},
     {email:"abc123@gmail.com",fName:"Bill",lName:"Gates",phoneNum:"+112312312",ID:"IC12321313"}
+    ];
+
+var hotspotData = [
+    {creator:"abc123@gmail.com",street:"123 Hogwarts", zip:"9.75",city:"Adelaide",country:"Australia"},
+    {creator:"abc123@gmail.com",street:"123 Hogwarts", zip:"9.75",city:"Adelaide",country:"Australia"},
+    {creator:"abc123@gmail.com",street:"123 Hogwarts", zip:"9.75",city:"Adelaide",country:"Australia"},
+    {creator:"abc123@gmail.com",street:"123 Hogwarts", zip:"9.75",city:"Adelaide",country:"Australia"},
+    {creator:"abc123@gmail.com",street:"123 Hogwarts", zip:"9.75",city:"Adelaide",country:"Australia"},
+    {creator:"abc123@gmail.com",street:"123 Hogwarts", zip:"9.75",city:"Adelaide",country:"Australia"},
+    {creator:"abc123@gmail.com",street:"123 Hogwarts", zip:"9.75",city:"Adelaide",country:"Australia"},
+    {creator:"abc123@gmail.com",street:"123 Hogwarts", zip:"9.75",city:"Adelaide",country:"Australia"},
+    {creator:"abc123@gmail.com",street:"123 Hogwarts", zip:"9.75",city:"Adelaide",country:"Australia"}
     ];
 
 var appdiv = new Vue({
@@ -49,7 +61,11 @@ var appdiv = new Vue({
         phoneNum: "0123456789",
         email: "abc@gmail.com",
         businessName: "McDonalds",
-        address: "123 Clown Street, Adelaide",
+        building: "Clown Tower",
+        street: "123 Clown Street",
+        zip: "9.75",
+        city: "Adelaide",
+        country: "Australia",
 
 
         searchTerm: "",
@@ -68,25 +84,36 @@ var appdiv = new Vue({
         venbNameEdit: "",
         venEmailEdit: "",
         venPhoneNumEdit: "",
-        venAddressEdit: "",
+        venBuildingEdit: "",
+        venStreetEdit: "",
+        venZipCodeEdit: "",
+        venCityEdit: "",
+        venCountryEdit: "",
         //UserEdits
         usIdEdit: "",
         usfNameEdit: "",
         uslNameEdit: "",
         usEmailEdit: "",
         usPhoneNumEdit: "",
+        //HotspotEdits
+        hsCreatorEdit: "",
+        hsStreetEdit: "",
+        hsZipEdit: "",
+        hsCityEdit: "",
+        hsCountryEdit: "",
+        isAddingHot: false,
         //
         venueSearch: "",
         userSearch: "",
         hotspotSearch: "",
-        editingDivOpen: false,
-        editingVenueIndex: 0,
+        editingMenuIndex: 0,
+        editingDivOpen: false
     },
     computed: {
         tabs: function (){
             switch(this.accountType){
                 case "user":
-                    return ["Profile","User History","Have I been to a Hotspot?","Email Subscription"];
+                    return ["Profile","User History","Email Subscription"];
                 case "venue":
                     return ["Profile","Venue History","Venue Check-In Code"];
                 case "admin":
@@ -132,7 +159,7 @@ var appdiv = new Vue({
             var search = this.venueSearch;
             var temp = [];
             venueData.forEach(function (venue){
-                var mixed = venue.fName.toLowerCase() + venue.lName.toLowerCase() + venue.bName.toLowerCase() + venue.checkInCode.toLowerCase() + venue.address.toLowerCase();
+                var mixed = venue.fName.toLowerCase() + venue.lName.toLowerCase() + venue.bName.toLowerCase() + venue.checkInCode.toLowerCase() + venue.street.toLowerCase();
                 if (mixed.includes(search.toLowerCase())){
                     temp.push(venue);
                 }
@@ -147,6 +174,18 @@ var appdiv = new Vue({
                 var mixed = user.fName.toLowerCase() + user.lName.toLowerCase() + user.ID.toLowerCase() + user.email.toLowerCase().substring(0,user.email.indexOf("@"));
                 if (mixed.includes(search.toLowerCase())){
                     temp.push(user);
+                }
+            });
+            return temp;
+        },
+
+        hotspotDatabase: function(){
+            var search = this.hotspotSearch;
+            var temp = [];
+            hotspotData.forEach(function (hotspot){
+                var mixed = hotspot.street.toLowerCase() + hotspot.city.toLowerCase() + hotspot.country.toLowerCase();
+                if (mixed.includes(search.toLowerCase())){
+                    temp.push(hotspot);
                 }
             });
             return temp;
@@ -182,7 +221,11 @@ var appdiv = new Vue({
             this.venbNameEdit = this.venueDatabase[index].bName;
             this.venEmailEdit = this.venueDatabase[index].email;
             this.venPhoneNumEdit = this.venueDatabase[index].phoneNum;
-            this.venAddressEdit = this.venueDatabase[index].address;
+            this.venBuildingEdit = this.venueDatabase[index].building;
+            this.venStreetEdit = this.venueDatabase[index].street;
+            this.venZipCodeEdit = this.venueDatabase[index].zip;
+            this.venCityEdit = this.venueDatabase[index].city;
+            this.venCountryEdit = this.venueDatabase[index].country;
             this.editingMenuIndex = index;
             this.editingDivOpen = true;
 
@@ -196,7 +239,11 @@ var appdiv = new Vue({
             this.venueDatabase[index].bName = this.venbNameEdit;
             this.venueDatabase[index].email = this.venEmailEdit;
             this.venueDatabase[index].phoneNum = this.venPhoneNumEdit;
-            this.venueDatabase[index].address = this.venAddressEdit;
+            this.venueDatabase[index].building = this.venBuildingEdit;
+            this.venueDatabase[index].street = this.venStreetEdit;
+            this.venueDatabase[index].zip = this.venZipCodeEdit;
+            this.venueDatabase[index].city = this.venCityEdit;
+            this.venueDatabase[index].country = this.venCountryEdit;
             //Code to have the server update the information of venue at index index.
         },
 
@@ -220,6 +267,54 @@ var appdiv = new Vue({
             this.userDatabase[index].email = this.usEmailEdit;
             this.userDatabase[index].phoneNum = this.usPhoneNumEdit;
             //Code to have the server update the information of venue at index index.
+        },
+
+        editHotspotAt: function(index){
+            this.hsCreatorEdit = this.hotspotDatabase[index].creator;
+            this.hsStreetEdit = this.hotspotDatabase[index].street;
+            this.hsZipEdit = this.hotspotDatabase[index].zip;
+            this.hsCityEdit = this.hotspotDatabase[index].city;
+            this.hsCountryEdit = this.hotspotDatabase[index].country;
+            this.editingMenuIndex = index;
+            this.editingDivOpen = true;
+
+        },
+
+        updateHotspotInfo: function(){
+            this.editingDivOpen = false;
+            var index = this.editingMenuIndex;
+            this.hotspotDatabase[index].create = this.hsCreatorEdit;
+            this.hotspotDatabase[index].street = this.hsStreetEdit;
+            this.hotspotDatabase[index].zip = this.hsZipEdit;
+            this.hotspotDatabase[index].city = this.hsCityEdit;
+            this.hotspotDatabase[index].country = this.hsCountryEdit;
+            //Code to have the server update the information of venue at index index.
+        },
+
+        startAddingHotspot: function(){
+            this.editingDivOpen = true;
+            this.isAddingHot = true;
+            this.hsStreetEdit =  "";
+            this.hsZipEdit = "";
+            this.hsCityEdit = "";
+            this.hsCountryEdit = "";
+        },
+
+        finishAddingHotspot: function(){
+            var obj = {
+                creator: this.email,
+                street: this.hsStreetEdit,
+                zip: this.hsZipEdit,
+                city: this.hsCityEdit,
+                country: this.hsCountryEdit
+            };
+            hotspotData.unshift(obj);
+            this.hotspotSearch = "a";
+            this.hotspotSearch = "";
+            this.isAddingHot = false;
+            this.editingDivOpen = false;
+
+            //Code to send the new hotspot to the server.
         }
 
     }
