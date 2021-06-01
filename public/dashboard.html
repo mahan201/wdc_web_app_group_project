@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Dashboard</title>
+    <script src="https://kit.fontawesome.com/e45ce6bf31.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.6.12/dist/vue.js"></script>
+    <script src='https://api.mapbox.com/mapbox-gl-js/v2.1.1/mapbox-gl.js'></script>
+    <link href='https://api.mapbox.com/mapbox-gl-js/v2.1.1/mapbox-gl.css' rel='stylesheet' />
+    <script src="javascripts/dashboard.js" defer></script>
+    <link rel ="stylesheet" href="stylesheets/Project.css">
+</head>
+<body>
+  <div id="app">
+      <ul id="nav-bar">
+          <li><a href="/">LOGO</a></li>
+          <li><a href="hotspot-map.html">Hotspot Map</a></li>
+          <li><a href="/check-in.html">Check-in</a></li>
+          <li><a class="active" href="/dashboard">Dashboard</a></li>
+          <li class="login"><a href="login.html">{{firstName}}</a></li>
+          <li class="login"><a v-on:click="typeIndex += 1">Switch Account Type (Now: {{accountType}}) #DEMO ONLY#</a></li>
+      </ul>
+
+      <div id="dashboardContent">
+
+        <div id="dashboardNav">
+            <ol>
+                <li v-for="(item,index) in tabs"><a href="#" v-on:click="selectedTab=item; editingDivOpen = false;" v-bind:class="{'active':selectedTab == item}">{{item}}</a></li>
+            </ol>
+        </div>
+
+
+
+        <div id="dashboardMenu">
+            <div v-if="tabsBool[0]" id="profile">
+                <h1 class="dashboardMenuTitle">Profile</h1>
+                <div class="menuInfo">
+                    <button v-if="!editing" class="dashboardButton Right" v-on:click="editing = true;">Edit</button>
+                    <br>
+                  <div id="profFirstName" class="profileItem Left">
+                    <h3>First Name</h3>
+                      <input v-model="firstName" v-bind:disabled="!editing" required/>
+                  </div>
+                  <div id="profLastName" class="profileItem">
+                    <h3>Last Name</h3>
+                      <input  v-model="lastName" v-bind:disabled="!editing" required/>
+                  </div>
+                  <div v-if="accountType!=='admin'" id="profPhoneNo" class="profileItem Left">
+                    <h3>Phone Number</h3>
+                      <input  v-model="phoneNum" v-bind:disabled="!editing" required/>
+                  </div>
+
+                  <div id="profEmail" class="profileItem">
+                    <h3>Email:</h3>
+                      <input v-model="email" v-bind:disabled="!editing" required/>
+                  </div>
+
+                    <div v-if="accountType==='venue'" id="profBusinessName" class="profileItem Left">
+                        <h3>Business Name:</h3>
+                        <input v-model="businessName" v-bind:disabled="!editing" required/>
+                    </div>
+
+                    <div v-if="accountType==='venue'" class="profileItem">
+                        <h3>Building Name:</h3>
+                        <input  v-model="building" v-bind:disabled="!editing" required/>
+                    </div>
+
+                    <div v-if="accountType==='venue'" class="profileItem Left">
+                        <h3>Street:</h3>
+                        <input  v-model="street" v-bind:disabled="!editing" required/>
+                    </div>
+
+                    <div v-if="accountType==='venue'" class="profileItem">
+                        <h3>Zip Code:</h3>
+                        <input v-model="zip" v-bind:disabled="!editing" required/>
+                    </div>
+
+                    <div v-if="accountType==='venue'" class="profileItem Left">
+                        <h3>City:</h3>
+                        <input v-model="city" v-bind:disabled="!editing" required/>
+                    </div>
+
+                    <div v-if="accountType==='venue'" class="profileItem">
+                        <h3>Country:</h3>
+                        <input v-model="country" v-bind:disabled="!editing" required/>
+                    </div>
+
+                    <div>
+                        <a class="Left" href="forgot_password.html">Reset Password</a>
+                        <button v-if="editing" v-on:click="updateInfo">Save</button>
+                    </div>
+
+                </div>
+            </div>
+
+            <div v-else-if="tabsBool[1]" id="hotspotManager">
+                <h1 class="dashboardMenuTitle">Manage Hotspots</h1>
+                <div class="menuInfo">
+
+                    <div v-if="editingDivOpen" class="editMenu">
+
+                      <div v-if="!isAddingHot" class="profileItem">
+                            <h3>Creator:</h3>
+                            <input v-model="hsCreatorEdit" required disabled/>
+                        </div>
+
+                       <div class="profileItem">
+                            <h3>Street Name:</h3>
+                            <input v-model="hsStreetEdit" required/>
+                        </div>
+
+                        <div class="profileItem Left">
+                            <h3>Zip Code:</h3>
+                            <input v-model="hsZipEdit" required/>
+                        </div>
+
+                        <div class="profileItem">
+                            <h3>City:</h3>
+                            <input v-model="hsCityEdit" required/>
+                        </div>
+
+                        <div class="profileItem">
+                            <h3>Country:</h3>
+                            <input v-model="hsCountryEdit" required/>
+                        </div>
+
+                        <div>
+                            <button v-if="!isAddingHot" v-on:click="updateHotspotInfo" class="Left">Save</button>
+                            <button v-else-if="isAddingHot" v-on:click="finishAddingHotspot" class="Left">Add</button>
+                            <button v-on:click="editingDivOpen = false">Close</button>
+                        </div>
+                    </div>
+
+                    <input class="searchBar Left" v-model="hotspotSearch" placeholder="Search..."/>
+                    <button class="dashboardButton Right" v-on:click="startAddingHotspot">+ Add</button>
+                    <br>
+
+
+                    <ul class="historyList">
+                        <li v-for="(hotspot,index) in hotspotDatabase">{{hotspot.street}} | {{hotspot.zip}} | {{hotspot.city}} | {{hotspot.country}} <span class="itemEdit Right" v-on:click="editHotspotAt(index)">Edit</span></li>
+                        <li v-if="hotspotDatabase.length == 0">No results</li>
+                    </ul>
+
+                </div>
+            </div>
+
+            <div v-else-if="tabsBool[2]" id="venueManager">
+                <h1 class="dashboardMenuTitle">Manage Venues</h1>
+                <div class="menuInfo">
+
+                    <div v-if="editingDivOpen" class="editMenu">
+
+                          <div class="profileItem">
+                            <h3>First Name</h3>
+                              <input v-model="venfNameEdit" required />
+                          </div>
+                          <div class="profileItem Left">
+                            <h3>Last Name</h3>
+                              <input v-model="venlNameEdit" required/>
+                          </div>
+
+                          <div class="profileItem">
+                                <h3>Business Name:</h3>
+                                <input v-model="venbNameEdit" required />
+                            </div>
+
+                          <div class="profileItem Left">
+                            <h3>Phone Number</h3>
+                              <input v-model="venPhoneNumEdit" required/>
+                          </div>
+
+                          <div class="profileItem">
+                            <h3>Email:</h3>
+                              <input v-model="venEmailEdit" required/>
+                          </div>
+
+                            <div class="profileItem Left">
+                                <h3>Building Name:</h3>
+                                <input v-model="venBuildingEdit" required/>
+                            </div>
+
+                            <div class="profileItem">
+                                <h3>Street Name:</h3>
+                                <input id="venueAddEdit" v-model="venStreetEdit" required/>
+                            </div>
+
+                            <div class="profileItem Left">
+                                <h3>Zip Code:</h3>
+                                <input v-model="venZipCodeEdit" required/>
+                            </div>
+
+                            <div class="profileItem">
+                                <h3>City:</h3>
+                                <input v-model="venCityEdit" required/>
+                            </div>
+
+                            <div class="profileItem">
+                                <h3>Country:</h3>
+                                <input v-model="venCountryEdit" required/>
+                            </div>
+
+                            <div>
+                                <button v-on:click="updateVenueInfo" class="Left">Save</button>
+                                <button v-on:click="editingDivOpen = false">Close</button>
+                            </div>
+
+                    </div>
+
+                    <input class="searchBar Left" v-model="venueSearch" placeholder="Search..."/>
+
+                    <ul class="historyList">
+                        <li v-for="(venue,index) in venueDatabase">{{venue.checkInCode}} | {{venue.bName}} | {{venue.email}} <span class="itemEdit Right" v-on:click="editVenueAt(index)">Edit</span></li>
+                        <li v-if="venueDatabase.length == 0">No results</li>
+                    </ul>
+
+                </div>
+            </div>
+
+            <div v-else-if="tabsBool[3]" id="userManager">
+                <h1 class="dashboardMenuTitle">Manage Users</h1>
+                <div class="menuInfo">
+
+                    <div v-if="editingDivOpen" class="editMenu">
+                            <div class="profileItem">
+                            <h3>ID</h3>
+                              <input v-model="usIdEdit"  required/>
+                          </div>
+
+                          <div class="profileItem Left">
+                            <h3>First Name</h3>
+                              <input v-model="usfNameEdit"  required/>
+                          </div>
+                          <div class="profileItem">
+                            <h3>Last Name</h3>
+                              <input v-model="uslNameEdit" required/>
+                          </div>
+
+                          <div class="profileItem Left">
+                            <h3>Phone Number</h3>
+                              <input v-model="usPhoneNumEdit" required/>
+                          </div>
+
+                          <div class="profileItem">
+                            <h3>Email:</h3>
+                              <input v-model="usEmailEdit" required/>
+                          </div>
+
+                            <div>
+                                <button v-on:click="updateUserInfo" class="Left">Save</button>
+                                <button v-on:click="editingDivOpen = false">Close</button>
+                            </div>
+
+                    </div>
+
+                    <input class="searchBar Left" v-model="userSearch" placeholder="Search..."/>
+
+                    <ul class="historyList">
+                        <li v-for="(venue,index) in userDatabase">{{venue.ID}} | {{venue.fName}} | {{venue.lName}} | {{venue.email}} <span class="itemEdit Right" v-on:click="editUserAt(index)">Edit</span></li>
+                        <li v-if="userDatabase.length == 0">No results</li>
+                    </ul>
+
+                </div>
+            </div>
+
+            <div v-else-if="tabsBool[4]" id="adminSignUp">
+                <h1 class="dashboardMenuTitle">Sign up an Admin / Health Official</h1>
+                <div class="menuInfo">
+                    <form class="centered" action="/signUpAdmin.ajax">
+                        <input type="text" id="firstName" name="firstName" placeholder="First Name" required >
+                        <input type="text" id="lastName" name="lastName" placeholder ="Last Name" required><br>
+                        <input type="text" id="phoneNo" name="phoneNo" placeholder="Phone Number" required >
+                        <input type="text" id="identity" name="identity" placeholder ="Email Address" required><br>
+                        <input type="password" id="Psw" name="Psw" placeholder ="Password: " required>
+                        <input type="password" id="CPsw" name="CPsw" placeholder ="Confirm Password: " required><br>
+                        <button type="submit" class="bold" id="submit_button">Sign Up</button>
+                    </form>
+
+                </div>
+            </div>
+
+            <div v-else-if="tabsBool[5]" id="userHistory">
+                <h1 class="dashboardMenuTitle">User Check-In History</h1>
+                <div class="menuInfo">
+                    <input class="searchBar" placeholder="Search..." v-model="searchTerm"/>
+                    <button class="dashboardButton Right" v-on:click="historyMapView">Map View</button>
+                    <br>
+                    <ul class="historyList">
+                        <li v-for="checkIn in userHistory">{{checkIn}}</li>
+                        <li v-if="userHistory.length == 0">No results</li>
+                    </ul>
+
+                </div>
+            </div>
+
+
+            <div v-else-if="tabsBool[6]" id="emailSubs">
+                <h1 class="dashboardMenuTitle">Email Subscriptions</h1>
+                <div class="menuInfo" >
+                    <i class="fas fa-envelope-open-text" id="email_logo"></i>
+                    <form>
+                          <input type="checkbox" id="choice1" name="choice1" v-model="weeklyNotifications">
+                          <label for="choice1"> Notification for when a visited venue has become a hotspot.</label><br>
+                          <input type="checkbox" id="choice2" name="choice1" v-model="visitedHotspotNoti">
+                          <label for="choice2"> Weekly hotspot notification.</label><br>
+                          <button type="submit" v-on:click="updateEmailInfo">Save</button>
+                    </form>
+
+
+                </div>
+            </div>
+
+            <div v-else-if="tabsBool[7]" id="venueHistory">
+                <h1 class="dashboardMenuTitle">Venue Check-In History</h1>
+                <div class="menuInfo">
+                    <input class="searchBar" placeholder="Search..." v-model="searchTerm"/>
+                    <br>
+                    <ul class="historyList">
+                        <li v-for="checkIn in venueHistory">{{checkIn}}</li>
+                        <li v-if="venueHistory.length == 0">No results</li>
+                    </ul>
+
+
+                </div>
+            </div>
+
+            <div v-else-if="tabsBool[8]" id="venueCode">
+                <h1 class="dashboardMenuTitle">Venue Check-In Code</h1>
+                <div class="menuInfo centered">
+                    <h2>Check-In Code</h2>
+                    <h3 id="checkinCode">{{venueCheckInCode}}</h3>
+
+                    <h2>URL Check-In</h2>
+                    <h3><a href="check-in.html?code=MCD1231234">https://project.com/check-in.html?code={{venueCheckInCode}}</a> </h3>
+
+                </div>
+            </div>
+
+        </div>
+
+      </div>
+
+  </div>
+</body>
+
+
+
+
+</html>
