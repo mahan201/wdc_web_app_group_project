@@ -28,14 +28,7 @@ var venueData= [
     {email:"abc123@gmail.com",fName:"Bill",lName:"Gates",bName:"McDonald's",phoneNum:"+112312312",checkInCode:"MCD12321",building:"Clown Tower",street:"123 Clown Street",zip:"52876",city:"Adelaide",country:"Australia"}
     ];
 
-var userData= [
-    {email:"abc123@gmail.com",fName:"Bill",lName:"Gates",phoneNum:"+112312312",ID:"IC12321313"},
-    {email:"abc123@gmail.com",fName:"Bill",lName:"Gates",phoneNum:"+112312312",ID:"IC12321313"},
-    {email:"abc123@gmail.com",fName:"Bill",lName:"Gates",phoneNum:"+112312312",ID:"IC12321313"},
-    {email:"abc123@gmail.com",fName:"Bill",lName:"Gates",phoneNum:"+112312312",ID:"IC12321313"},
-    {email:"abc123@gmail.com",fName:"Bill",lName:"Gates",phoneNum:"+112312312",ID:"IC12321313"},
-    {email:"abc123@gmail.com",fName:"Bill",lName:"Gates",phoneNum:"+112312312",ID:"IC12321313"}
-    ];
+var userData= [];
 
 var hotspotData = [
     {creator:"abc123@gmail.com",street:"123 Hogwarts", zip:"9.75",city:"Adelaide",country:"Australia"},
@@ -48,6 +41,23 @@ var hotspotData = [
     {creator:"abc123@gmail.com",street:"123 Hogwarts", zip:"9.75",city:"Adelaide",country:"Australia"},
     {creator:"abc123@gmail.com",street:"123 Hogwarts", zip:"9.75",city:"Adelaide",country:"Australia"}
     ];
+
+function getAllUsers(){
+    xhttp = new XMLHttpRequest();
+
+    xhttp.onreadystatechange = function(){
+        if(this.readyState == 4 && this.status == 200){
+           userData = JSON.parse(this.response);
+        }
+    };
+
+    xhttp.open("GET","/user-details.ajax", true);
+
+    xhttp.send();
+}
+
+getAllUsers();
+
 
 var appdiv = new Vue({
     el: "#app",
@@ -178,7 +188,7 @@ var appdiv = new Vue({
             var search = this.userSearch;
             var temp = [];
             userData.forEach(function (user){
-                var mixed = user.fName.toLowerCase() + user.lName.toLowerCase() + user.ID.toLowerCase() + user.email.toLowerCase().substring(0,user.email.indexOf("@"));
+                var mixed = user.firstName.toLowerCase() + user.lastName.toLowerCase() + user.icPsprt.toLowerCase() + user.email.toLowerCase().substring(0,user.email.indexOf("@"));
                 if (mixed.includes(search.toLowerCase())){
                     temp.push(user);
                 }
@@ -339,5 +349,4 @@ var appdiv = new Vue({
 
     }
 });
-
 

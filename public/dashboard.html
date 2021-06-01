@@ -255,7 +255,7 @@
                     <input class="searchBar Left" v-model="userSearch" placeholder="Search..."/>
 
                     <ul class="historyList">
-                        <li v-for="(venue,index) in userDatabase">{{venue.ID}} | {{venue.fName}} | {{venue.lName}} | {{venue.email}} <span class="itemEdit Right" v-on:click="editUserAt(index)">Edit</span></li>
+                        <li v-for="(user,index) in userDatabase">{{user.icPsprt}} | {{user.firstName}} | {{user.lastName}} | {{user.email}} <span class="itemEdit Right" v-on:click="editUserAt(index)">Edit</span></li>
                         <li v-if="userDatabase.length == 0">No results</li>
                     </ul>
 
