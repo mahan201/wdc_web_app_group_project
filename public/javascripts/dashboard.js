@@ -30,17 +30,21 @@ var venueData= [
 
 var userData= [];
 
-var hotspotData = [
-    {creator:"abc123@gmail.com",street:"123 Hogwarts", zip:"9.75",city:"Adelaide",country:"Australia"},
-    {creator:"abc123@gmail.com",street:"123 Hogwarts", zip:"9.75",city:"Adelaide",country:"Australia"},
-    {creator:"abc123@gmail.com",street:"123 Hogwarts", zip:"9.75",city:"Adelaide",country:"Australia"},
-    {creator:"abc123@gmail.com",street:"123 Hogwarts", zip:"9.75",city:"Adelaide",country:"Australia"},
-    {creator:"abc123@gmail.com",street:"123 Hogwarts", zip:"9.75",city:"Adelaide",country:"Australia"},
-    {creator:"abc123@gmail.com",street:"123 Hogwarts", zip:"9.75",city:"Adelaide",country:"Australia"},
-    {creator:"abc123@gmail.com",street:"123 Hogwarts", zip:"9.75",city:"Adelaide",country:"Australia"},
-    {creator:"abc123@gmail.com",street:"123 Hogwarts", zip:"9.75",city:"Adelaide",country:"Australia"},
-    {creator:"abc123@gmail.com",street:"123 Hogwarts", zip:"9.75",city:"Adelaide",country:"Australia"}
-    ];
+var hotspotData = [];
+
+function getAllHotspots(){
+    xhttp = new XMLHttpRequest();
+
+    xhttp.onreadystatechange = function(){
+        if(this.readyState == 4 && this.status == 200){
+           hotspotData = JSON.parse(this.response);
+        }
+    };
+
+    xhttp.open("GET","/hotspots.ajax", true);
+
+    xhttp.send();
+}
 
 function getAllUsers(){
     xhttp = new XMLHttpRequest();

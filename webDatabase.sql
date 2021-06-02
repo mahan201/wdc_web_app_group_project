@@ -55,7 +55,7 @@ FOREIGN KEY (user) REFERENCES BasicUser(email),
 FOREIGN KEY (venue) REFERENCES VenueOwner(email)
 );
 
-CREATE TABLE `Hotspot`(
+CREATE TABLE `Hotspots`(
 id INT AUTO_INCREMENT,
 creator VARCHAR(255),
 address VARCHAR(255),
@@ -68,7 +68,7 @@ PRIMARY KEY(id),
 FOREIGN KEY (creator) REFERENCES Admin(email)
 );
 
-CREATE TABLE Security(
+CREATE TABLE `Security`(
 id INT AUTO_INCREMENT,
 user VARCHAR(255),
 password VARCHAR(255),
@@ -87,4 +87,13 @@ INSERT INTO BasicUser VALUES ("niaj.sharif@gmail.com","Niaj","Sharif","+60116439
 INSERT INTO Security (user,password,accountType) VALUES ("m2.noorbahr@gmail.com","password1234","user");
 INSERT INTO Security (user,password,accountType) VALUES ("ghanem.ganadi@gmail.com","password1234","user");
 INSERT INTO Security (user,password,accountType) VALUES ("talha1h.zubayer@gmail.com","password1234","user");
+
+
+INSERT INTO Admin VALUES ("adelaide.zoo@adelaide.au","Adelaide","Zoo");
+INSERT INTO Admin VALUES ("aadelaide.library@adelaide.au","Adelaide","Library");
+INSERT INTO Admin VALUES ("adelaide.market@adelaide.au","Adelaide","Market");
+
+INSERT INTO Hotspots (creator, address, zipCode, city, country, lat, lng) VALUES ("adelaide.zoo@adelaide.au","Frome Rd","5000","Adelaide","Australia",-34.9049198,138.5840592);
+INSERT INTO Hotspots (creator, address, zipCode, city, country, lat, lng) VALUES ("aadelaide.library@adelaide.au","Jeffrey Smart Building, 217/243 Hindley St", "5000", "Adelaide", "Australia",-34.9229795,138.5919103);
+INSERT INTO Hotspots (creator, address, zipCode, city, country, lat, lng) VALUES ("adelaide.market@adelaide.au","44-60 Gouger St","5000","Adelaide","Australia",-34.922496,138.5917335);
 
