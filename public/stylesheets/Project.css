@@ -70,6 +70,17 @@
         border-radius: 4px;
     }
 
+    button.DeleteButton{
+        color: white;
+        background-color: red;
+    }
+
+    button.DeleteButton:hover{
+        color: red;
+        background-color: white;
+    }
+
+
     .bold{
         font-weight: bold;
     }

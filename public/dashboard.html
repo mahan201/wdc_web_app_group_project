@@ -128,6 +128,7 @@
                             <button v-if="!isAddingHot" v-on:click="updateHotspotInfo" class="Left">Save</button>
                             <button v-else-if="isAddingHot" v-on:click="finishAddingHotspot" class="Left">Add</button>
                             <button v-on:click="editingDivOpen = false">Close</button>
+                            <button v-if="!isAddingHot" v-on:click="deleteHotspot" class="Right DeleteButton">Delete</button>
                         </div>
                     </div>
 
@@ -137,7 +138,7 @@
 
 
                     <ul class="historyList">
-                        <li v-for="(hotspot,index) in hotspotDatabase">{{hotspot.street}} | {{hotspot.zip}} | {{hotspot.city}} | {{hotspot.country}} <span class="itemEdit Right" v-on:click="editHotspotAt(index)">Edit</span></li>
+                        <li v-for="(hotspot,index) in hotspotDatabase">{{hotspot.address}} | {{hotspot.zip}} | {{hotspot.city}} | {{hotspot.country}} <span class="itemEdit Right" v-on:click="editHotspotAt(index)">Edit</span></li>
                         <li v-if="hotspotDatabase.length == 0">No results</li>
                     </ul>
 

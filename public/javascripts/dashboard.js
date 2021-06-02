@@ -32,35 +32,30 @@ var userData= [];
 
 var hotspotData = [];
 
-function getAllHotspots(){
+function makeRequest(method,route,onSuccess){
     xhttp = new XMLHttpRequest();
 
     xhttp.onreadystatechange = function(){
         if(this.readyState == 4 && this.status == 200){
-           hotspotData = JSON.parse(this.response);
+           onSuccess(this.response);
         }
     };
 
-    xhttp.open("GET","/hotspots.ajax", true);
+    xhttp.open(method,route, true);
 
     xhttp.send();
+}
+
+function getAllHotspots(){
+    makeRequest("GET","/hotspots.ajax",(response) => hotspotData = JSON.parse(response));
 }
 
 function getAllUsers(){
-    xhttp = new XMLHttpRequest();
-
-    xhttp.onreadystatechange = function(){
-        if(this.readyState == 4 && this.status == 200){
-           userData = JSON.parse(this.response);
-        }
-    };
-
-    xhttp.open("GET","/user-details.ajax", true);
-
-    xhttp.send();
+    makeRequest("GET","/users/user-details.ajax",(response) => userData = JSON.parse(response));
 }
 
 getAllUsers();
+getAllHotspots();
 
 
 var appdiv = new Vue({
@@ -204,7 +199,7 @@ var appdiv = new Vue({
             var search = this.hotspotSearch;
             var temp = [];
             hotspotData.forEach(function (hotspot){
-                var mixed = hotspot.street.toLowerCase() + hotspot.city.toLowerCase() + hotspot.country.toLowerCase();
+                var mixed = hotspot.address.toLowerCase() + hotspot.city.toLowerCase() + hotspot.country.toLowerCase();
                 if (mixed.includes(search.toLowerCase())){
                     temp.push(hotspot);
                 }
@@ -305,8 +300,8 @@ var appdiv = new Vue({
 
         editHotspotAt: function(index){
             this.hsCreatorEdit = this.hotspotDatabase[index].creator;
-            this.hsStreetEdit = this.hotspotDatabase[index].street;
-            this.hsZipEdit = this.hotspotDatabase[index].zip;
+            this.hsStreetEdit = this.hotspotDatabase[index].address;
+            this.hsZipEdit = this.hotspotDatabase[index].zipCode;
             this.hsCityEdit = this.hotspotDatabase[index].city;
             this.hsCountryEdit = this.hotspotDatabase[index].country;
             this.editingMenuIndex = index;
@@ -349,6 +344,13 @@ var appdiv = new Vue({
             this.editingDivOpen = false;
 
             //Code to send the new hotspot to the server.
+        },
+
+        deleteHotspot: function(){
+            this.editingDivOpen = false;
+            this.hotspotSearch = "a";
+            this.hotspotSearch = "";
+            hotspotData.splice(this.editingMenuIndex,1);
         }
 
     }

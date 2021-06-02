@@ -20,21 +20,14 @@ function queryDatabase(req, res, next, query){
    });
 }
 
+
 /* GET home page. */
 router.get('/', function(req, res, next) {
   res.redirect('hotspot-map.html');
 });
 
-router.get('/user-details.ajax', function(req,res,next){
-    queryDatabase(req,res,next,"SELECT * FROM BasicUser;");
-});
-
 router.get('/hotspots.ajax', function(req,res,next){
     queryDatabase(req,res,next,"SELECT * FROM Hotspots");
-});
-
-router.get('/check-in.ajax', function(req,res,next){
-    queryDatabase(req,res,next,"SELECT * FROM CheckIn");
 });
 
 module.exports = router;
