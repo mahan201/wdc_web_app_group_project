@@ -32,7 +32,7 @@ var userData= [];
 
 var hotspotData = [];
 
-function makeRequest(method,route,onSuccess){
+function makeRequest(method,route, headers, onSuccess){
     xhttp = new XMLHttpRequest();
 
     xhttp.onreadystatechange = function(){
@@ -40,6 +40,16 @@ function makeRequest(method,route,onSuccess){
            onSuccess(this.response);
         }
     };
+
+    if(Object.keys(headers).length > 0){
+        route += "?";
+        for(const property in headers){
+            route += property + "=" + headers[property] + "&";
+        }
+        route = route.slice(0,route.length-1);
+    }
+
+    console.log(route);
 
     xhttp.open(method,route, true);
 

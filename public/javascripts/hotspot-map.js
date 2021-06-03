@@ -12,15 +12,45 @@ var hotspots = [
     {lat: -34.886994, long: 138.583152}
     ];
 
+function makeRequest(method,route, headers, onSuccess){
+    xhttp = new XMLHttpRequest();
 
-function setHotspots(lst){
-    lst.forEach(function(cords){
-        let ltlng = new mapboxgl.LngLat(cords.long,cords.lat);
-        let marker = new mapboxgl.Marker({color:"#FF0000"})
-        .setLngLat(ltlng)
-        .addTo(map);
-    });
+    xhttp.onreadystatechange = function(){
+        if(this.readyState == 4 && this.status == 200){
+           onSuccess(this.response);
+        }
+    };
+
+    if(Object.keys(headers).length > 0){
+        route += "?";
+        for(const property in headers){
+            route += property + "=" + headers[property] + "&";
+        }
+        route = route.slice(0,route.length-1);
+    }
+
+    console.log(route);
+
+    xhttp.open(method,route, true);
+
+    xhttp.send();
 }
 
-setHotspots(hotspots);
+function setup(){
+
+    makeRequest("GET","/hotspots.ajax",{columns:"lng,lat"}, function(response){
+        hotspots = JSON.parse(response);
+        hotspots.forEach(function(cords){
+            let ltlng = new mapboxgl.LngLat(cords.lng,cords.lat);
+            let marker = new mapboxgl.Marker({color:"#FF0000"})
+            .setLngLat(ltlng)
+            .addTo(map);
+        });
+    });
+
+
+}
+
+
+setup();
 

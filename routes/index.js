@@ -27,7 +27,16 @@ router.get('/', function(req, res, next) {
 });
 
 router.get('/hotspots.ajax', function(req,res,next){
-    queryDatabase(req,res,next,"SELECT * FROM Hotspots");
+    var headers = ["creator","address","zipCode","city","country","lat","lng"];
+    if(req.query.columns === undefined){
+        queryDatabase(req,res,next,"SELECT * FROM Hotspots");
+    } else {
+        var cols = req.query.columns.split(',');
+        var query = "";
+        cols.forEach(col => {if(headers.includes(col)) { query += col+"," } } );
+        query = query.slice(0,query.length-1);
+        queryDatabase(req,res,next,"SELECT " + query + " FROM Hotspots");
+    }
 });
 
 module.exports = router;
