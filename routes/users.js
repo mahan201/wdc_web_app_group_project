@@ -20,6 +20,56 @@ function queryDatabase(req, res, next, query){
    });
 }
 
+router.post('/login.ajax', function(req,res){
+
+    if('email' in req.body && 'password' in req.body){
+       var email = req.body.email;
+       var password = req.body.password;
+
+       req.pool.getConnection(function(err,connection){
+          if(err){
+              console.log(err);
+              res.sendStatus(500);
+              return;
+          }
+
+         var query = "SELECT DISTINCT * FROM Security WHERE user = '" + email + "';";
+          connection.query(query, async function(err, rows, fields){
+             connection.release();
+             if(err){
+                 console.log(err);
+                 res.sendStatus(500);
+                 return;
+             }
+
+             console.log(rows);
+
+             if(rows.length > 0){
+                try {
+                  if (await argon2.verify(rows[0].password, password)) {
+                      console.log("LOGGED IN");
+                    req.session.user = email;
+                    req.session.accountType = rows[0].accountType;
+                    res.sendStatus(200);
+                  } else {
+                    res.send(401);
+                  }
+                } catch (err) {
+                  res.sendStatus(500);
+                }
+             } else {
+                 res.sendStatus(401);
+             }
+          });
+       });
+    } else {
+        res.sendStatus(401);
+    }
+
+
+
+});
+
 router.post("/user-signup.ajax", async function(req,res){
     var firstName = req.body.fname;
     var lastName = req.body.lname;

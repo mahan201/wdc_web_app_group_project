@@ -70,7 +70,7 @@ FOREIGN KEY (creator) REFERENCES Admin(email)
 
 CREATE TABLE `Security`(
 id INT AUTO_INCREMENT,
-user VARCHAR(255),
+user VARCHAR(255) UNIQUE NOT NULL,
 password VARCHAR(255),
 accountType VARCHAR(10),
 PRIMARY KEY (id)

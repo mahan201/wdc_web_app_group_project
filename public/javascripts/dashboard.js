@@ -55,11 +55,11 @@ function makeRequest(method,route, headers, onSuccess){
 }
 
 function getAllHotspots(){
-    makeRequest("GET","/hotspots.ajax",(response) => hotspotData = JSON.parse(response));
+    makeRequest("GET","/hotspots.ajax", {}, (response) => hotspotData = JSON.parse(response));
 }
 
 function getAllUsers(){
-    makeRequest("GET","/users/user-details.ajax",(response) => userData = JSON.parse(response));
+    makeRequest("GET","/users/user-details.ajax", {}, (response) => userData = JSON.parse(response));
 }
 
 getAllUsers();
