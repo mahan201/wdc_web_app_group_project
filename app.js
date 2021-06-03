@@ -37,23 +37,23 @@ app.use(session({
 var prev = "";
 
 app.use(async function(req,res,next){
-   try{
-       const hash = await argon2.hash("Mahan");
-       console.log(hash);
-       prev = hash;
-   } catch (err) {
-       console.log(err);
-   }
+//   try{
+//       const hash = await argon2.hash("Mahan");
+//       console.log(hash);
+//       prev = hash;
+//   } catch (err) {
+//       console.log(err);
+//   }
 
-   try {
-      if (await argon2.verify(prev, "Mahan")) {
-        console.log("MATCH");
-      } else {
-        console.log("NO MATCH");
-      }
-    } catch (err) {
-      console.log(err);
-    }
+//   try {
+//       if (await argon2.verify(prev, "Mahan")) {
+//         console.log("MATCH");
+//       } else {
+//         console.log("NO MATCH");
+//       }
+//     } catch (err) {
+//       console.log(err);
+//     }
 
    if(req.path == "/dashboard.html" && req.session.user == undefined){
        res.redirect('login.html');

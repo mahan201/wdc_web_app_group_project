@@ -79,12 +79,12 @@ PRIMARY KEY (id)
 
 -- Sample data to test
 
-INSERT INTO BasicUser VALUES ("m2.noorbahr@gmail.com","Mahan","Noorbahr","+601164398065","H96810461");
+
 INSERT INTO BasicUser VALUES ("ghanem.ganadi@gmail.com","Ghanem","Ganadi","+601164398065","ABCEFG1");
 INSERT INTO BasicUser VALUES ("talha1h.zubayer@gmail.com","Talhah","Zubayer","+601164398065","ZubZub1234");
 INSERT INTO BasicUser VALUES ("niaj.sharif@gmail.com","Niaj","Sharif","+601164398065","SHarif123");
 
-INSERT INTO Security (user,password,accountType) VALUES ("m2.noorbahr@gmail.com","password1234","user");
+
 INSERT INTO Security (user,password,accountType) VALUES ("ghanem.ganadi@gmail.com","password1234","user");
 INSERT INTO Security (user,password,accountType) VALUES ("talha1h.zubayer@gmail.com","password1234","user");
 

@@ -49,8 +49,6 @@ function makeRequest(method,route, headers, onSuccess){
         route = route.slice(0,route.length-1);
     }
 
-    console.log(route);
-
     xhttp.open(method,route, true);
 
     xhttp.send();
