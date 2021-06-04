@@ -303,6 +303,10 @@
 
     }
 
+    ul.logout{
+        float:none;
+    }
+
     ol{
         list-style-type: none;
         margin: 0;

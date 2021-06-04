@@ -20,6 +20,48 @@ function queryDatabase(req, res, next, query){
    });
 }
 
+router.get('/details.ajax', function(req,res,next){
+    var obj = {loggedIn: false};
+    if(req.session.user){
+        obj.loggedIn = true;
+        if(req.session.rest === undefined){
+            var table = "BasicUser";
+            if (req.session.accountType === "venue"){table = "VenueOwner";}
+            else if (req.session.accountType === "admin"){table = "Admin";}
+
+            var excludes = ["email","lat","lng",];
+
+            req.pool.getConnection(function(err,connection){
+              if(err){
+                  res.sendStatus(500);
+                  return;
+              }
+
+              var query = "SELECT DISTINCT * FROM " + table + " WHERE email = '" + req.session.user + "';";
+              connection.query(query, function(err, rows, fields){
+                 connection.release();
+                 if(err){
+                     res.sendStatus(500);
+                     return;
+                 }
+                 var row = rows[0];
+                 Object.keys(row).forEach((key) => (!excludes.includes(key)) && (req.session[key] = row[key]));
+                 req.session.rest = true;
+                 Object.keys(req.session).forEach((key) => (key !== "cookie" && key !== "rest") && (obj[key] = req.session[key]));
+                 res.json(obj);
+              });
+           });
+        } else {
+            Object.keys(req.session).forEach((key) => (key !== "cookie" && key !== "rest") && (obj[key] = req.session[key]));
+            res.json(obj);
+        }
+
+    } else {
+        res.json(obj);
+    }
+
+});
+
 
 router.post('/login.ajax', function(req,res){
 
@@ -66,6 +108,12 @@ router.post('/login.ajax', function(req,res){
 
 
 
+});
+
+router.get('/logout.ajax', function(req,res){
+    Object.keys(req.session).forEach((key) => (key !== "cookie") && (delete req.session[key]));
+    console.log(req.session);
+    res.redirect("/");
 });
 
 router.post("/user-signup.ajax", async function(req,res){

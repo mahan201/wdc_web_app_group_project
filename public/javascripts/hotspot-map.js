@@ -6,38 +6,37 @@ center: [138.6062277,-34.920603],
 zoom: 11
 });
 
-var hotspots = [
-    {lat: -34.872733, long: 138.607408},
-    {lat: -34.903095, long: 138.539703},
-    {lat: -34.886994, long: 138.583152}
-    ];
+var session = {};
 
-function makeRequest(method,route, headers, onSuccess){
-    xhttp = new XMLHttpRequest();
+makeRequest("GET","users/details.ajax",{},function(result){
+    appdiv.received = true;
+    session = JSON.parse(result);
+});
 
-    xhttp.onreadystatechange = function(){
-        if(this.readyState == 4 && this.status == 200){
-           onSuccess(this.response);
+var appdiv = new Vue({
+    el : "#app",
+    data : {
+        received: false,
+        showLogout: false
+    },
+    computed: {
+        loggedIn: function(){
+            if(this.received){
+                return session.loggedIn;
+            }
+        },
+        firstName: function(){
+            if(this.received){
+                return session.firstName;
+            }
         }
-    };
-
-    if(Object.keys(headers).length > 0){
-        route += "?";
-        for(const property in headers){
-            route += property + "=" + headers[property] + "&";
-        }
-        route = route.slice(0,route.length-1);
     }
+});
 
-    xhttp.open(method,route, true);
-
-    xhttp.send();
-}
-
-function setup(){
-
-    makeRequest("GET","/hotspots.ajax",{columns:"lng,lat"}, function(response){
-        hotspots = JSON.parse(response);
+//Function from prep.js
+makeRequest("GET","/hotspots.ajax",{columns:"lng,lat"}, function(response){
+        console.log("WORKED");
+        var hotspots = JSON.parse(response);
         hotspots.forEach(function(cords){
             let ltlng = new mapboxgl.LngLat(cords.lng,cords.lat);
             let marker = new mapboxgl.Marker({color:"#FF0000"})
@@ -45,10 +44,4 @@ function setup(){
             .addTo(map);
         });
     });
-
-
-}
-
-
-setup();
 

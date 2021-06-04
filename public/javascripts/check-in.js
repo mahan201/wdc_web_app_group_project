@@ -1,9 +1,16 @@
 
+var session = {};
+
+makeRequest("GET","users/details.ajax",{},function(result){
+    appdiv.received = true;
+    session = JSON.parse(result);
+});
 
 var appdiv = new Vue({
     el: "#app",
     data: {
-        signedIn: false,
+        received: false,
+        showLogout: false,
         codes: [],
         failed: false,
         passed: false,
@@ -13,6 +20,18 @@ var appdiv = new Vue({
         lName: "",
         pNum: "",
         IDNum: ""
+    },
+    computed: {
+        signedIn: function(){
+            if(this.received){
+                return session.loggedIn;
+            }
+        },
+        firstName: function(){
+            if(this.received){
+                return session.firstName;
+            }
+        }
     },
     methods: {
         checkIn: function(event){
