@@ -23,7 +23,8 @@
             <p v-if="failed" id="errorMess" class="failed">Invalid Check-In Code</p>
             <p v-if="passed" id="successMess" class="passed">Successfully Checked In!</p>
             <form v-on:submit.prevent="checkIn">
-                    <input type="text" id="checkinCode" name="checkInCode" v-model="code" placeholder="Enter Venue Check-In Code..." required ><br>
+                    <input type="text" id="checkinCode" name="checkInCode" v-model="code" placeholder="Enter Venue Check-In Code..." required >
+                    <input v-if="!signedIn" type="text" id="email" name="firstName" v-model="email" placeholder="Email" required ><br>
                     <input v-if="!signedIn" type="text" id="firstName" name="firstName" v-model="fName" placeholder="First Name" required >
                     <input v-if="!signedIn" type="text" id="lastName" name="lastName" v-model="lName" placeholder ="Last Name" required><br>
                     <input v-if="!signedIn" type="text" id="phoneNo" name="phoneNo" v-model="pNum" placeholder="Phone Number" required >

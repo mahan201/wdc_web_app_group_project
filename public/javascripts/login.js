@@ -3,7 +3,8 @@ var appdiv = new Vue({
     el: "#app",
     data: {
         email: "",
-        password: ""
+        password: "",
+        invalid: "hidden"
     },
     methods: {
         logIn: function(){
@@ -13,7 +14,10 @@ var appdiv = new Vue({
                 if(this.readyState == 4 && this.status == 200){
                    window.location.replace('/');
                 } else if (this.readyState == 4 && this.status == 500){
-                    alert("Incorrect email or password!");
+                    alert("Internal Server Error. Please try again later.");
+                } else if (this.readyState == 4 && this.status == 401){
+                    console.log("FAILED LOGIN");
+                    appdiv.invalid = "visible";
                 }
             };
 
@@ -26,10 +30,3 @@ var appdiv = new Vue({
         }
     }
 });
-
-function getCodes(){
-    //Will be replaced with server code to get a list of valid venue check-in codes.
-    appdiv.codes = ["ABC123","XYZ456","JQK789"];
-}
-
-getCodes();

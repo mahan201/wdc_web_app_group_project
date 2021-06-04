@@ -20,6 +20,7 @@ function queryDatabase(req, res, next, query){
    });
 }
 
+
 router.post('/login.ajax', function(req,res){
 
     if('email' in req.body && 'password' in req.body){
@@ -42,12 +43,9 @@ router.post('/login.ajax', function(req,res){
                  return;
              }
 
-             console.log(rows);
-
              if(rows.length > 0){
                 try {
                   if (await argon2.verify(rows[0].password, password)) {
-                      console.log("LOGGED IN");
                     req.session.user = email;
                     req.session.accountType = rows[0].accountType;
                     res.sendStatus(200);
@@ -71,15 +69,13 @@ router.post('/login.ajax', function(req,res){
 });
 
 router.post("/user-signup.ajax", async function(req,res){
-    var firstName = req.body.fname;
-    var lastName = req.body.lname;
-    var phoneNum = req.body.ph;
+    var firstName = req.body.firstName;
+    var lastName = req.body.lastName;
+    var phoneNum = req.body.phoneNum;
     var passport = req.body.passport;
-    var email = req.body.Email;
-    var password = req.body.Psw;
+    var email = req.body.email;
+    var password = req.body.password;
     const passwordHash = await argon2.hash(password);
-
-    console.log(passwordHash);
 
     req.pool.getConnection(function(err,connection){
       if(err){
@@ -87,37 +83,153 @@ router.post("/user-signup.ajax", async function(req,res){
           res.sendStatus(500);
           return;
       }
-      var query1 = "INSERT INTO BasicUser VALUES ('" + email + "','" + firstName + "','" + lastName + "','" + phoneNum + "','" + passport + "');";
+      var query1 = "INSERT INTO Security (user,password,accountType) VALUES ('" + email + "','" + passwordHash + "','user');";
       connection.query(query1, function(err, results){
          connection.release();
          if(err){
-             console.log(err);
+             if(err.code === "ER_DUP_ENTRY"){
+                 //We want to differentiate this from other server errors so that the client knows the user is trying to sign up with an existing email.
+                 res.sendStatus(400);
+                 return;
+             }
              res.sendStatus(500);
              return;
          }
-         console.log("RECORD ADDED!");
-         req.pool.getConnection(function(err,connection){
+      });
+   });
+
+
+   req.pool.getConnection(function(err,connection){
+      if(err){
+          console.log(err);
+          res.sendStatus(500);
+          return;
+      }
+
+      var query2 = "INSERT INTO BasicUser VALUES ('" + email + "','" + firstName + "','" + lastName + "','" + phoneNum + "','" + passport + "');";
+      connection.query(query2, function(err, results){
+         connection.release();
+         if(err){
+             if(err.code !== "ER_DUP_ENTRY"){
+                 res.sendStatus(500);
+                 return;
+             }
+
+             req.pool.getConnection(function(err,connection){
               if(err){
                   console.log(err);
                   res.sendStatus(500);
                   return;
               }
 
-              var query2 = " INSERT INTO Security (user,password,accountType) VALUES ('" + email + "','" + passwordHash + "','user');";
-              connection.query(query2, function(err, results){
+              var query3 = "UPDATE BasicUser SET firstName = '" + firstName + "', lastName = '" + lastName + "', phoneNum = '" + phoneNum + "', icPsprt = '" + passport + "' WHERE email = '" + email + "';";
+              connection.query(query3, function(err, results){
                  connection.release();
                  if(err){
+                     res.sendStatus(500);
+                     return;
+                 }
+
+                 res.redirect('/login.html');
+                 return;
+              });
+           });
+
+         } else {
+            res.redirect('/login.html');
+            return;
+         }
+      });
+   });
+
+
+});
+
+router.post('/check-in.ajax', function(req,res){
+
+    var venue = req.body.venue;
+    var email = req.body.email;
+    var firstName = req.body.firstName;
+    var lastName = req.body.lastName;
+    var phoneNum = req.body.phoneNum;
+    var passport = req.body.passport;
+
+    console.log(req.body);
+
+    if(req.session.user){
+        //SIGNED IN USER;
+
+    } else {
+        //NOT SIGNED IN USER;
+         if (venue === undefined || email === undefined || firstName === undefined || lastName === undefined || phoneNum === undefined || passport === undefined){
+             res.sendStatus(400);
+         }
+
+         req.pool.getConnection(function(err,connection){
+          if(err){
+              console.log(err);
+              res.sendStatus(500);
+              return;
+          }
+
+          var query1 = "INSERT INTO BasicUser VALUES ('" + email + "','" + firstName + "','" + lastName + "','" + phoneNum + "','" + passport + "');";
+          connection.query(query1, function(err, results){
+             connection.release();
+             if(err){
+                 if(err.code !== "ER_DUP_ENTRY"){
                      console.log(err);
                      res.sendStatus(500);
                      return;
                  }
-                 console.log("RECORD ADDED!");
-                 res.redirect('/login.html');
-              });
-           });
-      });
-   });
+                 req.pool.getConnection(function(err,connection){
+                      if(err){
+                          console.log(err);
+                          res.sendStatus(500);
+                          return;
+                      }
 
+                      var query2 = "UPDATE BasicUser SET firstName = '" + firstName + "', lastName = '" + lastName + "', phoneNum = '" + phoneNum + "', icPsprt = '" + passport + "' WHERE email = '" + email + "';";
+                      connection.query(query2, function(err, results){
+                         connection.release();
+                         if(err){
+                             console.log(err);
+                             res.sendStatus(500);
+                             return;
+                         }
+                         return;
+                      });
+                   });
+
+             }
+             return;
+          });
+       });
+
+       req.pool.getConnection(function(err,connection){
+          if(err){
+              console.log(err);
+              res.sendStatus(500);
+              return;
+          }
+
+          if(res.headersSent){return;}
+
+          var query3 = "INSERT INTO CheckIn (user, venue) VALUES ('" + email + "' , '" + venue + "');";
+          connection.query(query3, function(err, results){
+             connection.release();
+             if(res.headersSent){return;}
+             if(err){
+                 console.log(err);
+                 res.sendStatus(500);
+                 return;
+             } else {
+                 res.sendStatus(200);
+                 return;
+             }
+
+          });
+       });
+    }
 
 });
 

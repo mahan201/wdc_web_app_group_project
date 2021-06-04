@@ -15,6 +15,58 @@ var capital = document.getElementById("capital");
 var number = document.getElementById("number");
 var length = document.getElementById("length");
 
+var appdiv = new Vue({
+    el: "#app",
+    data: {
+        firstName: "",
+        lastName: "",
+        phoneNum: "",
+        passport: "",
+        email: "",
+        password: "",
+        confirmPassword: "",
+        invalid: "hidden",
+        invalidMessage: ""
+
+    },
+    methods: {
+        signUp: function(){
+            if(this.password !== this.confirmPassword){
+              this.invalidMessage = "Password must match!";
+              this.invalid = "visible";
+            }
+
+            xhttp = new XMLHttpRequest();
+
+            xhttp.onreadystatechange = function(){
+                if(this.readyState == 4 && this.status == 200){
+                   window.location.replace('/');
+                } else if (this.readyState == 4 && this.status == 500){
+                    alert("Internal Server Error. Please try again later.");
+                } else if (this.readyState == 4 && this.status == 400){
+                    console.log("FAILED SIGNUP");
+                    appdiv.invalidMessage = "Email address is already in use!";
+                    appdiv.invalid = "visible";
+                }
+            };
+
+
+            xhttp.open("POST","/users/user-signup.ajax", true);
+
+            xhttp.setRequestHeader("Content-type", "application/json");
+
+            xhttp.send(JSON.stringify({
+              firstName: this.firstName,
+              lastName: this.lastName,
+              phoneNum: this.phoneNum,
+              passport: this.passport,
+              email: this.email,
+              password: this.password
+            }));
+        }
+    }
+});
+
 // When the user clicks on the password field, show the message box
 myEmail.onfocus = function() {
   document.getElementById("message").style.display = "block";

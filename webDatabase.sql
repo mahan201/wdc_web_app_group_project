@@ -69,11 +69,10 @@ FOREIGN KEY (creator) REFERENCES Admin(email)
 );
 
 CREATE TABLE `Security`(
-id INT AUTO_INCREMENT,
-user VARCHAR(255) UNIQUE NOT NULL,
+user VARCHAR(255),
 password VARCHAR(255),
 accountType VARCHAR(10),
-PRIMARY KEY (id)
+PRIMARY KEY (user)
 );
 
 
@@ -83,7 +82,10 @@ PRIMARY KEY (id)
 INSERT INTO BasicUser VALUES ("ghanem.ganadi@gmail.com","Ghanem","Ganadi","+601164398065","ABCEFG1");
 INSERT INTO BasicUser VALUES ("talha1h.zubayer@gmail.com","Talhah","Zubayer","+601164398065","ZubZub1234");
 INSERT INTO BasicUser VALUES ("niaj.sharif@gmail.com","Niaj","Sharif","+601164398065","SHarif123");
+INSERT INTO BasicUser VALUES ("m2.noorbahr@gmail.com","Mahan","Noorbahr","+601164398065","SHarif123");
 
+
+INSERT INTO VenueOwner VALUES ("acb@mcd.com","Ronald","McDonald","123","McDonalds","MCD123",123,123);
 
 INSERT INTO Security (user,password,accountType) VALUES ("ghanem.ganadi@gmail.com","password1234","user");
 INSERT INTO Security (user,password,accountType) VALUES ("talha1h.zubayer@gmail.com","password1234","user");

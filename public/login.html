@@ -13,6 +13,7 @@
             <div class="login-page">
                 <i id="login_logo" class="fas fa-user-circle"></i>             <!-- Making log-in logo  -->
                 <h1>Log into the app</h1>
+                <h3 class="invalid" v-bind:style="{'visibility' : invalid}">Incorrect email or password!</h3>
                 <form v-on:submit.prevent="logIn">                                <!--Creating log-in inputs -->
                     <i class="fas fa-envelope"></i>
                     <input type="text" id="email" name="email" placeholder="Enter email..." v-model="email" required ><br>

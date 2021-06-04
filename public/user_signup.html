@@ -5,23 +5,25 @@
         <meta charset ="UTF-8">
         <script src="https://kit.fontawesome.com/e45ce6bf31.js" crossorigin="anonymous"></script>
         <link rel ="stylesheet" href="stylesheets/Project.css">
-         <script src="javascripts/password_validation.js" defer></script>
+        <script src="https://cdn.jsdelivr.net/npm/vue@2.6.12/dist/vue.js"></script>
+         <script src="javascripts/user-signup.js" defer></script>
     </head>
     <body class="background_Color">                               <!-- Set the whole page's background color -->
 
-        <div class ="form_container">                             <!--Making a white container -->
+        <div class ="form_container" id="app">                             <!--Making a white container -->
             <div class ="signup-page">
                 <p><a class="bold Right"  href="Business_signup.html" id ="business_signup">Create a new business account?</a></p><br>
                 <hr>
                 <h1> Create a new account</h1>
-                <form action="/users/user-signup.ajax" method="post">                                                                                               <!--Creating signup inputs -->
-                    <input type="text" id="fname" name="fname" placeholder="First name* : " required ><br>
-                    <input type="text" id="lname" name="lname" placeholder ="Last name* : " required><br>
-                    <input type="text" id="ph" name="ph" placeholder="Phone number* : " required ><br>
-                    <input type="text" id="passport" name="passport" placeholder ="Passport/IC* : " required><br>
-                    <input type="text" id="Email" name="Email" placeholder="Email* : " required ><br>
-                    <input type="password" id="Psw" name="Psw" placeholder ="Password* : " pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}" title="Must contain at least one number and one uppercase and lowercase letter, and at least 8 or more characters" required><br>
-                    <input type="password" id="CPsw" name="CPsw" placeholder ="Comfirm Password* : " required><br>
+                <h3 class = "invalid" v-bind:style="{'visibility': invalid}" >{{invalidMessage}}</h3>
+                <form v-on:submit.prevent="signUp">                                                                                               <!--Creating signup inputs -->
+                    <input type="text" id="fname" name="fname" placeholder="First name* : " v-model = "firstName" required ><br>
+                    <input type="text" id="lname" name="lname" placeholder ="Last name* : " v-model = "lastName" required><br>
+                    <input type="text" id="ph" name="ph" placeholder="Phone number* : " v-model = "phoneNum" required ><br>
+                    <input type="text" id="passport" name="passport" placeholder ="Passport/IC* : " v-model = "passport" required><br>
+                    <input type="text" id="Email" name="Email" placeholder="Email* : " v-model = "email" required ><br>
+                    <input type="password" id="Psw" name="Psw" placeholder ="Password* : " pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}" title="Must contain at least one number and one uppercase and lowercase letter, and at least 8 or more characters" v-model = "password" required><br>
+                    <input type="password" id="CPsw" name="CPsw" placeholder ="Comfirm Password* : " v-model = "confirmPassword" required><br>
                     <button id="signup_button" class="bold" type="submit" >Sign Up</button><br>                          <!--Signup button. After signup, go to the login page again-->
                 </form>
                 <br>
