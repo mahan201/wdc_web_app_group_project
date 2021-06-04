@@ -35,7 +35,26 @@ var appdiv = new Vue({
     },
     methods: {
         checkIn: function(event){
-            if(this.codes.includes(this.code)){
+            var valid = false;
+            var venueEmail = "";
+            this.codes.forEach(function(venue) {
+                if(venue.checkInCode === appdiv.code){
+                  valid = true;
+                  venueEmail = venue.email;
+                }
+            });
+            if(valid){
+
+                var details = {venue: venueEmail};
+
+                if(!this.signedIn){
+                    details.email = this.email;
+                    details.firstName = this.fName;
+                    details.lastName = this.lName;
+                    details.phoneNum = this.pNum;
+                    details.passport = this.IDNum;
+                }
+
                 //Code to send the data to the server.
                 xhttp = new XMLHttpRequest();
 
@@ -44,7 +63,8 @@ var appdiv = new Vue({
                        appdiv.passed = true;
                        appdiv.failed = false;
                     } else if (this.readyState == 4 && this.status == 500){
-                        alert("Internal server issue. Please try again later!");
+                        this.failed = true;
+                        this.passed = false;
                     }
                 };
 
@@ -52,14 +72,7 @@ var appdiv = new Vue({
 
                 xhttp.setRequestHeader("Content-type","application/json");
 
-                xhttp.send(JSON.stringify({
-                    venue: "acb@mcd.com",
-                    email: this.email,
-                    firstName: this.fName,
-                    lastName: this.lName,
-                    phoneNum: this.pNum,
-                    passport: this.IDNum
-                }));
+                xhttp.send(JSON.stringify(details));
             } else {
                 this.failed = true;
                 this.passed = false;
@@ -69,9 +82,6 @@ var appdiv = new Vue({
     }
 });
 
-function getCodes(){
-    //Will be replaced with server code to get a list of valid venue check-in codes.
-    appdiv.codes = ["ABC123","XYZ456","JQK789"];
-}
-
-getCodes();
+makeRequest("GET","users/check-in-codes.ajax",{},function(result){
+        appdiv.codes = JSON.parse(result);
+    });

@@ -5,6 +5,7 @@ var router = express.Router();
 function queryDatabase(req, res, next, query){
     req.pool.getConnection(function(err,connection){
       if(err){
+          console.log(err);
           res.sendStatus(500);
           return;
       }
@@ -12,6 +13,7 @@ function queryDatabase(req, res, next, query){
       connection.query(query, function(err, rows, fields){
          connection.release();
          if(err){
+             console.log(err);
              res.sendStatus(500);
              return;
          }
@@ -25,11 +27,12 @@ router.get('/details.ajax', function(req,res,next){
     if(req.session.user){
         obj.loggedIn = true;
         if(req.session.rest === undefined){
+            //This is for when req.session doesnt have the extra properties such as first name. last name etc (custom for each type).
             var table = "BasicUser";
             if (req.session.accountType === "venue"){table = "VenueOwner";}
             else if (req.session.accountType === "admin"){table = "Admin";}
 
-            var excludes = ["email","lat","lng",];
+            var excludes = ["email","lat","lng"];
 
             req.pool.getConnection(function(err,connection){
               if(err){
@@ -193,6 +196,10 @@ router.post("/user-signup.ajax", async function(req,res){
 
 });
 
+router.get('/check-in-codes.ajax', function(req,res,next){
+    queryDatabase(req,res,next,"SELECT email, checkInCode FROM VenueOwner;");
+});
+
 router.post('/check-in.ajax', function(req,res){
 
     var venue = req.body.venue;
@@ -206,6 +213,28 @@ router.post('/check-in.ajax', function(req,res){
 
     if(req.session.user){
         //SIGNED IN USER;
+        if(venue === undefined){
+            res.sendStatus(400);
+            return;
+        }
+
+        req.pool.getConnection(function(err,connection){
+          if(err){
+              res.sendStatus(500);
+              return;
+          }
+
+          var query = "INSERT INTO CheckIn (user,venue) VALUES ('" + req.session.user + "', '" + venue + "');";
+          connection.query(query, function(err, rows, fields){
+             connection.release();
+             if(err){
+                 res.sendStatus(500);
+                 return;
+             }
+             res.sendStatus(200);
+             return;
+          });
+       });
 
     } else {
         //NOT SIGNED IN USER;
