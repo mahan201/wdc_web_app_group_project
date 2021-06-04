@@ -22,6 +22,28 @@ function queryDatabase(req, res, next, query){
    });
 }
 
+function generateCheckInCode(email,bName){
+    var excludeCharacters = ['.',' ',',','A','E','I','O','U'];
+    email = email.slice(0,email.indexOf("@")).split('');
+    bName =  bName.toUpperCase().split('').filter(val => /[A-Z]/);
+    var strippedName = bName.filter(val => !excludeCharacters.includes(val));
+
+    if(strippedName.length <= 3){
+        //Revert back. Stripped version is too short.
+        strippedName = bName;
+    }
+
+    var size = Math.floor(Math.random() * 4) + 3;
+
+    var part1 = strippedName.slice(0,Math.min(size,strippedName.length));
+    part1 = part1.reduce((acc,val) => acc += val);
+
+    var part2Size = 10 - part1.length;
+    var hash = email.map(val => val.charCodeAt(0)).reduce((acc,val) => acc *= val, 1);
+    hash = hash % (Math.pow(10,part2Size));
+    return part1 + hash.toString();
+}
+
 router.get('/details.ajax', function(req,res,next){
     var obj = {loggedIn: false};
     if(req.session.user){
@@ -157,9 +179,14 @@ router.post("/user-signup.ajax", async function(req,res){
           return;
       }
 
+      if(res.headersSent){return;}
+
       var query2 = "INSERT INTO BasicUser VALUES ('" + email + "','" + firstName + "','" + lastName + "','" + phoneNum + "','" + passport + "');";
       connection.query(query2, function(err, results){
          connection.release();
+
+         if(res.headersSent){return;}
+
          if(err){
              if(err.code !== "ER_DUP_ENTRY"){
                  res.sendStatus(500);
@@ -173,9 +200,14 @@ router.post("/user-signup.ajax", async function(req,res){
                   return;
               }
 
+              if(res.headersSent){return;}
+
               var query3 = "UPDATE BasicUser SET firstName = '" + firstName + "', lastName = '" + lastName + "', phoneNum = '" + phoneNum + "', icPsprt = '" + passport + "' WHERE email = '" + email + "';";
               connection.query(query3, function(err, results){
                  connection.release();
+
+                 if(res.headersSent){return;}
+
                  if(err){
                      res.sendStatus(500);
                      return;
@@ -192,6 +224,108 @@ router.post("/user-signup.ajax", async function(req,res){
          }
       });
    });
+
+
+});
+
+router.post("/venue-signup.ajax", async function(req,res){
+    var firstName = req.body.firstName;
+    var lastName = req.body.lastName;
+    var phoneNum = req.body.phoneNum;
+    var email = req.body.email;
+    var password = req.body.password;
+    const passwordHash = await argon2.hash(password);
+    var companyName = req.body.companyName;
+    var buildingName = req.body.buildingName;
+    var street = req.body.street;
+    var zipCode = req.body.zipCode;
+    var city = req.body.city;
+    var country = req.body.country;
+    var checkInCode = generateCheckInCode(email,companyName);
+    var lng = req.body.lng;
+    var lat = req.body.lat;
+
+
+    req.pool.getConnection(function(err,connection){
+      if(err){
+          console.log(err);
+          res.sendStatus(500);
+          return;
+      }
+      var query1 = "INSERT INTO Security (user,password,accountType) VALUES ('" + email + "','" + passwordHash + "','venue');";
+      connection.query(query1, function(err, results){
+         connection.release();
+         if(err){
+             if(err.code === "ER_DUP_ENTRY"){
+                 //We want to differentiate this from other server errors so that the client knows the user is trying to sign up with an existing email.
+                 res.sendStatus(400);
+                 return;
+             }
+             res.sendStatus(500);
+             return;
+         }
+      });
+  });
+
+
+  req.pool.getConnection(function(err,connection){
+      if(err){
+          console.log(err);
+          res.sendStatus(500);
+          return;
+      }
+
+      if(res.headersSent){return;}
+
+      var query2 = "INSERT INTO VenueOwner VALUES ('" + email + "','" + firstName + "','" + lastName + "','" + phoneNum + "','" + companyName  + "','" + checkInCode + "'," + lat.toString() + "," + lng.toString() + ");";
+      connection.query(query2, function(err, results){
+         connection.release();
+
+         if(res.headersSent){return;}
+
+         if(err){
+             if(err.code === "ER_DUP_ENTRY"){
+                 //We want to differentiate this from other server errors so that the client knows the user is trying to sign up with an existing email.
+                 res.sendStatus(400);
+                 return;
+             }
+             res.sendStatus(500);
+             return;
+
+         }
+      });
+  });
+
+  req.pool.getConnection(function(err,connection){
+      if(err){
+          console.log(err);
+          res.sendStatus(500);
+          return;
+      }
+
+      if(res.headersSent){return;}
+
+      var query3 = "INSERT INTO Address (venue,buildingName,streetName,zipCode,city,country) VALUES ('" + email + "','" + buildingName + "','" + street + "','" + zipCode+ "','" + city  + "','" + country + "');";
+      connection.query(query3, function(err, results){
+         connection.release();
+
+         if(res.headersSent){return;}
+
+         if(err){
+             if(err.code === "ER_DUP_ENTRY"){
+                 //We want to differentiate this from other server errors so that the client knows the user is trying to sign up with an existing email.
+                 res.sendStatus(400);
+                 return;
+             }
+             res.sendStatus(500);
+             return;
+
+         } else {
+            res.redirect('/login.html');
+            return;
+         }
+      });
+  });
 
 
 });

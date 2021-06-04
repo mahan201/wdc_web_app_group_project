@@ -5,31 +5,34 @@
         <meta charset ="UTF-8">
         <script src="https://kit.fontawesome.com/e45ce6bf31.js" crossorigin="anonymous"></script>
         <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
-        <script  src="javascripts/password_validation.js" defer></script>
+        <script src="javascripts/prep.js"></script>
+        <script  src="javascripts/signup.js" defer></script>
         <link rel ="stylesheet" href="stylesheets/Project.css">
 
     </head>
     <body class="background_Color">
-        <div class ="form_container">
+        <div id="app" class ="form_container">
             <div class ="business_signup-page">
                 <h1> Create a new business account</h1>
-                <form>                                                                                               <!--Creating signup inputs -->
-                    <input type="text" id="fname" name="fname" placeholder="First name* : " required >
-                    <input type="text" id="lname" name="lname" placeholder ="Last name* : " required><br>
-                    <input type="text" id="company_name" name="company_name" placeholder="Company name* : " required >
-                    <input type="text" id="ph" name="ph" placeholder="Phone number* : " required ><br>
-                    <input type="text" id="building" name="building" placeholder="Building Name* : " required >
-                    <input type="text" id="street" name="street" placeholder="Street* : " required ><br>
-                    <input type="text" id="zip" name="zip" placeholder="Zip Code* : " required >
-                    <input type="text" id="city" name="city" placeholder="City* : " required ><br>
-                    <input type="text" id="country" name="country" placeholder="Country* : " required >
-                    <input type="text" id="Email" name="Email" placeholder="Email* : " required ><br>
-                    <input type="password" id="Psw" name="Psw" placeholder ="Password* : " pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}" title="Must contain at least one number and one uppercase and lowercase letter, and at least 8 or more characters" required>
-                    <input type="password" id="CPsw" name="CPsw" placeholder ="Comfirm Password* : " required><br>
-                    <button id="signup_button" class="bold" type="submit" formaction="login.html">Sign Up</button><br>                          <!--Signup button. After signup, go to th login page again -->
+                <h3 class = "invalid" v-bind:style="{'visibility': invalid}" >{{invalidMessage}}</h3>
+                <form v-on:submit.prevent="signUpVenue">                                                                                               <!--Creating signup inputs -->
+                    <input type="text" id="fname" name="fname" placeholder="First name* : " v-model="firstName" required >
+                    <input type="text" id="lname" name="lname" placeholder ="Last name* : " v-model="lastName" required><br>
+                    <input type="text" id="company_name" name="company_name" v-model="companyName" placeholder="Company name* : " required >
+                    <input type="text" id="ph" name="ph" placeholder="Phone number* : " v-model="phoneNum" required ><br>
+                    <input type="text" id="building" name="building" placeholder="Building Name* : " v-model="buildingName" required >
+                    <input type="text" id="street" name="street" placeholder="Street* : " v-model="street" required ><br>
+                    <input type="text" id="zip" name="zip" placeholder="Zip Code* : " v-model="zipCode" required >
+                    <input type="text" id="city" name="city" placeholder="City* : " v-model="city" required ><br>
+                    <input type="text" id="country" name="country" placeholder="Country* : " v-model="country" required >
+                    <input type="text" id="Email" name="Email" placeholder="Email* : " v-model="email" required ><br>
+                    <input type="password" id="Psw" name="Psw" placeholder ="Password* : " v-model="password" pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}" title="Must contain at least one number and one uppercase and lowercase letter, and at least 8 or more characters" required>
+                    <input type="password" id="CPsw" name="CPsw" placeholder ="Comfirm Password* : " v-model="confirmPassword" required><br>
+                    <button id="signup_button" class="bold" type="submit">Sign Up</button><br>                          <!--Signup button. After signup, go to th login page again -->
                 </form>
                 <br>
-                <div id="message">                                                                                   <!-- Info for Password validation -->
+                <div id="message">
+                      <p id="validEmail" class="invalid">Email must be <b>valid</b></p>                                                                                       <!-- Info for Password validation -->
                       <h3>Password must contain the following:</h3>
                       <p id="letter" class="invalid">A <b>lowercase</b> letter</p>
                       <p id="capital" class="invalid">A <b>capital (uppercase)</b> letter</p>

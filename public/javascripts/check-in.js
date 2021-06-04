@@ -24,7 +24,7 @@ var appdiv = new Vue({
     computed: {
         signedIn: function(){
             if(this.received){
-                return session.loggedIn;
+                return session.loggedIn && (session.accountType === "user");
             }
         },
         firstName: function(){

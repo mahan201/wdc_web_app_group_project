@@ -6,7 +6,8 @@
         <script src="https://kit.fontawesome.com/e45ce6bf31.js" crossorigin="anonymous"></script>
         <link rel ="stylesheet" href="stylesheets/Project.css">
         <script src="https://cdn.jsdelivr.net/npm/vue@2.6.12/dist/vue.js"></script>
-         <script src="javascripts/user-signup.js" defer></script>
+        <script src="javascripts/prep.js"></script>
+         <script src="javascripts/signup.js" defer></script>
     </head>
     <body class="background_Color">                               <!-- Set the whole page's background color -->
 
@@ -16,7 +17,7 @@
                 <hr>
                 <h1> Create a new account</h1>
                 <h3 class = "invalid" v-bind:style="{'visibility': invalid}" >{{invalidMessage}}</h3>
-                <form v-on:submit.prevent="signUp">                                                                                               <!--Creating signup inputs -->
+                <form v-on:submit.prevent="signUpUser">                                                                                               <!--Creating signup inputs -->
                     <input type="text" id="fname" name="fname" placeholder="First name* : " v-model = "firstName" required ><br>
                     <input type="text" id="lname" name="lname" placeholder ="Last name* : " v-model = "lastName" required><br>
                     <input type="text" id="ph" name="ph" placeholder="Phone number* : " v-model = "phoneNum" required ><br>
