@@ -279,14 +279,15 @@
 
             <div v-else-if="tabsBool[4]" id="adminSignUp">
                 <h1 class="dashboardMenuTitle">Sign up an Admin / Health Official</h1>
-                <div class="menuInfo">
-                    <form class="centered" action="/signUpAdmin.ajax">
-                        <input type="text" id="firstName" name="firstName" placeholder="First Name" required >
-                        <input type="text" id="lastName" name="lastName" placeholder ="Last Name" required><br>
-                        <input type="text" id="phoneNo" name="phoneNo" placeholder="Phone Number" required >
-                        <input type="text" id="identity" name="identity" placeholder ="Email Address" required><br>
-                        <input type="password" id="Psw" name="Psw" placeholder ="Password: " required>
-                        <input type="password" id="CPsw" name="CPsw" placeholder ="Confirm Password: " required><br>
+                <div class="menuInfo centered">
+                    <h3>{{adminSUmessage}}</h3>
+                    <form class="centered" v-on:submit.prevent="signUpAdmin">
+                        <input type="text" id="firstName" name="firstName" placeholder="First Name" v-model="adminSUfirstName" required >
+                        <input type="text" id="lastName" name="lastName" placeholder ="Last Name" v-model="adminSUlastName" required><br>
+                        <input type="text" id="phoneNo" name="phoneNo" placeholder="Phone Number" v-model="adminSUphoneNum" required >
+                        <input type="text" id="identity" name="identity" placeholder ="Email Address" v-model="adminSUemail" pattern="^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$" required><br>
+                        <input type="password" id="Psw" name="Psw" placeholder ="Password: " v-model="adminSUpassword" pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}" required>
+                        <input type="password" id="CPsw" name="CPsw" placeholder ="Confirm Password: " v-model="adminSUconfirmPassword" required><br>
                         <button type="submit" class="bold" id="submit_button">Sign Up</button>
                     </form>
 

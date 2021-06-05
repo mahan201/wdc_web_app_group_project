@@ -58,6 +58,15 @@ var appdiv = new Vue({
         weeklyNotifications: true,
         visitedHotspotNoti: true,
 
+        //Admin Sign Up models
+        adminSUfirstName: "",
+        adminSUlastName: "",
+        adminSUphoneNum: "",
+        adminSUemail: "",
+        adminSUpassword: "",
+        adminSUconfirmPassword: "",
+        adminSUmessage: "",
+
         //Venue Data
         checkInCode: "",
 
@@ -382,6 +391,40 @@ var appdiv = new Vue({
             this.hotspotSearch = "a";
             this.hotspotSearch = "";
             hotspotData.splice(this.editingMenuIndex,1);
+        },
+
+        signUpAdmin: function(){
+            if(this.adminSUpassword !== this.adminSUpassword){
+                this.adminSUmessage = "Passwords must match.";
+                return;
+            }
+            var obj = {
+                firstName: this.adminSUfirstName,
+                lastName: this.adminSUlastName,
+                phoneNum: this.adminSUphoneNum,
+                email: this.adminSUemail,
+                password: this.adminSUpassword
+            };
+
+            var xhttp = new XMLHttpRequest();
+
+            xhttp.onreadystatechange = function(){
+                if(this.readyState == 4 && this.status == 200){
+                    appdiv.adminSUmessage = "Successfully signed up!";
+                } else if (this.readyState == 4 && this.status == 500){
+                    alert("Internal Server Error. Please try again later.");
+                } else if (this.readyState == 4 && this.status == 400){
+                    appdiv.adminSUmessage = "This admin already exists.";
+                }
+            };
+
+
+            xhttp.open("POST","/users/admin-signup.ajax", true);
+
+            xhttp.setRequestHeader("Content-type", "application/json");
+
+            xhttp.send(JSON.stringify(obj));
+
         }
 
     }

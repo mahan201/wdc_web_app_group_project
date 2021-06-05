@@ -330,6 +330,74 @@ router.post("/venue-signup.ajax", async function(req,res){
 
 });
 
+router.post("/admin-signup.ajax", async function(req,res){
+    if(req.session.accountType !== "admin"){
+        res.sendStatus(401);
+        return;
+    }
+    var firstName = req.body.firstName;
+    var lastName = req.body.lastName;
+    var email = req.body.email;
+    var password = req.body.password;
+    const passwordHash = await argon2.hash(password);
+
+
+    req.pool.getConnection(function(err,connection){
+      if(err){
+          console.log(err);
+          res.sendStatus(500);
+          return;
+      }
+      var query1 = "INSERT INTO Security (user,password,accountType) VALUES ('" + email + "','" + passwordHash + "','admin');";
+      connection.query(query1, function(err, results){
+         connection.release();
+         if(err){
+             if(err.code === "ER_DUP_ENTRY"){
+                 //We want to differentiate this from other server errors so that the client knows the user is trying to sign up with an existing email.
+                 res.sendStatus(400);
+                 return;
+             }
+             res.sendStatus(500);
+             return;
+         }
+      });
+  });
+
+
+  req.pool.getConnection(function(err,connection){
+      if(err){
+          console.log(err);
+          res.sendStatus(500);
+          return;
+      }
+
+      if(res.headersSent){return;}
+
+      var query2 = "INSERT INTO Admin VALUES ('" + email + "','" + firstName + "','" + lastName + "');";
+      connection.query(query2, function(err, results){
+         connection.release();
+
+         if(res.headersSent){return;}
+
+         if(err){
+             if(err.code === "ER_DUP_ENTRY"){
+                 //We want to differentiate this from other server errors so that the client knows the user is trying to sign up with an existing email.
+                 res.sendStatus(400);
+                 return;
+             }
+             res.sendStatus(500);
+             return;
+
+         }
+         res.sendStatus(200);
+         return;
+      });
+  });
+
+
+});
+
+
 router.get('/check-in-codes.ajax', function(req,res,next){
     queryDatabase(req,res,next,"SELECT email, checkInCode FROM VenueOwner;");
 });
