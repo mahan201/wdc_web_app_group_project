@@ -35,7 +35,6 @@ var appdiv = new Vue({
 
 //Function from prep.js
 makeRequest("GET","/hotspots.ajax",{columns:"lng,lat"}, function(response){
-        console.log("WORKED");
         var hotspots = JSON.parse(response);
         hotspots.forEach(function(cords){
             let ltlng = new mapboxgl.LngLat(cords.lng,cords.lat);

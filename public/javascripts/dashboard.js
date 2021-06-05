@@ -48,15 +48,16 @@ getAllHotspots();
 var appdiv = new Vue({
     el: "#app",
     data: {
+        session: {},
         //Demonstration Data
         typeIndex: 0,
         //Profile Data
         selectedTab: "Profile",
         editing: false,
+        email: "abc@gmail.com",
         firstName: "Talhah",
         lastName: "Zubayer",
         phoneNum: "0123456789",
-        email: "abc@gmail.com",
         businessName: "McDonalds",
         building: "Clown Tower",
         street: "123 Clown Street",
@@ -343,3 +344,6 @@ var appdiv = new Vue({
     }
 });
 
+makeRequest("GET","users/details.ajax",{},function(result){
+    appdiv.session = JSON.parse(result);
+});

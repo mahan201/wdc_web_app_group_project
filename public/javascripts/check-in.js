@@ -1,19 +1,16 @@
 
-var session = {};
-
-makeRequest("GET","users/details.ajax",{},function(result){
-    appdiv.received = true;
-    session = JSON.parse(result);
-});
-
 var appdiv = new Vue({
     el: "#app",
     data: {
-        received: false,
+        session: {},
         showLogout: false,
+
+
         codes: [],
         failed: false,
         passed: false,
+
+
         code: "",
         email: "",
         fName: "",
@@ -23,14 +20,13 @@ var appdiv = new Vue({
     },
     computed: {
         signedIn: function(){
-            if(this.received){
-                return session.loggedIn && (session.accountType === "user");
-            }
+            return this.session.loggedIn;
+        },
+        accountType: function(){
+            return this.session.accountType;
         },
         firstName: function(){
-            if(this.received){
-                return session.firstName;
-            }
+            return this.session.firstName;
         }
     },
     methods: {
@@ -80,6 +76,10 @@ var appdiv = new Vue({
 
         }
     }
+});
+
+makeRequest("GET","users/details.ajax",{},function(result){
+    appdiv.session = JSON.parse(result);
 });
 
 makeRequest("GET","users/check-in-codes.ajax",{},function(result){
