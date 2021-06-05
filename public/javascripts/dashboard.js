@@ -33,37 +33,36 @@ var userData= [];
 var hotspotData = [];
 
 
-function getAllHotspots(){
-    makeRequest("GET","/hotspots.ajax", {}, (response) => hotspotData = JSON.parse(response));
-}
+// makeRequest("GET","users/details.ajax",{},function(result){appdiv.session = JSON.parse(result);});
 
-function getAllUsers(){
-    makeRequest("GET","/users/user-details.ajax", {}, (response) => userData = JSON.parse(response));
-}
+// makeRequest("GET","/hotspots.ajax", {}, (response) => hotspotData = JSON.parse(response));
 
-getAllUsers();
-getAllHotspots();
+// makeRequest("GET","/users/user-details.ajax", {}, (response) => userData = JSON.parse(response));
 
 
 var appdiv = new Vue({
     el: "#app",
     data: {
         session: {},
+        showLogout: false,
         //Demonstration Data
-        typeIndex: 0,
+        accountType: "user",
         //Profile Data
         selectedTab: "Profile",
         editing: false,
-        email: "abc@gmail.com",
-        firstName: "Talhah",
-        lastName: "Zubayer",
-        phoneNum: "0123456789",
-        businessName: "McDonalds",
-        building: "Clown Tower",
-        street: "123 Clown Street",
-        zip: "9.75",
-        city: "Adelaide",
-        country: "Australia",
+        user: "",
+        firstName: "",
+        lastName: "",
+        phoneNum: "",
+        icPsprt:"",
+        businessName: "",
+        building: "",
+        street: "",
+        zip: "",
+        city: "",
+        country: "",
+
+        emailUpdateFlag: false,
 
 
         searchTerm: "",
@@ -73,7 +72,7 @@ var appdiv = new Vue({
         visitedHotspotNoti: true,
 
         //Venue Data
-        venueCheckInCode: "MCD1231234",
+        checkInCode: "",
 
         //Admin Data
         //VenueEdits
@@ -109,11 +108,6 @@ var appdiv = new Vue({
     },
     computed: {
 
-        accountType: function(){
-            var lst = ["user","venue","admin"];
-            return lst[this.typeIndex%lst.length];
-        },
-
         tabs: function (){
             switch(this.accountType){
                 case "user":
@@ -138,7 +132,7 @@ var appdiv = new Vue({
             var temp = [];
             userHistoryFull.forEach(function (checkIn) {
                if ((checkIn.checkInCode.toLowerCase().includes(search.toLowerCase())) || (checkIn.businessName.toLowerCase().includes(search.toLowerCase()))){
-                   var formatted = checkIn.checkInCode + " | " + checkIn.businessName + " | " + checkIn.phoneNo + " | " + checkIn.time + " | " + (checkIn.isHotspot ? "HOTSPOT" : "");
+                   var formatted = checkIn.checkInCode + " | " + checkIn.businessName + " | " + checkIn.phoneNum + " | " + checkIn.time + (checkIn.isHotspot ? " | HOTSPOT" : "");
                    temp.push(formatted);
                }
             });
@@ -229,7 +223,32 @@ var appdiv = new Vue({
         },
 
         updateEmailInfo: function(){
-          //Code to send the email preferences to the server.
+            appdiv.emailUpdateFlag = false;
+            //If the current checkbox states are the same as
+            if(this.weeklyNotifications === Boolean(this.session.weeklyHotspotNoti) && this.visitedHotspotNoti === Boolean(this.session.venueHotspotNoti)){
+                return;
+            }
+
+            //Code to send the email preferences to the server.
+            var xhttp = new XMLHttpRequest();
+
+            xhttp.onreadystatechange = function(){
+                if(this.readyState == 4 && this.status == 200){
+                    console.log("UPDATED");
+                   appdiv.emailUpdateFlag = true;
+                   appdiv.session.weeklyHotspotNoti = Number(appdiv.weeklyNotifications);
+                   appdiv.session.venueHotspotNoti = Number(appdiv.visitedHotspotNoti);
+                } else if (this.readyState == 4 && this.status == 500){
+                    alert("Internal Server Error. Please try again later.");
+                }
+            };
+
+
+            xhttp.open("POST","/users/"+this.user+"/updateEmailPref.ajax", true);
+
+            xhttp.setRequestHeader("Content-type", "application/json");
+
+            xhttp.send(JSON.stringify({weeklyNotifications: this.weeklyNotifications, visitedHotspot: this.visitedHotspotNoti}));
         },
 
         editVenueAt: function(index){
@@ -344,6 +363,38 @@ var appdiv = new Vue({
     }
 });
 
+
+function setup(){
+    if(appdiv.accountType === "user"){
+        makeRequest("GET","users/"+appdiv.user+"/checkInHistory.ajax",{},function(result){
+            var res = JSON.parse(result);
+            res.forEach(function(row){
+                var temp = new Date(row.time);
+                row.time = temp.toLocaleString();
+            });
+            userHistoryFull = res;
+            //Trigger the function for userHistory computed property.
+            var temp = appdiv.searchTerm;
+            appdiv.searchTerm = "";
+            appdiv.searchTerm = temp;
+
+        });
+
+
+
+    } else if(appdiv.accountType === "venue"){
+        //
+    } else if(appdiv.accountType === "admin"){
+        //
+    }
+}
+
+
 makeRequest("GET","users/details.ajax",{},function(result){
     appdiv.session = JSON.parse(result);
+    Object.keys(appdiv.session).forEach((val) => appdiv[val] = appdiv.session[val]);
+
+    appdiv.weeklyNotifications = Boolean(appdiv.session.weeklyHotspotNoti);
+    appdiv.visitedHotspotNoti = Boolean(appdiv.session.venueHotspotNoti);
+    setup();
 });

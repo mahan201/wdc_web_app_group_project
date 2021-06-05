@@ -11,6 +11,8 @@ firstName VARCHAR(255),
 lastName VARCHAR(255),
 phoneNum VARCHAR(50),
 icPsprt VARCHAR(15),
+weeklyHotspotNoti INT,
+venueHotspotNoti INT,
 PRIMARY KEY(email)
 );
 
@@ -30,6 +32,7 @@ businessName VARCHAR(15),
 checkInCode VARCHAR(10) UNIQUE,
 lat FLOAT( 10, 6 ) NOT NULL,
 lng FLOAT( 10, 6 ) NOT NULL,
+isHotspot INT,
 PRIMARY KEY(email)
 );
 
@@ -79,13 +82,13 @@ PRIMARY KEY (user)
 -- Sample data to test
 
 
-INSERT INTO BasicUser VALUES ("ghanem.ganadi@gmail.com","Ghanem","Ganadi","+601164398065","ABCEFG1");
-INSERT INTO BasicUser VALUES ("talha1h.zubayer@gmail.com","Talhah","Zubayer","+601164398065","ZubZub1234");
-INSERT INTO BasicUser VALUES ("niaj.sharif@gmail.com","Niaj","Sharif","+601164398065","SHarif123");
-INSERT INTO BasicUser VALUES ("m2.noorbahr@gmail.com","Mahan","Noorbahr","+601164398065","SHarif123");
+INSERT INTO BasicUser VALUES ("ghanem.ganadi@gmail.com","Ghanem","Ganadi","+601164398065","ABCEFG1",1,1);
+INSERT INTO BasicUser VALUES ("talha1h.zubayer@gmail.com","Talhah","Zubayer","+601164398065","ZubZub1234",1,1);
+INSERT INTO BasicUser VALUES ("niaj.sharif@gmail.com","Niaj","Sharif","+601164398065","SHarif123",1,1);
+INSERT INTO BasicUser VALUES ("m2.noorbahr@gmail.com","Mahan","Noorbahr","+601164398065","SHarif123",1,1);
 
 
-INSERT INTO VenueOwner VALUES ("acb@mcd.com","Ronald","McDonald","123","McDonalds","MCD123",123,123);
+INSERT INTO VenueOwner VALUES ("acb@mcd.com","Ronald","McDonald","123","McDonalds","MCD123",123,123,0);
 
 INSERT INTO Security (user,password,accountType) VALUES ("ghanem.ganadi@gmail.com","password1234","user");
 INSERT INTO Security (user,password,accountType) VALUES ("talha1h.zubayer@gmail.com","password1234","user");

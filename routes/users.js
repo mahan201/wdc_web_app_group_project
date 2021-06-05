@@ -181,7 +181,7 @@ router.post("/user-signup.ajax", async function(req,res){
 
       if(res.headersSent){return;}
 
-      var query2 = "INSERT INTO BasicUser VALUES ('" + email + "','" + firstName + "','" + lastName + "','" + phoneNum + "','" + passport + "');";
+      var query2 = "INSERT INTO BasicUser VALUES ('" + email + "','" + firstName + "','" + lastName + "','" + phoneNum + "','" + passport + "',1,1);";
       connection.query(query2, function(err, results){
          connection.release();
 
@@ -277,7 +277,7 @@ router.post("/venue-signup.ajax", async function(req,res){
 
       if(res.headersSent){return;}
 
-      var query2 = "INSERT INTO VenueOwner VALUES ('" + email + "','" + firstName + "','" + lastName + "','" + phoneNum + "','" + companyName  + "','" + checkInCode + "'," + lat.toString() + "," + lng.toString() + ");";
+      var query2 = "INSERT INTO VenueOwner VALUES ('" + email + "','" + firstName + "','" + lastName + "','" + phoneNum + "','" + companyName  + "','" + checkInCode + "'," + lat.toString() + "," + lng.toString() + ", 0);";
       connection.query(query2, function(err, results){
          connection.release();
 
@@ -383,7 +383,7 @@ router.post('/check-in.ajax', function(req,res){
               return;
           }
 
-          var query1 = "INSERT INTO BasicUser VALUES ('" + email + "','" + firstName + "','" + lastName + "','" + phoneNum + "','" + passport + "');";
+          var query1 = "INSERT INTO BasicUser VALUES ('" + email + "','" + firstName + "','" + lastName + "','" + phoneNum + "','" + passport + "',1,1);";
           connection.query(query1, function(err, results){
              connection.release();
              if(err){
@@ -461,8 +461,24 @@ router.get('/user-details.ajax', function(req,res,next){
     queryDatabase(req,res,next,"SELECT * FROM BasicUser;");
 });
 
-router.get('/check-in.ajax', function(req,res,next){
-    queryDatabase(req,res,next,"SELECT * FROM CheckIn");
+router.get('/:user/checkInHistory.ajax', function(req,res,next){
+    if(req.session.user !== req.params.user){
+        res.sendStatus(401);
+    } else {
+        queryDatabase(req,res,next,"SELECT checkInCode,businessName,phoneNum,time,isHotspot FROM CheckIn INNER JOIN VenueOwner ON CheckIn.venue = VenueOwner.email WHERE user = '" + req.params.user + "';");
+    }
+
+});
+
+router.post('/:user/updateEmailPref.ajax', function(req,res,next){
+    if(req.session.user !== req.params.user){
+        res.sendStatus(401);
+    } else {
+        req.session.weeklyHotspotNoti = Number(req.body.weeklyNotifications);
+        req.session.venueHotspotNoti = Number(req.body.visitedHotspot);
+        queryDatabase(req,res,next,"UPDATE BasicUser SET weeklyHotspotNoti = " + Number(req.body.weeklyNotifications) + ", venueHotspotNoti = " + Number(req.body.visitedHotspot) + " WHERE email = '" + req.session.user + "';");
+
+    }
 });
 
 module.exports = router;
