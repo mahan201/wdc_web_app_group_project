@@ -1,22 +1,8 @@
 var allTabs = ["Profile","Hotspots","Venues","Users","Signup an Admin","User History","Email Subscription","Venue History","Venue Check-In Code"];
 
-var venueHistoryFull= [
-    {firstName: "Mahan",lastName: "Noorbahr",phoneNo: "0123456789",time: "10-5-2021 13:05"},
-    {firstName: "Mahan",lastName: "Noorbahr",phoneNo: "0123456789",time: "10-5-2021 13:05"},
-    {firstName: "Mahan",lastName: "Noorbahr",phoneNo: "0123456789",time: "10-5-2021 13:05"},
-    {firstName: "Mahan",lastName: "Noorbahr",phoneNo: "0123456789",time: "10-5-2021 13:05"},
-    {firstName: "Mahan",lastName: "Noorbahr",phoneNo: "0123456789",time: "10-5-2021 13:05"},
-    {firstName: "Mahan",lastName: "Noorbahr",phoneNo: "0123456789",time: "10-5-2021 13:05"}
-    ];
+var venueHistoryFull= [];
 
-var userHistoryFull= [
-    {checkInCode: "MCD12387", businessName: "McDonald's",phoneNo: "0123456789",time: "10-5-2021 13:05", isHotspot: true},
-    {checkInCode: "MCD12387", businessName: "McDonald's",phoneNo: "0123456789",time: "10-5-2021 13:05", isHotspot: false},
-    {checkInCode: "MCD12387", businessName: "McDonald's",phoneNo: "0123456789",time: "10-5-2021 13:05", isHotspot: true},
-    {checkInCode: "MCD12387", businessName: "McDonald's",phoneNo: "0123456789",time: "10-5-2021 13:05", isHotspot: false},
-    {checkInCode: "MCD12387", businessName: "McDonald's",phoneNo: "0123456789",time: "10-5-2021 13:05", isHotspot: true},
-    {checkInCode: "MCD12387", businessName: "McDonald's",phoneNo: "0123456789",time: "10-5-2021 13:05", isHotspot: false}
-    ];
+var userHistoryFull= [];
 
 var venueData= [
     {email:"abc123@gmail.com",fName:"Bill",lName:"Gates",bName:"McDonald's",phoneNum:"+112312312",checkInCode:"MCD12321",building:"Clown Tower",street:"123 Clown Street",zip:"52876",city:"Adelaide",country:"Australia"},
@@ -57,9 +43,9 @@ var appdiv = new Vue({
         phoneNum: "",
         icPsprt:"",
         businessName: "",
-        building: "",
-        street: "",
-        zip: "",
+        buildingName: "",
+        streetName: "",
+        zipCode: "",
         city: "",
         country: "",
 
@@ -146,7 +132,7 @@ var appdiv = new Vue({
             var temp = [];
             venueHistoryFull.forEach(function (checkIn) {
                if ((checkIn.firstName.toLowerCase().includes(search.toLowerCase())) || (checkIn.lastName.toLowerCase().includes(search.toLowerCase()))){
-                   var formatted = checkIn.firstName + " | " + checkIn.lastName + " | " + checkIn.phoneNo + " | " + checkIn.time;
+                   var formatted = checkIn.firstName + " | " + checkIn.lastName + " | " + checkIn.phoneNum + " | " + checkIn.time;
                    temp.push(formatted);
                }
             });
@@ -422,7 +408,22 @@ function setup(){
         });
 
     } else if(appdiv.accountType === "venue"){
-        //
+        makeRequest("GET","users/venueAddress.ajax",{},function(result){
+            var res = JSON.parse(result)[0];
+
+            Object.keys(res).forEach(key => appdiv[key] = res[key]);
+        });
+
+        makeRequest("GET","users/venueHistory.ajax",{},function(result){
+            var res = JSON.parse(result);
+            res.forEach(function(row){
+                var temp = new Date(row.time);
+                row.time = temp.toLocaleString();
+            });
+            venueHistoryFull = res;
+        });
+
+
     } else if(appdiv.accountType === "admin"){
         //
     }

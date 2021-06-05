@@ -38,7 +38,7 @@ PRIMARY KEY(email)
 
 CREATE TABLE `Address`(
 id INT AUTO_INCREMENT,
-venue VARCHAR(255),
+venue VARCHAR(255) UNIQUE,
 buildingName VARCHAR(20),
 streetName VARCHAR(100),
 zipCode VARCHAR(10),

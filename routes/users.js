@@ -495,6 +495,22 @@ router.get('/mapHistory.ajax', function(req,res,next){
    }
 });
 
+router.get('/venueAddress.ajax', function(req,res,next){
+   if(req.session.accountType !== "venue"){
+       res.sendStatus(401);
+   } else {
+       queryDatabase(req,res,next,"SELECT DISTINCT buildingName,streetName,zipCode,city,country FROM Address WHERE venue = '" + req.session.user + "';");
+   }
+});
+
+router.get('/venueHistory.ajax', function(req,res,next){
+   if(req.session.accountType !== "venue"){
+       res.sendStatus(401);
+   } else {
+       queryDatabase(req,res,next,"SELECT firstName,lastName,phoneNum,time FROM CheckIn INNER JOIN BasicUser ON CheckIn.user = BasicUser.email WHERE venue = '" + req.session.user + "' ORDER BY time DESC;");
+   }
+});
+
 router.get('/:user/checkInHistory.ajax', function(req,res,next){
     if(req.session.user !== req.params.user){
         res.sendStatus(401);
