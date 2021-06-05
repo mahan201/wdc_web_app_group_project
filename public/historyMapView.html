@@ -7,7 +7,9 @@
     <script src='https://api.mapbox.com/mapbox-gl-js/v2.1.1/mapbox-gl.js'></script>
     <link href='https://api.mapbox.com/mapbox-gl-js/v2.1.1/mapbox-gl.css' rel='stylesheet' />
     <link rel ="stylesheet" href="stylesheets/Project.css">
-    <script src="javascripts/hotspot-map.js" defer></script>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.6.12/dist/vue.js"></script>
+    <script src="javascripts/prep.js"></script>
+    <script src="javascripts/historyMapView.js" defer></script>
 </head>
 <body>
     <div id="app">
@@ -16,7 +18,13 @@
           <li><a href="hotspot-map.html">Hotspot Map</a></li>
           <li><a href="check-in.html">Check-in</a></li>
           <li><a class="active" href="dashboard.html">Dashboard</a></li>
-          <li class="login"><a href="login.html">Login</a></li>
+          <li v-if="!loggedIn" class="login"><a href="login.html">Login</a></li>
+          <li v-else class="login">
+            <div>
+                <a href="dashboard.html" v-on:mouseenter="showLogout = true;" v-on:mouseleave="showLogout = false;">{{firstName}}</a>
+                <a v-if="showLogout" v-on:mouseenter="showLogout = true;" v-on:mouseleave="showLogout = false;" href="users/logout.ajax">Logout</a>
+            </div>
+          </li>
       </ul>
 
     <h1 class="pageHeader">Your History</h1>

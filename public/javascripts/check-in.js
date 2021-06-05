@@ -1,3 +1,4 @@
+Vue.use(Dropdown);
 
 var appdiv = new Vue({
     el: "#app",
@@ -7,6 +8,7 @@ var appdiv = new Vue({
 
 
         codes: [],
+        codeSearchTerm: "",
         failed: false,
         passed: false,
 
@@ -27,9 +29,25 @@ var appdiv = new Vue({
         },
         firstName: function(){
             return this.session.firstName;
+        },
+
+        codesDropDown: function(){
+            var temp = [];
+            this.codes.forEach(val => temp.push({name: val.checkInCode, id: val.checkInCode}));
+            return temp;
         }
     },
     methods: {
+        onCodeSelect: function(selection){
+                this.code = selection.name;
+        },
+
+        filteredCodes: function(term){
+            // var temp = [];
+            // this.codes2.forEach(val => (val.name.includes(term)) && temp.push({name: val.checkInCode, id: val.checkInCode}));
+            // return temp;
+        },
+
         checkIn: function(event){
             var valid = false;
             var venueEmail = "";
@@ -43,7 +61,7 @@ var appdiv = new Vue({
 
                 var details = {venue: venueEmail};
 
-                if(!this.signedIn){
+                if(!this.signedIn || this.accountType !== "user"){
                     details.email = this.email;
                     details.firstName = this.fName;
                     details.lastName = this.lName;

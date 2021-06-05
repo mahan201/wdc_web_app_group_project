@@ -492,3 +492,8 @@
           padding: 12px 16px;
           transform: translate(0%, -50%);
     }
+
+    #checkInDrop{
+        position: relative;
+        left: 41%;
+    }

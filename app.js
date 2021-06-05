@@ -38,7 +38,7 @@ var prev = "";
 
 app.use(async function(req,res,next){
     console.log(req.session.user);
-   if(req.path == "/dashboard.html" && req.session.user == undefined){
+   if((req.path == "/dashboard.html" || req.path == "/historyMapView.html") && req.session.user == undefined){
        res.redirect('login.html');
    } else { next(); }
 });

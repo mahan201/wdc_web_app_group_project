@@ -5,8 +5,6 @@
     <title>Dashboard</title>
     <script src="https://kit.fontawesome.com/e45ce6bf31.js" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/vue@2.6.12/dist/vue.js"></script>
-    <script src='https://api.mapbox.com/mapbox-gl-js/v2.1.1/mapbox-gl.js'></script>
-    <link href='https://api.mapbox.com/mapbox-gl-js/v2.1.1/mapbox-gl.css' rel='stylesheet' />
     <script src="javascripts/prep.js"></script>
     <script src="javascripts/dashboard.js" defer></script>
     <link rel ="stylesheet" href="stylesheets/Project.css">
@@ -15,9 +13,9 @@
   <div id="app">
       <ul id="nav-bar">
           <li><a href="/">LOGO</a></li>
-          <li><a class="active" href="hotspot-map.html">Hotspot Map</a></li>
+          <li><a href="hotspot-map.html">Hotspot Map</a></li>
           <li><a href="check-in.html">Check-in</a></li>
-          <li><a href="dashboard.html">Dashboard</a></li>
+          <li><a class="active" href="dashboard.html">Dashboard</a></li>
           <li v-if="!loggedIn" class="login"><a href="login.html">Login</a></li>
           <li v-else class="login">
             <div>
@@ -46,7 +44,7 @@
 
                     <div id="profEmail" class="profileItem">
                         <h3>Email:</h3>
-                          <input v-model="user" v-bind:disabled="!editing" required/>
+                          <input v-model="user" disabled required/>
                     </div>
 
                   <div id="profFirstName" class="profileItem Left">
@@ -76,27 +74,27 @@
 
                     <div v-if="accountType==='venue'" class="profileItem">
                         <h3>Building Name:</h3>
-                        <input  v-model="building" v-bind:disabled="!editing" required/>
+                        <input  v-model="building" disabled required/>
                     </div>
 
                     <div v-if="accountType==='venue'" class="profileItem Left">
                         <h3>Street:</h3>
-                        <input  v-model="street" v-bind:disabled="!editing" required/>
+                        <input  v-model="street" disabled required/>
                     </div>
 
                     <div v-if="accountType==='venue'" class="profileItem">
                         <h3>Zip Code:</h3>
-                        <input v-model="zip" v-bind:disabled="!editing" required/>
+                        <input v-model="zip" disabled required/>
                     </div>
 
                     <div v-if="accountType==='venue'" class="profileItem Left">
                         <h3>City:</h3>
-                        <input v-model="city" v-bind:disabled="!editing" required/>
+                        <input v-model="city" disabled required/>
                     </div>
 
                     <div v-if="accountType==='venue'" class="profileItem">
                         <h3>Country:</h3>
-                        <input v-model="country" v-bind:disabled="!editing" required/>
+                        <input v-model="country" disabled required/>
                     </div>
 
                     <br>
@@ -346,9 +344,6 @@
                 <div class="menuInfo centered">
                     <h2>Check-In Code</h2>
                     <h3 id="checkinCode">{{checkInCode}}</h3>
-
-                    <h2>URL Check-In</h2>
-                    <h3><a href="check-in.html?code=MCD1231234">https://project.com/check-in.html?code={{checkInCode}}</a> </h3>
 
                 </div>
             </div>

@@ -345,7 +345,7 @@ router.post('/check-in.ajax', function(req,res){
 
     console.log(req.body);
 
-    if(req.session.user){
+    if(req.session.user && req.session.accountType === "user"){
         //SIGNED IN USER;
         if(venue === undefined){
             res.sendStatus(400);
@@ -354,6 +354,7 @@ router.post('/check-in.ajax', function(req,res){
 
         req.pool.getConnection(function(err,connection){
           if(err){
+              console.log(err)
               res.sendStatus(500);
               return;
           }
@@ -362,6 +363,7 @@ router.post('/check-in.ajax', function(req,res){
           connection.query(query, function(err, rows, fields){
              connection.release();
              if(err){
+                 console.log(err)
                  res.sendStatus(500);
                  return;
              }
@@ -378,6 +380,7 @@ router.post('/check-in.ajax', function(req,res){
 
          req.pool.getConnection(function(err,connection){
           if(err){
+              console.log(err)
               console.log(err);
               res.sendStatus(500);
               return;
@@ -461,11 +464,42 @@ router.get('/user-details.ajax', function(req,res,next){
     queryDatabase(req,res,next,"SELECT * FROM BasicUser;");
 });
 
+router.post('/updateInfo.ajax', function(req,res,next){
+    if(req.session.user !== req.body.user){
+        res.sendStatus(401);
+    } else {
+        var toChange = Object.keys(req.body).filter(val => val !== "user");
+        toChange.forEach(val => req.session[val] = req.body[val]);
+
+        var query2 = "";
+        toChange.forEach(function(column){
+           query2 += column + " = '"  + req.body[column] + "', ";
+        });
+        query2 = query2.slice(0,query2.length-2);
+
+        var table = "BasicUser";
+        if(req.session.accountType === "venue"){table = "VenueOwner";}
+        else if(req.session.accountType == "admin"){table = "Admin";}
+
+        queryDatabase(req,res,next,"UPDATE " + table + " SET " + query2 + " WHERE email = '" + req.session.user + "';");
+
+    }
+
+});
+
+router.get('/mapHistory.ajax', function(req,res,next){
+   if(req.session.accountType !== "user"){
+       res.sendStatus(401);
+   } else {
+       queryDatabase(req,res,next,"SELECT lng,lat FROM CheckIn INNER JOIN VenueOwner ON CheckIn.venue = VenueOwner.email WHERE user = '" + req.session.user + "';");
+   }
+});
+
 router.get('/:user/checkInHistory.ajax', function(req,res,next){
     if(req.session.user !== req.params.user){
         res.sendStatus(401);
     } else {
-        queryDatabase(req,res,next,"SELECT checkInCode,businessName,phoneNum,time,isHotspot FROM CheckIn INNER JOIN VenueOwner ON CheckIn.venue = VenueOwner.email WHERE user = '" + req.params.user + "';");
+        queryDatabase(req,res,next,"SELECT checkInCode,businessName,phoneNum,time,isHotspot FROM CheckIn INNER JOIN VenueOwner ON CheckIn.venue = VenueOwner.email WHERE user = '" + req.params.user + "' ORDER BY time DESC;");
     }
 
 });

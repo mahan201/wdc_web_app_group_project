@@ -13,6 +13,8 @@
     "express-session": "^1.17.2",
     "morgan": "~1.9.1",
     "mysql": "^2.18.1",
-    "session": "^0.1.0"
+    "session": "^0.1.0",
+    "vue": "^2.6.13",
+    "vue-simple-search-dropdown": "^1.0.1"
   }
 }

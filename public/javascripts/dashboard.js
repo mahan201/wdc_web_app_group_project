@@ -45,6 +45,7 @@ var appdiv = new Vue({
     data: {
         session: {},
         showLogout: false,
+        loggedIn: false,
         //Demonstration Data
         accountType: "user",
         //Profile Data
@@ -205,7 +206,16 @@ var appdiv = new Vue({
         },
 
         anyEmpty: function(){
-            var mixed = [this.firstName,this.lastName,this.phoneNum,this.email,this.businessName,this.building,this.street,this.zip,this.city,this.country];
+            var mixed = [];
+            if (this.accountType == "user"){
+                mixed = [this.firstName,this.lastName,this.phoneNum];
+            } else if (this.accountType == "venue"){
+                mixed = [this.firstName,this.lastName,this.phoneNum,this.businessName];
+
+            } else {
+                mixed = [this.firstName,this.lastName];
+            }
+
             if(mixed.includes("")){
                 return true;
             } else {
@@ -216,8 +226,36 @@ var appdiv = new Vue({
 
         updateInfo: function(){
             if(!this.anyEmpty()){
+                console.log("SENT");
                 this.editing = false;
-                //Code to send the changed info to the server.
+
+                var obj = {
+                    user: this.user,
+                    firstName: this.firstName,
+                    lastName: this.lastName
+                };
+
+                if(this.accountType === "user"){
+                    obj.phoneNum = this.phoneNum;
+                    obj.icPsprt = this.icPsprt;
+                } else if (this.accountType === "venue"){
+                    obj.businessName = this.businessName;
+                }
+
+                var xhttp = new XMLHttpRequest();
+
+                xhttp.onreadystatechange = function(){
+                    if (this.readyState == 4 && this.status == 500){
+                        alert("Internal Server Error. Please try again later.");
+                    }
+                };
+
+
+                xhttp.open("POST","/users/updateInfo.ajax", true);
+
+                xhttp.setRequestHeader("Content-type", "application/json");
+
+                xhttp.send(JSON.stringify(obj));
             }
 
         },
@@ -366,6 +404,9 @@ var appdiv = new Vue({
 
 function setup(){
     if(appdiv.accountType === "user"){
+        appdiv.weeklyNotifications = Boolean(appdiv.session.weeklyHotspotNoti);
+        appdiv.visitedHotspotNoti = Boolean(appdiv.session.venueHotspotNoti);
+
         makeRequest("GET","users/"+appdiv.user+"/checkInHistory.ajax",{},function(result){
             var res = JSON.parse(result);
             res.forEach(function(row){
@@ -380,8 +421,6 @@ function setup(){
 
         });
 
-
-
     } else if(appdiv.accountType === "venue"){
         //
     } else if(appdiv.accountType === "admin"){
@@ -394,7 +433,5 @@ makeRequest("GET","users/details.ajax",{},function(result){
     appdiv.session = JSON.parse(result);
     Object.keys(appdiv.session).forEach((val) => appdiv[val] = appdiv.session[val]);
 
-    appdiv.weeklyNotifications = Boolean(appdiv.session.weeklyHotspotNoti);
-    appdiv.visitedHotspotNoti = Boolean(appdiv.session.venueHotspotNoti);
     setup();
 });
