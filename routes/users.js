@@ -330,72 +330,6 @@ router.post("/venue-signup.ajax", async function(req,res){
 
 });
 
-router.post("/admin-signup.ajax", async function(req,res){
-    if(req.session.accountType !== "admin"){
-        res.sendStatus(401);
-        return;
-    }
-    var firstName = req.body.firstName;
-    var lastName = req.body.lastName;
-    var email = req.body.email;
-    var password = req.body.password;
-    const passwordHash = await argon2.hash(password);
-
-
-    req.pool.getConnection(function(err,connection){
-      if(err){
-          console.log(err);
-          res.sendStatus(500);
-          return;
-      }
-      var query1 = "INSERT INTO Security (user,password,accountType) VALUES ('" + email + "','" + passwordHash + "','admin');";
-      connection.query(query1, function(err, results){
-         connection.release();
-         if(err){
-             if(err.code === "ER_DUP_ENTRY"){
-                 //We want to differentiate this from other server errors so that the client knows the user is trying to sign up with an existing email.
-                 res.sendStatus(400);
-                 return;
-             }
-             res.sendStatus(500);
-             return;
-         }
-      });
-  });
-
-
-  req.pool.getConnection(function(err,connection){
-      if(err){
-          console.log(err);
-          res.sendStatus(500);
-          return;
-      }
-
-      if(res.headersSent){return;}
-
-      var query2 = "INSERT INTO Admin VALUES ('" + email + "','" + firstName + "','" + lastName + "');";
-      connection.query(query2, function(err, results){
-         connection.release();
-
-         if(res.headersSent){return;}
-
-         if(err){
-             if(err.code === "ER_DUP_ENTRY"){
-                 //We want to differentiate this from other server errors so that the client knows the user is trying to sign up with an existing email.
-                 res.sendStatus(400);
-                 return;
-             }
-             res.sendStatus(500);
-             return;
-
-         }
-         res.sendStatus(200);
-         return;
-      });
-  });
-
-
-});
 
 
 router.get('/check-in-codes.ajax', function(req,res,next){
@@ -598,5 +532,122 @@ router.post('/:user/updateEmailPref.ajax', function(req,res,next){
 
     }
 });
+
+router.use(function(req,res,next){
+   if(req.session.accountType !== "admin"){
+       res.sendStatus(401);
+   } else {
+       next();
+   }
+});
+
+router.post("/admin-signup.ajax", async function(req,res){
+    var firstName = req.body.firstName;
+    var lastName = req.body.lastName;
+    var email = req.body.email;
+    var password = req.body.password;
+    const passwordHash = await argon2.hash(password);
+
+
+    req.pool.getConnection(function(err,connection){
+      if(err){
+          console.log(err);
+          res.sendStatus(500);
+          return;
+      }
+      var query1 = "INSERT INTO Security (user,password,accountType) VALUES ('" + email + "','" + passwordHash + "','admin');";
+      connection.query(query1, function(err, results){
+         connection.release();
+         if(err){
+             if(err.code === "ER_DUP_ENTRY"){
+                 //We want to differentiate this from other server errors so that the client knows the user is trying to sign up with an existing email.
+                 res.sendStatus(400);
+                 return;
+             }
+             res.sendStatus(500);
+             return;
+         }
+      });
+  });
+
+
+  req.pool.getConnection(function(err,connection){
+      if(err){
+          console.log(err);
+          res.sendStatus(500);
+          return;
+      }
+
+      if(res.headersSent){return;}
+
+      var query2 = "INSERT INTO Admin VALUES ('" + email + "','" + firstName + "','" + lastName + "');";
+      connection.query(query2, function(err, results){
+         connection.release();
+
+         if(res.headersSent){return;}
+
+         if(err){
+             if(err.code === "ER_DUP_ENTRY"){
+                 //We want to differentiate this from other server errors so that the client knows the user is trying to sign up with an existing email.
+                 res.sendStatus(400);
+                 return;
+             }
+             res.sendStatus(500);
+             return;
+
+         }
+         res.sendStatus(200);
+         return;
+      });
+  });
+
+
+});
+
+router.post("/add-hotspot.ajax", function(req,res,next){
+   var id = req.body.id;
+   var creator = req.body.creator;
+   var street = req.body.street;
+   var zipCode = req.body.zip;
+   var city = req.body.city;
+   var country = req.body.country;
+   var lng = req.body.lng;
+   var lat = req.body.lat;
+
+   queryDatabase(req,res,next,"INSERT INTO Hotspots (creator,street,zipCode,city,country,lat,lng) VALUES ('" + creator + "', '" + street + "', '" + zipCode + "', '" + city + "', '" + country + "', " + lat + ", " + lng + ");");
+
+
+
+});
+
+router.post("/update-hotspot.ajax", function(req,res,next){
+   var id = req.body.id;
+   var creator = req.body.creator;
+
+   var exclude = ["id","creator","lng","lat","dateAdded"];
+   var toChange = Object.keys(req.body).filter(key => !exclude.includes(key));
+
+    var query2 = "";
+        toChange.forEach(function(column){
+           query2 += column + " = '"  + req.body[column] + "', ";
+        });
+        query2 = query2.slice(0,query2.length-2);
+    query2 += ",lng = " + req.body.lng;
+    query2 += " , lat = " + req.body.lat;
+
+  queryDatabase(req,res,next,"UPDATE Hotspots SET " + query2 + " ;");
+
+
+
+});
+
+router.post('/delete-hotspot.ajax', function(req,res,next){
+    var id = req.body.id;
+
+
+  queryDatabase(req,res,next,"DELETE FROM Hotspots WHERE id = " + id + ";");
+
+});
+
 
 module.exports = router;

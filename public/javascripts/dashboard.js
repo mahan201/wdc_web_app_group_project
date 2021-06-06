@@ -16,7 +16,17 @@ var venueData= [
 
 var userData= [];
 
-var hotspotData = [];
+var hotspotData = [
+    {creator:"abc123@gmail.com",street:"123 Hogwarts", zip:"9.75",city:"Adelaide",country:"Australia"},
+    {creator:"abc123@gmail.com",street:"123 Hogwarts", zip:"9.75",city:"Adelaide",country:"Australia"},
+    {creator:"abc123@gmail.com",street:"123 Hogwarts", zip:"9.75",city:"Adelaide",country:"Australia"},
+    {creator:"abc123@gmail.com",street:"123 Hogwarts", zip:"9.75",city:"Adelaide",country:"Australia"},
+    {creator:"abc123@gmail.com",street:"123 Hogwarts", zip:"9.75",city:"Adelaide",country:"Australia"},
+    {creator:"abc123@gmail.com",street:"123 Hogwarts", zip:"9.75",city:"Adelaide",country:"Australia"},
+    {creator:"abc123@gmail.com",street:"123 Hogwarts", zip:"9.75",city:"Adelaide",country:"Australia"},
+    {creator:"abc123@gmail.com",street:"123 Hogwarts", zip:"9.75",city:"Adelaide",country:"Australia"},
+    {creator:"abc123@gmail.com",street:"123 Hogwarts", zip:"9.75",city:"Adelaide",country:"Australia"}
+    ];
 
 
 // makeRequest("GET","users/details.ajax",{},function(result){appdiv.session = JSON.parse(result);});
@@ -94,6 +104,8 @@ var appdiv = new Vue({
         hsZipEdit: "",
         hsCityEdit: "",
         hsCountryEdit: "",
+        hsLng: 0,
+        hsLat: 0,
         isAddingHot: false,
         //
         venueSearch: "",
@@ -177,7 +189,7 @@ var appdiv = new Vue({
             var search = this.hotspotSearch;
             var temp = [];
             hotspotData.forEach(function (hotspot){
-                var mixed = hotspot.address.toLowerCase() + hotspot.city.toLowerCase() + hotspot.country.toLowerCase();
+                var mixed = hotspot.street.toLowerCase() + hotspot.city.toLowerCase() + hotspot.country.toLowerCase();
                 if (mixed.includes(search.toLowerCase())){
                     temp.push(hotspot);
                 }
@@ -340,7 +352,7 @@ var appdiv = new Vue({
 
         editHotspotAt: function(index){
             this.hsCreatorEdit = this.hotspotDatabase[index].creator;
-            this.hsStreetEdit = this.hotspotDatabase[index].address;
+            this.hsStreetEdit = this.hotspotDatabase[index].street;
             this.hsZipEdit = this.hotspotDatabase[index].zipCode;
             this.hsCityEdit = this.hotspotDatabase[index].city;
             this.hsCountryEdit = this.hotspotDatabase[index].country;
@@ -352,12 +364,57 @@ var appdiv = new Vue({
         updateHotspotInfo: function(){
             this.editingDivOpen = false;
             var index = this.editingMenuIndex;
-            this.hotspotDatabase[index].create = this.hsCreatorEdit;
+
+            if(
+                this.hotspotDatabase[index].street === this.hsStreetEdit &&
+                this.hotspotDatabase[index].zipCode === this.hsZipEdit &&
+                this.hotspotDatabase[index].city === this.hsCityEdit &&
+                this.hotspotDatabase[index].country === this.hsCountryEdit
+                ) {return;}
+
             this.hotspotDatabase[index].street = this.hsStreetEdit;
-            this.hotspotDatabase[index].zip = this.hsZipEdit;
+            this.hotspotDatabase[index].zipCode = this.hsZipEdit;
             this.hotspotDatabase[index].city = this.hsCityEdit;
             this.hotspotDatabase[index].country = this.hsCountryEdit;
             //Code to have the server update the information of venue at index index.
+
+            //Use the Forward Geocoding API to get lng lat coordinates.
+            xhttp = new XMLHttpRequest();
+
+            xhttp.onreadystatechange = function(){
+              if(this.readyState == 4 && this.status == 200){
+                var result = JSON.parse(this.response);
+
+                appdiv.hotspotDatabase[appdiv.editingMenuIndex].lng = result[0].lon;
+                appdiv.hotspotDatabase[appdiv.editingMenuIndex].lat = result[0].lat;
+                appdiv.updateHotspotInfoSend();
+              }
+            };
+
+            var address = [this.hsStreetEdit,this.hsZipEdit,this.hsCityEdit,this.hsCountryEdit].reduce((acc,val) => acc = acc + val + ", ", "");
+            address = address.slice(0,address.length-2);
+
+            xhttp.open("GET","https://us1.locationiq.com/v1/search.php?key=pk.4e874fdbdccdbc06c6bf9becc4b7fadf&format=json&q=" + encodeURIComponent(address), true);
+
+            xhttp.send();
+
+        },
+
+        updateHotspotInfoSend: function(){
+            var xhttp = new XMLHttpRequest();
+
+            xhttp.onreadystatechange = function(){
+                if (this.readyState == 4 && this.status == 500){
+                    alert("Internal Server Error. Please try again later.");
+                }
+            };
+
+
+            xhttp.open("POST","/users/update-hotspot.ajax", true);
+
+            xhttp.setRequestHeader("Content-type", "application/json");
+
+            xhttp.send(JSON.stringify(this.hotspotDatabase[this.editingMenuIndex]));
         },
 
         startAddingHotspot: function(){
@@ -370,12 +427,46 @@ var appdiv = new Vue({
         },
 
         finishAddingHotspot: function(){
+            var combined = [this.hsStreetEdit, this.hsZipEdit, this.hsCityEdit,this.hsCountryEdit];
+            if(combined.includes("") || combined.includes(" ")){
+                alert("Fields cannot be empty");
+                return;
+            }
+
+            //Use the Forward Geocoding API to get lng lat coordinates.
+            xhttp = new XMLHttpRequest();
+
+            xhttp.onreadystatechange = function(){
+              if(this.readyState == 4 && this.status == 200){
+                var result = JSON.parse(this.response);
+
+                appdiv.hsLng = result[0].lon;
+                appdiv.hsLat = result[0].lat;
+                appdiv.finishAddingHotspotSend();
+              } else if (this.readyState == 4 && this.status == 404){
+                  alert("Could not find the location of the hotspot. Please change the address and try again.");
+              }
+            };
+
+            var address = [this.hsStreetEdit,this.hsZipEdit,this.hsCityEdit,this.hsCountryEdit].reduce((acc,val) => acc = acc + val + ", ", "");
+            address = address.slice(0,address.length-2);
+
+            xhttp.open("GET","https://us1.locationiq.com/v1/search.php?key=pk.4e874fdbdccdbc06c6bf9becc4b7fadf&format=json&q=" + encodeURIComponent(address), true);
+
+            xhttp.send();
+
+        },
+
+        finishAddingHotspotSend: function(){
             var obj = {
-                creator: this.email,
+                id: hotspotData.length+1,
+                creator: this.user,
                 street: this.hsStreetEdit,
                 zip: this.hsZipEdit,
                 city: this.hsCityEdit,
-                country: this.hsCountryEdit
+                country: this.hsCountryEdit,
+                lng: this.hsLng,
+                lat: this.hsLat
             };
             hotspotData.unshift(obj);
             this.hotspotSearch = "a";
@@ -384,13 +475,52 @@ var appdiv = new Vue({
             this.editingDivOpen = false;
 
             //Code to send the new hotspot to the server.
+            var xhttp = new XMLHttpRequest();
+
+            xhttp.onreadystatechange = function(){
+                if (this.readyState == 4 && this.status == 500){
+                    alert("Internal Server Error. Please try again later.");
+                }
+            };
+
+
+            xhttp.open("POST","/users/add-hotspot.ajax", true);
+
+            xhttp.setRequestHeader("Content-type", "application/json");
+
+            xhttp.send(JSON.stringify(obj));
         },
 
         deleteHotspot: function(){
             this.editingDivOpen = false;
+            var idDelete = this.hotspotDatabase[this.editingMenuIndex].id;
+            var indexDelete = 0;
+            hotspotData.forEach( function(hotspot,index){
+              if (hotspot.id === idDelete){
+                  indexDelete = index;
+              }
+            });
+
+            hotspotData.splice(indexDelete,1);
+
+
+            var xhttp = new XMLHttpRequest();
+
+            xhttp.onreadystatechange = function(){
+                if (this.readyState == 4 && this.status == 500){
+                    alert("Internal Server Error. Please try again later.");
+                }
+            };
+
+
+            xhttp.open("POST","/users/delete-hotspot.ajax", true);
+
+            xhttp.setRequestHeader("Content-type", "application/json");
+
+            xhttp.send(JSON.stringify({id: idDelete}));
+
             this.hotspotSearch = "a";
             this.hotspotSearch = "";
-            hotspotData.splice(this.editingMenuIndex,1);
         },
 
         signUpAdmin: function(){
@@ -468,7 +598,11 @@ function setup(){
 
 
     } else if(appdiv.accountType === "admin"){
-        //
+
+        makeRequest("GET","hotspots.ajax",{},function(result){
+            var res = JSON.parse(result);
+            hotspotData = res;
+        });
     }
 }
 

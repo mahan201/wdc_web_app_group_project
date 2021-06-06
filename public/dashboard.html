@@ -152,7 +152,7 @@
 
 
                     <ul class="historyList">
-                        <li v-for="(hotspot,index) in hotspotDatabase">{{hotspot.address}} | {{hotspot.zip}} | {{hotspot.city}} | {{hotspot.country}} <span class="itemEdit Right" v-on:click="editHotspotAt(index)">Edit</span></li>
+                        <li v-for="(hotspot,index) in hotspotDatabase">{{hotspot.street}} | {{hotspot.zipCode}} | {{hotspot.city}} | {{hotspot.country}} <span class="itemEdit Right" v-on:click="editHotspotAt(index)">Edit</span></li>
                         <li v-if="hotspotDatabase.length == 0">No results</li>
                     </ul>
 

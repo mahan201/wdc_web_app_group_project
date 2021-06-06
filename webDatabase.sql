@@ -61,12 +61,13 @@ FOREIGN KEY (venue) REFERENCES VenueOwner(email)
 CREATE TABLE `Hotspots`(
 id INT AUTO_INCREMENT,
 creator VARCHAR(255),
-address VARCHAR(255),
+street VARCHAR(255),
 zipCode VARCHAR(10),
 city VARCHAR(20),
 country VARCHAR(20),
 lat FLOAT( 10, 6 ) NOT NULL,
 lng FLOAT( 10, 6 ) NOT NULL,
+dateAdded TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 PRIMARY KEY(id),
 FOREIGN KEY (creator) REFERENCES Admin(email)
 );
@@ -82,23 +83,6 @@ PRIMARY KEY (user)
 -- Sample data to test
 
 
-INSERT INTO BasicUser VALUES ("ghanem.ganadi@gmail.com","Ghanem","Ganadi","+601164398065","ABCEFG1",1,1);
-INSERT INTO BasicUser VALUES ("talha1h.zubayer@gmail.com","Talhah","Zubayer","+601164398065","ZubZub1234",1,1);
-INSERT INTO BasicUser VALUES ("niaj.sharif@gmail.com","Niaj","Sharif","+601164398065","SHarif123",1,1);
-INSERT INTO BasicUser VALUES ("m2.noorbahr@gmail.com","Mahan","Noorbahr","+601164398065","SHarif123",1,1);
+INSERT INTO Security VALUES("admin@wdcproject.com","$argon2i$v=19$m=4096,t=3,p=1$LJG5Ew4PYpth0tVx9WHIwg$v5eEq1gk7RTXnLCMSAm4SPGmTc3jhO3Iy7JPvSFtl3k","admin");
 
-
-INSERT INTO VenueOwner VALUES ("acb@mcd.com","Ronald","McDonald","123","McDonalds","MCD123",123,123,0);
-
-INSERT INTO Security (user,password,accountType) VALUES ("ghanem.ganadi@gmail.com","password1234","user");
-INSERT INTO Security (user,password,accountType) VALUES ("talha1h.zubayer@gmail.com","password1234","user");
-
-
-INSERT INTO Admin VALUES ("adelaide.zoo@adelaide.au","Adelaide","Zoo");
-INSERT INTO Admin VALUES ("aadelaide.library@adelaide.au","Adelaide","Library");
-INSERT INTO Admin VALUES ("adelaide.market@adelaide.au","Adelaide","Market");
-
-INSERT INTO Hotspots (creator, address, zipCode, city, country, lat, lng) VALUES ("adelaide.zoo@adelaide.au","Frome Rd","5000","Adelaide","Australia",-34.9049198,138.5840592);
-INSERT INTO Hotspots (creator, address, zipCode, city, country, lat, lng) VALUES ("aadelaide.library@adelaide.au","Jeffrey Smart Building, 217/243 Hindley St", "5000", "Adelaide", "Australia",-34.9229795,138.5919103);
-INSERT INTO Hotspots (creator, address, zipCode, city, country, lat, lng) VALUES ("adelaide.market@adelaide.au","44-60 Gouger St","5000","Adelaide","Australia",-34.922496,138.5917335);
-
+INSERT INTO Admin VALUES("admin@wdcproject.com","Admin","Admin");
