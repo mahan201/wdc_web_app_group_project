@@ -14,19 +14,16 @@ var venueData= [
     {email:"abc123@gmail.com",fName:"Bill",lName:"Gates",bName:"McDonald's",phoneNum:"+112312312",checkInCode:"MCD12321",building:"Clown Tower",street:"123 Clown Street",zip:"52876",city:"Adelaide",country:"Australia"}
     ];
 
-var userData= [];
-
-var hotspotData = [
-    {creator:"abc123@gmail.com",street:"123 Hogwarts", zip:"9.75",city:"Adelaide",country:"Australia"},
-    {creator:"abc123@gmail.com",street:"123 Hogwarts", zip:"9.75",city:"Adelaide",country:"Australia"},
-    {creator:"abc123@gmail.com",street:"123 Hogwarts", zip:"9.75",city:"Adelaide",country:"Australia"},
-    {creator:"abc123@gmail.com",street:"123 Hogwarts", zip:"9.75",city:"Adelaide",country:"Australia"},
-    {creator:"abc123@gmail.com",street:"123 Hogwarts", zip:"9.75",city:"Adelaide",country:"Australia"},
-    {creator:"abc123@gmail.com",street:"123 Hogwarts", zip:"9.75",city:"Adelaide",country:"Australia"},
-    {creator:"abc123@gmail.com",street:"123 Hogwarts", zip:"9.75",city:"Adelaide",country:"Australia"},
-    {creator:"abc123@gmail.com",street:"123 Hogwarts", zip:"9.75",city:"Adelaide",country:"Australia"},
-    {creator:"abc123@gmail.com",street:"123 Hogwarts", zip:"9.75",city:"Adelaide",country:"Australia"}
+var userData= [
+    {email:"abc123@gmail.com",fName:"Bill",lName:"Gates",phoneNum:"+112312312",ID:"IC12321313"},
+    {email:"abc123@gmail.com",fName:"Bill",lName:"Gates",phoneNum:"+112312312",ID:"IC12321313"},
+    {email:"abc123@gmail.com",fName:"Bill",lName:"Gates",phoneNum:"+112312312",ID:"IC12321313"},
+    {email:"abc123@gmail.com",fName:"Bill",lName:"Gates",phoneNum:"+112312312",ID:"IC12321313"},
+    {email:"abc123@gmail.com",fName:"Bill",lName:"Gates",phoneNum:"+112312312",ID:"IC12321313"},
+    {email:"abc123@gmail.com",fName:"Bill",lName:"Gates",phoneNum:"+112312312",ID:"IC12321313"}
     ];
+
+var hotspotData = [];
 
 
 // makeRequest("GET","users/details.ajax",{},function(result){appdiv.session = JSON.parse(result);});
@@ -165,7 +162,7 @@ var appdiv = new Vue({
             var search = this.venueSearch;
             var temp = [];
             venueData.forEach(function (venue){
-                var mixed = venue.fName.toLowerCase() + venue.lName.toLowerCase() + venue.bName.toLowerCase() + venue.checkInCode.toLowerCase() + venue.street.toLowerCase();
+                var mixed = venue.firstName.toLowerCase() + venue.lastName.toLowerCase() + venue.businessName.toLowerCase() + venue.checkInCode.toLowerCase();
                 if (mixed.includes(search.toLowerCase())){
                     temp.push(venue);
                 }
@@ -237,15 +234,18 @@ var appdiv = new Vue({
                 this.editing = false;
 
                 var obj = {
-                    user: this.user,
+                    accountType: "admin",
+                    email: this.user,
                     firstName: this.firstName,
                     lastName: this.lastName
                 };
 
                 if(this.accountType === "user"){
+                    obj.accountType = "user";
                     obj.phoneNum = this.phoneNum;
                     obj.icPsprt = this.icPsprt;
                 } else if (this.accountType === "venue"){
+                    obj.accountType = "venue";
                     obj.businessName = this.businessName;
                 }
 
@@ -297,35 +297,134 @@ var appdiv = new Vue({
         },
 
         editVenueAt: function(index){
-            this.venfNameEdit = this.venueDatabase[index].fName;
-            this.venlNameEdit = this.venueDatabase[index].lName;
-            this.venbNameEdit = this.venueDatabase[index].bName;
+            this.editingMenuIndex = index;
+            this.venfNameEdit = this.venueDatabase[index].firstName;
+            this.venlNameEdit = this.venueDatabase[index].lastName;
+            this.venbNameEdit = this.venueDatabase[index].businessName;
             this.venEmailEdit = this.venueDatabase[index].email;
             this.venPhoneNumEdit = this.venueDatabase[index].phoneNum;
-            this.venBuildingEdit = this.venueDatabase[index].building;
-            this.venStreetEdit = this.venueDatabase[index].street;
-            this.venZipCodeEdit = this.venueDatabase[index].zip;
-            this.venCityEdit = this.venueDatabase[index].city;
-            this.venCountryEdit = this.venueDatabase[index].country;
-            this.editingMenuIndex = index;
-            this.editingDivOpen = true;
+
+            makeRequest("GET","users/"+this.venEmailEdit+"/venueAddress.ajax",{},function(result){
+                var res = JSON.parse(result)[0];
+
+                appdiv.venBuildingEdit = res.buildingName;
+                appdiv.venStreetEdit = res.streetName;
+                appdiv.venZipCodeEdit = res.zipCode;
+                appdiv.venCityEdit = res.city;
+                appdiv.venCountryEdit = res.country;
+
+                appdiv.venBuildingEditOri = res.buildingName;
+                appdiv.venStreetEditOri = res.streetName;
+                appdiv.venZipCodeEditOri = res.zipCode;
+                appdiv.venCityEditOri = res.city;
+                appdiv.venCountryEditOri = res.country;
+
+                appdiv.editingDivOpen = true;
+            });
+
 
         },
 
         updateVenueInfo: function(){
             this.editingDivOpen = false;
             var index = this.editingMenuIndex;
-            this.venueDatabase[index].fName = this.venfNameEdit;
-            this.venueDatabase[index].lName = this.venlNameEdit;
-            this.venueDatabase[index].bName = this.venbNameEdit;
+
+            //If nothing is changed. dont call the server.
+            if(
+                this.venueDatabase[index].firstName === this.venfNameEdit &&
+                this.venueDatabase[index].lastName === this.venlNameEdit &&
+                this.venueDatabase[index].businessName === this.venbNameEdit &&
+                this.venueDatabase[index].email === this.venEmailEdit &&
+                this.venueDatabase[index].phoneNum === this.venPhoneNumEdit
+                ){
+                    this.updateVenueAddress();
+                    return;
+                }
+
+            this.venueDatabase[index].firstName = this.venfNameEdit;
+            this.venueDatabase[index].lastName = this.venlNameEdit;
+            this.venueDatabase[index].businessName = this.venbNameEdit;
             this.venueDatabase[index].email = this.venEmailEdit;
             this.venueDatabase[index].phoneNum = this.venPhoneNumEdit;
-            this.venueDatabase[index].building = this.venBuildingEdit;
-            this.venueDatabase[index].street = this.venStreetEdit;
-            this.venueDatabase[index].zip = this.venZipCodeEdit;
-            this.venueDatabase[index].city = this.venCityEdit;
-            this.venueDatabase[index].country = this.venCountryEdit;
-            //Code to have the server update the information of venue at index index.
+
+            var obj = this.venueDatabase[index];
+            obj.accountType = "venue";
+
+            var xhttp = new XMLHttpRequest();
+
+            xhttp.onreadystatechange = function(){
+                if (this.readyState == 4 && this.status == 500){
+                    alert("Internal Server Error. Please try again later.");
+                }
+            };
+
+
+            xhttp.open("POST","/users/updateInfo.ajax", true);
+
+            xhttp.setRequestHeader("Content-type", "application/json");
+
+            xhttp.send(JSON.stringify(obj));
+
+            this.updateVenueAddress();
+
+        },
+
+        updateVenueAddress: function(){
+            var index = this.editingMenuIndex;
+
+            if(
+                this.venBuildingEditOri === this.venBuildingEdit &&
+                this.venStreetEditOri === this.venStreetEdit &&
+                this.venZipCodeEditOri === this.venZipCodeEdit &&
+                this.venCityEditOri === this.venCityEdit &&
+                this.venCountryEditOri === this.venCountryEdit
+                ) {return;}
+
+
+            xhttp = new XMLHttpRequest();
+
+            xhttp.onreadystatechange = function(){
+              if(this.readyState == 4 && this.status == 200){
+                var result = JSON.parse(this.response);
+
+                appdiv.updateVenueAddressSend(result[0].lon,result[0].lat);
+              }
+            };
+
+            var address = [this.venBuildingEdit,this.venStreetEdit,this.venZipCodeEdit,this.venCityEdit,this.venCountryEdit].reduce((acc,val) => acc = acc + val + ", ", "");
+            address = address.slice(0,address.length-2);
+
+            xhttp.open("GET","https://us1.locationiq.com/v1/search.php?key=pk.4e874fdbdccdbc06c6bf9becc4b7fadf&format=json&q=" + encodeURIComponent(address), true);
+
+            xhttp.send();
+        },
+
+        updateVenueAddressSend: function(lng,lat){
+            var obj = {};
+            obj.venue = this.venEmailEdit;
+            obj.buildingName = this.venBuildingEdit;
+            obj.streetName = this.venStreetEdit;
+            obj.zipCode = this.venZipCodeEdit;
+            obj.city = this.venCityEdit;
+            obj.country = this.venCountryEdit;
+            obj.lng = lng;
+            obj.lat = lat;
+
+            var xhttp = new XMLHttpRequest();
+
+            xhttp.onreadystatechange = function(){
+                if (this.readyState == 4 && this.status == 500){
+                    alert("Internal Server Error. Please try again later.");
+                }
+            };
+
+
+            xhttp.open("POST","/users/update-venueAddress.ajax", true);
+
+            xhttp.setRequestHeader("Content-type", "application/json");
+
+            xhttp.send(JSON.stringify(obj));
+
         },
 
         editUserAt: function(index){
@@ -602,6 +701,11 @@ function setup(){
         makeRequest("GET","hotspots.ajax",{},function(result){
             var res = JSON.parse(result);
             hotspotData = res;
+        });
+
+        makeRequest("GET","users/venue-details.ajax",{},function(result){
+            var res = JSON.parse(result);
+            venueData = res;
         });
     }
 }

@@ -466,11 +466,16 @@ router.get('/user-details.ajax', function(req,res,next){
     queryDatabase(req,res,next,"SELECT * FROM BasicUser;");
 });
 
+router.get('/venue-details.ajax', function(req,res,next){
+    queryDatabase(req,res,next,"SELECT * FROM VenueOwner;");
+});
+
 router.post('/updateInfo.ajax', function(req,res,next){
-    if(req.session.user !== req.body.user){
+    if(req.session.user !== req.body.email && req.session.accountType !== "admin"){
         res.sendStatus(401);
     } else {
-        var toChange = Object.keys(req.body).filter(val => val !== "user");
+        console.log(req.body);
+        var toChange = Object.keys(req.body).filter(val => val !== "email" && val !== "accountType" && val !== "lat" && val !== "lng");
         toChange.forEach(val => req.session[val] = req.body[val]);
 
         var query2 = "";
@@ -479,11 +484,16 @@ router.post('/updateInfo.ajax', function(req,res,next){
         });
         query2 = query2.slice(0,query2.length-2);
 
-        var table = "BasicUser";
-        if(req.session.accountType === "venue"){table = "VenueOwner";}
-        else if(req.session.accountType == "admin"){table = "Admin";}
+        if(req.body.accountType === "venue"){
+            query2 += ", lat = " + req.body.lat;
+            query2 += ", lng = " + req.body.lng;
+        }
 
-        queryDatabase(req,res,next,"UPDATE " + table + " SET " + query2 + " WHERE email = '" + req.session.user + "';");
+        var table = "BasicUser";
+        if(req.body.accountType === "venue"){table = "VenueOwner";}
+        else if(req.body.accountType == "admin"){table = "Admin";}
+
+        queryDatabase(req,res,next,"UPDATE " + table + " SET " + query2 + " WHERE email = '" + req.body.email + "';");
 
     }
 
@@ -498,12 +508,70 @@ router.get('/mapHistory.ajax', function(req,res,next){
 });
 
 router.get('/venueAddress.ajax', function(req,res,next){
-   if(req.session.accountType !== "venue"){
+   if(req.session.accountType !== "venue" ){
        res.sendStatus(401);
    } else {
        queryDatabase(req,res,next,"SELECT DISTINCT buildingName,streetName,zipCode,city,country FROM Address WHERE venue = '" + req.session.user + "';");
    }
 });
+
+router.post('/update-venueAddress.ajax', function(req,res,next){
+
+    var query2 = "";
+    var toChange = Object.keys(req.body).filter(val => val !== "venue" && val !== "lng" && val !== "lat");
+    toChange.forEach(function(column){
+       query2 += column + " = '"  + req.body[column] + "', ";
+    });
+    query2 = query2.slice(0,query2.length-2);
+    req.pool.getConnection(function(err,connection){
+          if(err){
+              console.log(err)
+              res.sendStatus(500);
+              return;
+          }
+
+          var query = "UPDATE Address SET " + query2 + " WHERE venue = '" + req.body.venue + "';";
+          connection.query(query, function(err, rows, fields){
+             connection.release();
+             if(err){
+                 console.log(err)
+                 res.sendStatus(500);
+                 return;
+             }
+             return;
+          });
+    });
+
+     req.pool.getConnection(function(err,connection){
+          if(err){
+              console.log(err)
+              res.sendStatus(500);
+              return;
+          }
+
+          var query = "UPDATE VenueOwner SET lat = " + req.body.lat + ", lng = " + req.body.lng + " WHERE email = '" + req.body.venue + "';";
+          connection.query(query, function(err, rows, fields){
+             connection.release();
+             if(err){
+                 console.log(err)
+                 res.sendStatus(500);
+                 return;
+             }
+             res.sendStatus(200);
+             return;
+          });
+    });
+});
+
+router.get('/:venueEmail/venueAddress.ajax', function(req,res,next){
+   if(req.session.accountType !== "admin" ){
+       res.sendStatus(401);
+   } else {
+       queryDatabase(req,res,next,"SELECT DISTINCT buildingName,streetName,zipCode,city,country FROM Address WHERE venue = '" + req.params.venueEmail + "';");
+   }
+});
+
+router.get('/update-venue')
 
 router.get('/venueHistory.ajax', function(req,res,next){
    if(req.session.accountType !== "venue"){

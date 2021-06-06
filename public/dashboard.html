@@ -186,7 +186,7 @@
 
                           <div class="profileItem">
                             <h3>Email:</h3>
-                              <input v-model="venEmailEdit" required/>
+                              <input v-model="venEmailEdit" disabled required/>
                           </div>
 
                             <div class="profileItem Left">
@@ -224,7 +224,7 @@
                     <input class="searchBar Left" v-model="venueSearch" placeholder="Search..."/>
 
                     <ul class="historyList">
-                        <li v-for="(venue,index) in venueDatabase">{{venue.checkInCode}} | {{venue.bName}} | {{venue.email}} <span class="itemEdit Right" v-on:click="editVenueAt(index)">Edit</span></li>
+                        <li v-for="(venue,index) in venueDatabase">{{venue.checkInCode}} | {{venue.businessName}} | {{venue.email}} <span class="itemEdit Right" v-on:click="editVenueAt(index)">Edit</span></li>
                         <li v-if="venueDatabase.length == 0">No results</li>
                     </ul>
 
