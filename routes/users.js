@@ -2,22 +2,30 @@ var express = require('express');
 var argon2 = require('argon2');
 var router = express.Router();
 
-function queryDatabase(req, res, next, query){
+function queryDatabase(req, res, next, query, finish){
+
     req.pool.getConnection(function(err,connection){
       if(err){
           console.log(err);
-          res.sendStatus(500);
+          res.status(500);
           return;
       }
 
+      if(res.headersSent){return;}
+
       connection.query(query, function(err, rows, fields){
          connection.release();
+
+         if(res.headersSent){return;}
+
          if(err){
              console.log(err);
              res.sendStatus(500);
              return;
          }
-         res.json(rows);
+         if(finish){
+             res.json(rows);
+         }
       });
    });
 }
@@ -88,7 +96,7 @@ router.get('/details.ajax', function(req,res,next){
 });
 
 
-router.post('/login.ajax', function(req,res){
+router.post('/login.ajax', function(req,res,next){
 
     if('email' in req.body && 'password' in req.body){
        var email = req.body.email;
@@ -135,13 +143,13 @@ router.post('/login.ajax', function(req,res){
 
 });
 
-router.get('/logout.ajax', function(req,res){
+router.get('/logout.ajax', function(req,res,next){
     Object.keys(req.session).forEach((key) => (key !== "cookie") && (delete req.session[key]));
     console.log(req.session);
     res.redirect("/");
 });
 
-router.post("/user-signup.ajax", async function(req,res){
+router.post("/user-signup.ajax", async function(req,res,next){
     var firstName = req.body.firstName;
     var lastName = req.body.lastName;
     var phoneNum = req.body.phoneNum;
@@ -219,7 +227,7 @@ router.post("/user-signup.ajax", async function(req,res){
            });
 
          } else {
-            res.redirect('/login.html');
+            res.sendStatus(200);
             return;
          }
       });
@@ -228,7 +236,7 @@ router.post("/user-signup.ajax", async function(req,res){
 
 });
 
-router.post("/venue-signup.ajax", async function(req,res){
+router.post("/venue-signup.ajax", async function(req,res,next){
     var firstName = req.body.firstName;
     var lastName = req.body.lastName;
     var phoneNum = req.body.phoneNum;
@@ -321,7 +329,7 @@ router.post("/venue-signup.ajax", async function(req,res){
              return;
 
          } else {
-            res.redirect('/login.html');
+            res.sendStatus(200);
             return;
          }
       });
@@ -333,10 +341,10 @@ router.post("/venue-signup.ajax", async function(req,res){
 
 
 router.get('/check-in-codes.ajax', function(req,res,next){
-    queryDatabase(req,res,next,"SELECT email, checkInCode FROM VenueOwner;");
+    queryDatabase(req,res,next,"SELECT email, checkInCode FROM VenueOwner;", true);
 });
 
-router.post('/check-in.ajax', function(req,res){
+router.post('/check-in.ajax', function(req,res,next){
 
     var venue = req.body.venue;
     var email = req.body.email;
@@ -354,31 +362,15 @@ router.post('/check-in.ajax', function(req,res){
             return;
         }
 
-        req.pool.getConnection(function(err,connection){
-          if(err){
-              console.log(err)
-              res.sendStatus(500);
-              return;
-          }
-
-          var query = "INSERT INTO CheckIn (user,venue) VALUES ('" + req.session.user + "', '" + venue + "');";
-          connection.query(query, function(err, rows, fields){
-             connection.release();
-             if(err){
-                 console.log(err)
-                 res.sendStatus(500);
-                 return;
-             }
-             res.sendStatus(200);
-             return;
-          });
-       });
+        queryDatabase(req,res,next,"INSERT INTO CheckIn (user,venue) VALUES ('" + req.session.user + "', '" + venue + "');", true);
 
     } else {
         //NOT SIGNED IN USER;
          if (venue === undefined || email === undefined || firstName === undefined || lastName === undefined || phoneNum === undefined || passport === undefined){
              res.sendStatus(400);
          }
+
+
 
          req.pool.getConnection(function(err,connection){
           if(err){
@@ -421,30 +413,12 @@ router.post('/check-in.ajax', function(req,res){
           });
        });
 
-       req.pool.getConnection(function(err,connection){
-          if(err){
-              console.log(err);
-              res.sendStatus(500);
-              return;
-          }
 
-          if(res.headersSent){return;}
+       var query3 = "INSERT INTO CheckIn (user, venue) VALUES ('" + email + "' , '" + venue + "');";
 
-          var query3 = "INSERT INTO CheckIn (user, venue) VALUES ('" + email + "' , '" + venue + "');";
-          connection.query(query3, function(err, results){
-             connection.release();
-             if(res.headersSent){return;}
-             if(err){
-                 console.log(err);
-                 res.sendStatus(500);
-                 return;
-             } else {
-                 res.sendStatus(200);
-                 return;
-             }
+       queryDatabase(req,res,next,query3, true);
 
-          });
-       });
+
     }
 
 });
@@ -457,18 +431,6 @@ router.use(function(req,res,next){
    }
 });
 
-/* GET users listing. */
-router.get('/', function(req, res, next) {
-  res.send('respond with a resource');
-});
-
-router.get('/user-details.ajax', function(req,res,next){
-    queryDatabase(req,res,next,"SELECT * FROM BasicUser;");
-});
-
-router.get('/venue-details.ajax', function(req,res,next){
-    queryDatabase(req,res,next,"SELECT * FROM VenueOwner;");
-});
 
 router.post('/updateInfo.ajax', function(req,res,next){
     if(req.session.user !== req.body.email && req.session.accountType !== "admin"){
@@ -493,7 +455,7 @@ router.post('/updateInfo.ajax', function(req,res,next){
         if(req.body.accountType === "venue"){table = "VenueOwner";}
         else if(req.body.accountType == "admin"){table = "Admin";}
 
-        queryDatabase(req,res,next,"UPDATE " + table + " SET " + query2 + " WHERE email = '" + req.body.email + "';");
+        queryDatabase(req,res,next,"UPDATE " + table + " SET " + query2 + " WHERE email = '" + req.body.email + "';", true);
 
     }
 
@@ -503,7 +465,7 @@ router.get('/mapHistory.ajax', function(req,res,next){
    if(req.session.accountType !== "user"){
        res.sendStatus(401);
    } else {
-       queryDatabase(req,res,next,"SELECT lng,lat FROM CheckIn INNER JOIN VenueOwner ON CheckIn.venue = VenueOwner.email WHERE user = '" + req.session.user + "';");
+       queryDatabase(req,res,next,"SELECT lng,lat FROM CheckIn INNER JOIN VenueOwner ON CheckIn.venue = VenueOwner.email WHERE user = '" + req.session.user + "';", true);
    }
 });
 
@@ -511,7 +473,7 @@ router.get('/venueAddress.ajax', function(req,res,next){
    if(req.session.accountType !== "venue" ){
        res.sendStatus(401);
    } else {
-       queryDatabase(req,res,next,"SELECT DISTINCT buildingName,streetName,zipCode,city,country FROM Address WHERE venue = '" + req.session.user + "';");
+       queryDatabase(req,res,next,"SELECT DISTINCT buildingName,streetName,zipCode,city,country FROM Address WHERE venue = '" + req.session.user + "';", true);
    }
 });
 
@@ -567,17 +529,16 @@ router.get('/:venueEmail/venueAddress.ajax', function(req,res,next){
    if(req.session.accountType !== "admin" ){
        res.sendStatus(401);
    } else {
-       queryDatabase(req,res,next,"SELECT DISTINCT buildingName,streetName,zipCode,city,country FROM Address WHERE venue = '" + req.params.venueEmail + "';");
+       queryDatabase(req,res,next,"SELECT DISTINCT buildingName,streetName,zipCode,city,country FROM Address WHERE venue = '" + req.params.venueEmail + "';", true);
    }
 });
 
-router.get('/update-venue')
 
 router.get('/venueHistory.ajax', function(req,res,next){
-   if(req.session.accountType !== "venue"){
+    if(req.session.accountType !== "venue"){
        res.sendStatus(401);
    } else {
-       queryDatabase(req,res,next,"SELECT firstName,lastName,phoneNum,time FROM CheckIn INNER JOIN BasicUser ON CheckIn.user = BasicUser.email WHERE venue = '" + req.session.user + "' ORDER BY time DESC;");
+       queryDatabase(req,res,next,"SELECT firstName,lastName,phoneNum,time FROM CheckIn INNER JOIN BasicUser ON CheckIn.user = BasicUser.email WHERE venue = '" + req.session.user + "' ORDER BY time DESC;", true);
    }
 });
 
@@ -585,7 +546,7 @@ router.get('/:user/checkInHistory.ajax', function(req,res,next){
     if(req.session.user !== req.params.user){
         res.sendStatus(401);
     } else {
-        queryDatabase(req,res,next,"SELECT checkInCode,businessName,phoneNum,time,isHotspot FROM CheckIn INNER JOIN VenueOwner ON CheckIn.venue = VenueOwner.email WHERE user = '" + req.params.user + "' ORDER BY time DESC;");
+        queryDatabase(req,res,next,"SELECT checkInCode,businessName,phoneNum,time,isHotspot FROM CheckIn INNER JOIN VenueOwner ON CheckIn.venue = VenueOwner.email WHERE user = '" + req.params.user + "' ORDER BY time DESC;", true);
     }
 
 });
@@ -609,7 +570,15 @@ router.use(function(req,res,next){
    }
 });
 
-router.post("/admin-signup.ajax", async function(req,res){
+router.get('/user-details.ajax', function(req,res,next){
+    queryDatabase(req,res,next,"SELECT * FROM BasicUser;", true);
+});
+
+router.get('/venue-details.ajax', function(req,res,next){
+    queryDatabase(req,res,next,"SELECT * FROM VenueOwner;", true);
+});
+
+router.post("/admin-signup.ajax", async function(req,res,next){
     var firstName = req.body.firstName;
     var lastName = req.body.lastName;
     var email = req.body.email;
@@ -682,7 +651,7 @@ router.post("/add-hotspot.ajax", function(req,res,next){
    var lng = req.body.lng;
    var lat = req.body.lat;
 
-   queryDatabase(req,res,next,"INSERT INTO Hotspots (creator,street,zipCode,city,country,lat,lng) VALUES ('" + creator + "', '" + street + "', '" + zipCode + "', '" + city + "', '" + country + "', " + lat + ", " + lng + ");");
+   queryDatabase(req,res,next,"INSERT INTO Hotspots (creator,street,zipCode,city,country,lat,lng) VALUES ('" + creator + "', '" + street + "', '" + zipCode + "', '" + city + "', '" + country + "', " + lat + ", " + lng + ");", true);
 
 
 
@@ -703,7 +672,7 @@ router.post("/update-hotspot.ajax", function(req,res,next){
     query2 += ",lng = " + req.body.lng;
     query2 += " , lat = " + req.body.lat;
 
-  queryDatabase(req,res,next,"UPDATE Hotspots SET " + query2 + " ;");
+  queryDatabase(req,res,next,"UPDATE Hotspots SET " + query2 + " ;", true);
 
 
 
@@ -712,9 +681,26 @@ router.post("/update-hotspot.ajax", function(req,res,next){
 router.post('/delete-hotspot.ajax', function(req,res,next){
     var id = req.body.id;
 
+  queryDatabase(req,res,next,"DELETE FROM Hotspots WHERE id = '" + id + "';", true);
 
-  queryDatabase(req,res,next,"DELETE FROM Hotspots WHERE id = " + id + ";");
+});
 
+router.post('/delete-venue.ajax', function(req,res,next){
+    var email = req.body.email;
+
+  queryDatabase(req,res,next,"DELETE FROM CheckIn WHERE venue = '" + email + "';", false);
+  queryDatabase(req,res,next,"DELETE FROM Address WHERE venue = '" + email + "';", false);
+  queryDatabase(req,res,next,"DELETE FROM VenueOwner WHERE email = '" + email + "';", false);
+  queryDatabase(req,res,next,"DELETE FROM Security WHERE user = '" + email + "';", true);
+
+});
+
+router.post('/delete-user.ajax', function(req,res,next){
+    var email = req.body.email;
+
+  queryDatabase(req,res,next,"DELETE FROM CheckIn WHERE user = '" + email + "';", false);
+  queryDatabase(req,res,next,"DELETE FROM BasicUser WHERE email = '" + email + "';", false);
+  queryDatabase(req,res,next,"DELETE FROM Security WHERE user = '" + email + "';", true);
 });
 
 

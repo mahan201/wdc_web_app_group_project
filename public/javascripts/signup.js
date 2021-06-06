@@ -52,7 +52,7 @@ var appdiv = new Vue({
 
             xhttp.onreadystatechange = function(){
                 if(this.readyState == 4 && this.status == 200){
-                   window.location.replace('/');
+                   window.location.replace('/login.html');
                 } else if (this.readyState == 4 && this.status == 500){
                     alert("Internal Server Error. Please try again later.");
                 } else if (this.readyState == 4 && this.status == 400){
@@ -109,7 +109,7 @@ var appdiv = new Vue({
 
             xhttp.onreadystatechange = function(){
                 if(this.readyState == 4 && this.status == 200){
-                   window.location.replace('/');
+                   window.location.replace('/login.html');
                 } else if (this.readyState == 4 && this.status == 500){
                     alert("Internal Server Error. Please try again later.");
                 } else if (this.readyState == 4 && this.status == 400){

@@ -13,8 +13,8 @@
   <div id="app">
       <ul id="nav-bar">
           <li><a href="/">LOGO</a></li>
-          <li><a href="hotspot-map.html">Hotspot Map</a></li>
           <li><a href="check-in.html">Check-in</a></li>
+          <li><a href="hotspot-map.html">Hotspot Map</a></li>
           <li><a class="active" href="dashboard.html">Dashboard</a></li>
           <li v-if="!loggedIn" class="login"><a href="login.html">Login</a></li>
           <li v-else class="login">
@@ -217,6 +217,7 @@
                             <div>
                                 <button v-on:click="updateVenueInfo" class="Left">Save</button>
                                 <button v-on:click="editingDivOpen = false">Close</button>
+                                <button v-on:click="deleteVenue" class="Right DeleteButton">Delete</button>
                             </div>
 
                     </div>
@@ -257,12 +258,13 @@
 
                           <div class="profileItem">
                             <h3>Email:</h3>
-                              <input v-model="usEmailEdit" required/>
+                              <input v-model="usEmailEdit" disabled required/>
                           </div>
 
                             <div>
                                 <button v-on:click="updateUserInfo" class="Left">Save</button>
                                 <button v-on:click="editingDivOpen = false">Close</button>
+                                <button v-on:click="deleteUser" class="Right DeleteButton">Delete</button>
                             </div>
 
                     </div>

@@ -23,7 +23,7 @@ function queryDatabase(req, res, next, query){
 
 /* GET home page. */
 router.get('/', function(req, res, next) {
-  res.redirect('hotspot-map.html');
+  res.redirect('check-in.html');
 });
 
 router.get('/hotspots.ajax', function(req,res,next){

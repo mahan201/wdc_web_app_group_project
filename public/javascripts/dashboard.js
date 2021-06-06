@@ -4,15 +4,7 @@ var venueHistoryFull= [];
 
 var userHistoryFull= [];
 
-var venueData= [
-    {email:"abc123@gmail.com",fName:"Bill",lName:"Gates",bName:"McDonald's",phoneNum:"+112312312",checkInCode:"MCD12321",building:"Clown Tower",street:"123 Clown Street",zip:"52876",city:"Adelaide",country:"Australia"},
-    {email:"abc123@gmail.com",fName:"Bill",lName:"Gates",bName:"McDonald's",phoneNum:"+112312312",checkInCode:"MCD12321",building:"Clown Tower",street:"123 Clown Street",zip:"52876",city:"Adelaide",country:"Australia"},
-    {email:"abc123@gmail.com",fName:"Bill",lName:"Gates",bName:"McDonald's",phoneNum:"+112312312",checkInCode:"MCD12321",building:"Clown Tower",street:"123 Clown Street",zip:"52876",city:"Adelaide",country:"Australia"},
-    {email:"abc123@gmail.com",fName:"Bill",lName:"Gates",bName:"McDonald's",phoneNum:"+112312312",checkInCode:"MCD12321",building:"Clown Tower",street:"123 Clown Street",zip:"52876",city:"Adelaide",country:"Australia"},
-    {email:"abc123@gmail.com",fName:"Bill",lName:"Gates",bName:"McDonald's",phoneNum:"+112312312",checkInCode:"MCD12321",building:"Clown Tower",street:"123 Clown Street",zip:"52876",city:"Adelaide",country:"Australia"},
-    {email:"abc123@gmail.com",fName:"Bill",lName:"Gates",bName:"McDonald's",phoneNum:"+112312312",checkInCode:"MCD12321",building:"Clown Tower",street:"123 Clown Street",zip:"52876",city:"Adelaide",country:"Australia"},
-    {email:"abc123@gmail.com",fName:"Bill",lName:"Gates",bName:"McDonald's",phoneNum:"+112312312",checkInCode:"MCD12321",building:"Clown Tower",street:"123 Clown Street",zip:"52876",city:"Adelaide",country:"Australia"}
-    ];
+var venueData= [];
 
 var userData= [
     {email:"abc123@gmail.com",fName:"Bill",lName:"Gates",phoneNum:"+112312312",ID:"IC12321313"},
@@ -24,13 +16,6 @@ var userData= [
     ];
 
 var hotspotData = [];
-
-
-// makeRequest("GET","users/details.ajax",{},function(result){appdiv.session = JSON.parse(result);});
-
-// makeRequest("GET","/hotspots.ajax", {}, (response) => hotspotData = JSON.parse(response));
-
-// makeRequest("GET","/users/user-details.ajax", {}, (response) => userData = JSON.parse(response));
 
 
 var appdiv = new Vue({
@@ -428,9 +413,9 @@ var appdiv = new Vue({
         },
 
         editUserAt: function(index){
-            this.usIdEdit = this.userDatabase[index].ID;
-            this.usfNameEdit = this.userDatabase[index].fName;
-            this.uslNameEdit = this.userDatabase[index].lName;
+            this.usIdEdit = this.userDatabase[index].icPsprt;
+            this.usfNameEdit = this.userDatabase[index].firstName;
+            this.uslNameEdit = this.userDatabase[index].lastName;
             this.usEmailEdit = this.userDatabase[index].email;
             this.usPhoneNumEdit = this.userDatabase[index].phoneNum;
             this.editingMenuIndex = index;
@@ -441,11 +426,32 @@ var appdiv = new Vue({
         updateUserInfo: function(){
             this.editingDivOpen = false;
             var index = this.editingMenuIndex;
-            this.userDatabase[index].ID = this.usIdEdit;
-            this.userDatabase[index].fName = this.usfNameEdit;
-            this.userDatabase[index].lName = this.uslNameEdit;
+            this.userDatabase[index].icPsprt = this.usIdEdit;
+            this.userDatabase[index].firstName = this.usfNameEdit;
+            this.userDatabase[index].lastName = this.uslNameEdit;
             this.userDatabase[index].email = this.usEmailEdit;
             this.userDatabase[index].phoneNum = this.usPhoneNumEdit;
+
+            var obj = this.userDatabase[index];
+
+            obj.accountType = "user";
+
+            var xhttp = new XMLHttpRequest();
+
+            xhttp.onreadystatechange = function(){
+                if (this.readyState == 4 && this.status == 500){
+                    alert("Internal Server Error. Please try again later.");
+                }
+            };
+
+
+            xhttp.open("POST","/users/updateInfo.ajax", true);
+
+            xhttp.setRequestHeader("Content-type", "application/json");
+
+            xhttp.send(JSON.stringify(obj));
+
+            this.updateVenueAddress();
             //Code to have the server update the information of venue at index index.
         },
 
@@ -622,6 +628,70 @@ var appdiv = new Vue({
             this.hotspotSearch = "";
         },
 
+        deleteVenue: function(){
+            this.editingDivOpen = false;
+            var idDelete = this.venueDatabase[this.editingMenuIndex].email;
+            var indexDelete = 0;
+            venueData.forEach( function(venue,index){
+              if (venue.email === idDelete){
+                  indexDelete = index;
+              }
+            });
+
+            venueData.splice(indexDelete,1);
+
+
+            var xhttp = new XMLHttpRequest();
+
+            xhttp.onreadystatechange = function(){
+                if (this.readyState == 4 && this.status == 500){
+                    alert("Internal Server Error. Please try again later.");
+                }
+            };
+
+
+            xhttp.open("POST","/users/delete-venue.ajax", true);
+
+            xhttp.setRequestHeader("Content-type", "application/json");
+
+            xhttp.send(JSON.stringify({email: idDelete}));
+
+            this.venueSearch = "a";
+            this.venueSearch = "";
+        },
+
+        deleteUser: function(){
+            this.editingDivOpen = false;
+            var idDelete = this.userDatabase[this.editingMenuIndex].email;
+            var indexDelete = 0;
+            userData.forEach( function(user,index){
+              if (user.email === idDelete){
+                  indexDelete = index;
+              }
+            });
+
+            userData.splice(indexDelete,1);
+
+
+            var xhttp = new XMLHttpRequest();
+
+            xhttp.onreadystatechange = function(){
+                if (this.readyState == 4 && this.status == 500){
+                    alert("Internal Server Error. Please try again later.");
+                }
+            };
+
+
+            xhttp.open("POST","/users/delete-user.ajax", true);
+
+            xhttp.setRequestHeader("Content-type", "application/json");
+
+            xhttp.send(JSON.stringify({email: idDelete}));
+
+            this.userSearch = "a";
+            this.userSearch = "";
+        },
+
         signUpAdmin: function(){
             if(this.adminSUpassword !== this.adminSUpassword){
                 this.adminSUmessage = "Passwords must match.";
@@ -706,6 +776,11 @@ function setup(){
         makeRequest("GET","users/venue-details.ajax",{},function(result){
             var res = JSON.parse(result);
             venueData = res;
+        });
+
+        makeRequest("GET","users/user-details.ajax",{},function(result){
+            var res = JSON.parse(result);
+            userData = res;
         });
     }
 }
