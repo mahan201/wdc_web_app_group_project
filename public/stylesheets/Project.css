@@ -69,25 +69,25 @@
     }
 
 
-    button{                             /*for all buttons*/
-        background-color: #606ca6;
-        color: white;
-        border:1px solid #ccc;
-        padding:6px 15px;
-        margin: 8px 0;
-        width:80px;
-        border-radius: 4px;
-    }
+    /*button{                             /*for all buttons
+    /*    background-color: #43acc2;*/
+    /*    color: white;*/
+    /*    border:1px solid #ccc;*/
+    /*    padding:6px 15px;*/
+    /*    margin: 8px 0;*/
+    /*    width:80px;*/
+    /*    border-radius: 4px;*/
+    /*}*/
 
-    button:hover{
-        color: white;
-        background-color: #8a9bed;
-        border:1px solid #ccc;
-        padding:6px 15px;
-        margin: 8px 0;
-        width:80px;
-        border-radius: 4px;
-    }
+    /*button:hover{*/
+    /*    color: white;*/
+    /*    background-color:#087a9c;*/
+    /*    border:1px solid #ccc;*/
+    /*    padding:6px 15px;*/
+    /*    margin: 8px 0;*/
+    /*    width:80px;*/
+    /*    border-radius: 4px;*/
+    /*}*/
 
     button.DeleteButton{
         color: white;
@@ -112,6 +112,7 @@
         margin: 8px 0;
         width:80px;
         cursor: pointer;
+        border-radius: 4px;
 
     }
     #login_button:hover{
@@ -125,6 +126,7 @@
         padding:6px 15px;
         margin: 10px 0;
         width:auto;
+        border-radius: 4px;
     }
     #signup_button:hover{
         background-color: #087a9c;
@@ -297,13 +299,14 @@
         border:1px solid #ccc;
         padding:6px 15px;
         margin: 10px 0;
-        width:auto;
+        width: auto;
+        border-radius: 4px;
     }
     #reset_button:hover{
         background-color: #087a9c;
     }
 
-
+   /* Dashboard */
 
     .dashboardMenuTitle h1{
         color: white;
@@ -314,7 +317,7 @@
         margin: 0;
         padding: 0;
         overflow: hidden;
-        background-color: #606ca6;
+        background-color: #087a9c;
 
     }
 
@@ -327,7 +330,7 @@
         margin: 0;
         padding: 0;
         overflow: hidden;
-        background-color: #606ca6;
+        background-color: #087a9c;
 
     }
 
@@ -336,10 +339,17 @@
     }
 
     .dashboardButton{
-        margin: 10px 10px;
-        background-color: white;
-        color: #3B5998;
+        color: white;
+        background-color: #43acc2;
+        border:1px solid #ccc;
+        padding:6px 15px;
+        margin: 10px 0;
+        width: auto;
+        border-radius: 4px;
         font-size: 15px;
+    }
+     .dashboardButton:hover{
+        background-color: #087a9c;
     }
 
     .searchBar{
@@ -358,17 +368,18 @@
 
     #dashboardNav{
         width: 10%;
-        height: 1000px;
+        height: 465px;
         float: left;
         margin-right: 20px;
         color: white;
-        background-color: #606ca6;
+        background-color: #087a9c;
     }
 
     .dashboardMenuTitle, .menuInfo{
         color: white;
-        background-color: #606ca6;
+        background-color: #1485a5;
         border-radius: 20px;
+        margin-left: 87px;
     }
 
     .menuInfo{
@@ -409,13 +420,14 @@
     }
 
     li a.active{
-        background-color: #8a9bed;
+        background-color: #087a9c;
     }
 
     li a:hover{
-        background-color: #8a9bed;
+        background-color: #43acc2;
     }
 
+    /*                                          Check-in */
     .centered{
         text-align: center;
     }
@@ -427,6 +439,32 @@
         color: #606ca6;
         text-decoration: underline;
         text-decoration-color: #606ca6;
+    }
+
+    .check_in input[type=text]{
+        color: grey;
+        border-radius: 4px;
+        border: 1px solid #ccc;
+        padding: 10px 9px;
+        margin: 8px 0;
+        box-sizing: border-box;
+        width: 20%;
+    }
+
+    #submit_button {
+        color: white;
+        background-color: #43acc2;
+        border:1px solid #ccc;
+        padding:6px 15px;
+        margin: 8px 0;
+        width:80px;
+        cursor: pointer;
+        border-radius: 4px;
+
+    }
+    #submit_button:hover{
+        background-color: #087a9c;
+    }
     }
 
     .profileItem{

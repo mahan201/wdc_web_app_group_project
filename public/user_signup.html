@@ -18,8 +18,8 @@
                 <h1> Create a new account</h1>
                 <h3 class = "invalid" v-bind:style="{'visibility': invalid}" >{{invalidMessage}}</h3>
                 <form v-on:submit.prevent="signUpUser">                                                                                               <!--Creating signup inputs -->
-                    <input type="text" id="fname" name="fname" placeholder="First name* : " v-model = "firstName" required ><br>
-                    <input type="text" id="lname" name="lname" placeholder ="Last name* : " v-model = "lastName" required><br>
+                    <input type="text" id="fname" name="fname" placeholder="First Name* : " v-model = "firstName" required ><br>
+                    <input type="text" id="lname" name="lname" placeholder ="Last Name* : " v-model = "lastName" required><br>
                     <input type="text" id="ph" name="ph" placeholder="Phone number* : " v-model = "phoneNum" required ><br>
                     <input type="text" id="passport" name="passport" placeholder ="Passport/IC* : " v-model = "passport" required><br>
                     <input type="text" id="Email" name="Email" placeholder="Email* : " v-model = "email" v-on:focus="showRequirements = 'block'" v-on:blur="showRequirements = 'none'" required ><br>
