@@ -1,6 +1,5 @@
 
 
-    /*                                     Annie      Annie     Annie    Annie                                      */
     body{
         font-family: "Times New Roman", Helvetica, sans-serif;
         margin: 0;
@@ -54,7 +53,7 @@
         font-family:sans-serif;
     }
 
-   .login-page input[type=text], input[type=password] {                   /*edit for email and password boxes*/
+   .login-page input[type=text], #password {                   /*edit for email and password boxes*/
         color: grey;
         border-radius: 4px;
         border: 1px solid #ccc;
@@ -202,7 +201,7 @@
     .signup-page #business_signup:hover{
          color:#087a9c;
     }
-    .signup-page input[type=text], input[type=password] {                  /*edit for signup-button*/
+    .signup-page input[type=text], input[type=password], #CPsw {                  /*edit for signup-button*/
         color: grey;
         border-radius: 4px;
         border: 1px solid #ccc;
@@ -323,7 +322,7 @@
         box-sizing: border-box;
 
     }
-    .form_container #email, #validation_code, #Psw, #confirm_password{
+    .form_container #email, #validation_code, #Psw, #confirm_password, #new_password{
         width: 40%;
     }
     .form_container .bold p{
@@ -353,6 +352,7 @@
     }
 
     ul{
+        border: 3px solid green;
         list-style-type: none;
         margin: 0;
         padding: 0;
@@ -381,7 +381,7 @@
     .dashboardButton{
         color: white;
         background-color: #43acc2;
-        border:1px solid #ccc;
+        border:2px solid yellow;
         padding:6px 15px;
         margin: 10px 0;
         width: auto;
@@ -407,8 +407,10 @@
     }
 
     #dashboardNav{
-        width: 10%;
-        height: 465px;
+        border-radius: 10px;
+        border: 3px solid green;
+        width: 100px;
+        height: 458px;
         float: left;
         margin-right: 20px;
         color: white;
@@ -416,6 +418,7 @@
     }
 
     .dashboardMenuTitle, .menuInfo{
+        border: 3px solid green;
         color: white;
         background-color: #1485a5;
         border-radius: 20px;
@@ -423,10 +426,45 @@
     }
 
     .menuInfo{
-        padding: 30px;
+       padding: 30px;
+       height: 394px;
     }
 
 
+    #save_button{
+        color: white;
+        background-color: #43acc2;
+        border:2px solid yellow;
+        padding:6px 15px;
+        margin: 10px 0;
+        width: auto;
+        border-radius: 4px;
+    }
+    #save_button:hover{
+        background-color: #087a9c;
+    }
+
+    #adminSignUp #firstName, #lastName, #phoneNo, #identity, input[type=password] {
+        color: grey;
+        border-radius: 4px;
+        border: 1px solid #ccc;
+        padding: 10px 9px;
+        margin: 8px 0;
+        box-sizing: border-box;
+        width: 20%;
+    }
+    #adminSignUp button{
+        color: white;
+        background-color: #43acc2;
+        border:1px solid #ccc;
+        padding:6px 15px;
+        margin: 10px 0;
+        width: auto;
+        border-radius: 4px;
+    }
+    #adminSignUp button:hover{
+        background-color: #087a9c;
+    }
 
 
     .Left{

@@ -17,6 +17,7 @@
     <div id="app">
       <ul id="nav-bar">
           <li><a href="/">LOGO</a></li>
+          <!--<li><img src="_Logo.png" alt="Italian Trulli"  width="100" height="60"></li>-->
           <li><a class="active" href="check-in.html">Check-in</a></li>
           <li><a href="hotspot-map.html">Hotspot Map</a></li>
           <li><a href="dashboard.html">Dashboard</a></li>
@@ -30,7 +31,7 @@
       </ul>
         <div class="pageContent centered">
             <h1 class="pageHeader">Check-In</h1>
-            <p v-if='signedIn && accountType !== "user"' style="color: grey">Please sign in as a user for quick check-in.</p>
+            <h3 v-if='signedIn && accountType !== "user"' style="color: red">Please sign in as a user for quick check-in.</h3>
             <p v-if="failed" id="errorMess" class="failed">Invalid Check-In Code</p>
             <p v-if="passed" id="successMess" class="passed">Successfully Checked In!</p>
 
