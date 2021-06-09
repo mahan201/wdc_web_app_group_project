@@ -1,6 +1,5 @@
 
 
-    /*                                     Annie      Annie     Annie    Annie                                      */
     body{
         font-family: "Times New Roman", Helvetica, sans-serif;
         margin: 0;
@@ -381,7 +380,7 @@
     .dashboardButton{
         color: white;
         background-color: #43acc2;
-        border:1px solid #ccc;
+        border:2px solid yellow;
         padding:6px 15px;
         margin: 10px 0;
         width: auto;
@@ -427,6 +426,18 @@
     }
 
 
+    #save_button{
+        color: white;
+        background-color: #43acc2;
+        border:2px solid yellow;
+        padding:6px 15px;
+        margin: 10px 0;
+        width: auto;
+        border-radius: 4px;
+    }
+    #save_button:hover{
+        background-color: #087a9c;
+    }
 
 
     .Left{
