@@ -599,6 +599,7 @@ var appdiv = new Vue({
         deleteHotspot: function(){
             this.editingDivOpen = false;
             var idDelete = this.hotspotDatabase[this.editingMenuIndex].id;
+            console.log(idDelete);
             var indexDelete = 0;
             hotspotData.forEach( function(hotspot,index){
               if (hotspot.id === idDelete){

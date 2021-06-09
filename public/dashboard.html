@@ -225,7 +225,7 @@
 
                     </div>
 
-                    <input class="searchBar Left" v-model="venueSearch" placeholder="Search..."/>
+                    <input class="searchBar" v-model="venueSearch" placeholder="Search..."/>
 
                     <ul class="historyList">
                         <li v-for="(venue,index) in venueDatabase">{{venue.checkInCode}} | {{venue.businessName}} | {{venue.email}} <span class="itemEdit Right" v-on:click="editVenueAt(index)">Edit</span></li>
@@ -272,7 +272,7 @@
 
                     </div>
 
-                    <input class="searchBar Left" v-model="userSearch" placeholder="Search..."/>
+                    <input class="searchBar" v-model="userSearch" placeholder="Search..."/>
 
                     <ul class="historyList">
                         <li v-for="(user,index) in userDatabase">{{user.icPsprt}} | {{user.firstName}} | {{user.lastName}} | {{user.email}} <span class="itemEdit Right" v-on:click="editUserAt(index)">Edit</span></li>

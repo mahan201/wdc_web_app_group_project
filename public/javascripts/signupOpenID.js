@@ -79,7 +79,7 @@ var appdiv = new Vue({
 
             xhttp.onreadystatechange = function(){
                 if(this.readyState == 4 && this.status == 200){
-                   window.location.replace('/login.html');
+                   window.location.replace('/');
                 } else if (this.readyState == 4 && this.status == 500){
                     alert("Internal Server Error. Please try again later.");
                 } else if (this.readyState == 4 && this.status == 400){
@@ -90,11 +90,10 @@ var appdiv = new Vue({
             };
 
 
-            xhttp.open("POST","/users/toke-venue-signup.ajax", true);
+            xhttp.open("POST","/users/token-venue-signup.ajax", true);
 
             xhttp.setRequestHeader("Content-type", "application/json");
-
-            xhttp.send(JSON.stringify({
+            var obj = {
               idtoken: this.tokenId,
               phoneNum: this.phoneNum,
               companyName: this.companyName,
@@ -105,7 +104,10 @@ var appdiv = new Vue({
               country: this.country,
               lng: this.lng,
               lat: this.lat
-            }));
+            };
+
+            console.log(obj);
+            xhttp.send(JSON.stringify(obj));
         }
     }
 });
@@ -118,8 +120,8 @@ function onGoogleSignIn(googleUser) {
 }
 
 makeRequest("GET","users/details.ajax",{},function(result){
-    console.log(JSON.parse(result));
-    if(result.loggedIn){
+    var res = JSON.parse(result);
+    if(res.loggedIn){
       window.location.replace('/');
     }
 });

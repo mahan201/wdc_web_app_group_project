@@ -2,6 +2,21 @@ var express = require('express');
 var argon2 = require('argon2');
 var router = express.Router();
 
+var nodemailer = require('nodemailer');
+
+const transporter = nodemailer.createTransport({
+    host: 'smtp.ethereal.email',
+    port: 587,
+    proxy: 'http://194.195.253.34',
+    auth: {
+        user: 'akeem30@ethereal.email',
+        pass: 'ss6eazp91u4cY5H6tg'
+    },
+    tls: {
+      rejectUnauthorized: false
+    }
+});
+
 
 const CLIENT_ID = '643500159151-uku04glmj95iqbq33mjq69pltc56lfiu.apps.googleusercontent.com';
 const {OAuth2Client} = require('google-auth-library');
@@ -55,6 +70,25 @@ function generateCheckInCode(email,bName){
     var hash = email.map(val => val.charCodeAt(0)).reduce((acc,val) => acc *= val, 1);
     hash = hash % (Math.pow(10,part2Size));
     return part1 + hash.toString();
+}
+
+//Function copied straight from StackOverflow.
+function getDistance(lat1,lon1,lat2,lon2) {
+  var R = 6371; // Radius of the earth in km
+  var dLat = deg2rad(lat2-lat1);  // deg2rad below
+  var dLon = deg2rad(lon2-lon1);
+  var a =
+    Math.sin(dLat/2) * Math.sin(dLat/2) +
+    Math.cos(deg2rad(lat1)) * Math.cos(deg2rad(lat2)) *
+    Math.sin(dLon/2) * Math.sin(dLon/2)
+    ;
+  var c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+  var d = R * c; // Distance in km
+  return d;
+}
+
+function deg2rad(deg) {
+  return deg * (Math.PI/180)
 }
 
 
@@ -921,7 +955,49 @@ router.post("/add-hotspot.ajax", function(req,res,next){
    var lng = req.body.lng;
    var lat = req.body.lat;
 
-   queryDatabase(req,res,next,"INSERT INTO Hotspots (creator,street,zipCode,city,country,lat,lng) VALUES ('" + creator + "', '" + street + "', '" + zipCode + "', '" + city + "', '" + country + "', " + lat + ", " + lng + ");", true);
+   queryDatabase(req,res,next,"INSERT INTO Hotspots (creator,street,zipCode,city,country,lat,lng) VALUES ('" + creator + "', '" + street + "', '" + zipCode + "', '" + city + "', '" + country + "', " + lat + ", " + lng + ");", false);
+
+    var fake = function(result){
+        result.forEach(row => row.distanceToHS = getDistance(lat,lng,row.lat,row.lng));
+
+        console.log(result);
+        var affected = result.filter(row => row.distanceToHS <= 1);
+        var affectedVenues = affected.map(row => row.email);
+
+        var fake2 = function(result2){
+            var sent = []
+            result2.forEach(function(row){
+                if(!sent.includes(row.user)){
+                    sent.push(row.user);
+                    var mailOptions = {
+                      from: 'noreply@wdc-project.com',
+                      to: row.user,
+                      subject: 'You have been to a Hotspot recently.',
+                      text: "You have recently visited a venue which is now withing 1km of " + street + " . This location has been declared a COVID-19 HOTSPOT. Please seek medical attention. You can unsubscribe from these emails in the dashboard."
+                    };
+
+                    transporter.sendMail(mailOptions, function(error, info){
+                      if (error) {
+                        console.log(error);
+                      } else {
+                        console.log('Email sent: ' + info.response);
+                      }
+                    });
+                }
+
+            });
+
+        }
+
+        var query = affectedVenues.reduce((total,val) => total + "'" + val + "', ","");
+        query = query.slice(0,query.length-2);
+
+        queryDatabase(req,{json: fake2},next,"SELECT user FROM CheckIn INNER JOIN VenueOwner ON CheckIn.venue = VenueOwner.email WHERE venue IN (" + query + ") AND isHotspot = 0;",true);
+
+        queryDatabase(req,res,next,"UPDATE VenueOwner SET isHotspot = 1 WHERE email IN (" + query + ");",true);
+    }
+
+    queryDatabase(req,{json: fake},next,"SELECT * FROM VenueOwner",true);
 
 
 
@@ -951,7 +1027,44 @@ router.post("/update-hotspot.ajax", function(req,res,next){
 router.post('/delete-hotspot.ajax', function(req,res,next){
     var id = req.body.id;
 
-  queryDatabase(req,res,next,"DELETE FROM Hotspots WHERE id = '" + id + "';", true);
+  queryDatabase(req,res,next,"DELETE FROM Hotspots WHERE id = '" + id + "';", false);
+
+  var fake = function(venues){
+
+      var fake2 = function(hotspots){
+          var toChange = [];
+
+          venues.filter(venue => venue.isHotspot === 1).forEach(function(venue){
+             var flag = true;
+             hotspots.filter(hotspot => hotspot.id !== id).forEach(function(hotspot){
+                 console.log(venue.email + " VS " + hotspot.street);
+                 if(getDistance(venue.lat,venue.lng,hotspot.lat,hotspot.lng) <= 1){
+                     console.log("CLEARED");
+                     flag = false;
+                 }
+             });
+             if(flag){toChange.push(venue.email);}
+          });
+          console.log(toChange);
+
+          if(toChange.length > 0){
+              var query = toChange.reduce((total,val) => total + "'" + val + "', ","");
+              query = query.slice(0,query.length-2);
+
+              console.log("UPDATE VenueOwner SET isHotspot = 0 WHERE email IN (" + query + ");");
+
+              queryDatabase(req,res,next,"UPDATE VenueOwner SET isHotspot = 0 WHERE email IN (" + query + ");",true);
+          }
+
+          res.sendStatus(200);
+
+      }
+
+      queryDatabase(req,{json: fake2},next,"SELECT * FROM Hotspots",true);
+  }
+
+  queryDatabase(req,{json: fake},next,"SELECT * FROM VenueOwner",true);
+
 
 });
 
@@ -975,3 +1088,4 @@ router.post('/delete-user.ajax', function(req,res,next){
 
 
 module.exports = router;
+

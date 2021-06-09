@@ -78,25 +78,25 @@
     }
 
 
-    /*button{                             /*for all buttons
-    /*    background-color: #43acc2;*/
-    /*    color: white;*/
-    /*    border:1px solid #ccc;*/
-    /*    padding:6px 15px;*/
-    /*    margin: 8px 0;*/
-    /*    width:80px;*/
-    /*    border-radius: 4px;*/
-    /*}*/
+    button{                             /*for all buttons
+        background-color: #43acc2;
+        color: white;
+        border:1px solid #ccc;
+        padding:6px 15px;
+        margin: 8px 0;
+        width:80px;
+        border-radius: 4px;
+    }
 
-    /*button:hover{*/
-    /*    color: white;*/
-    /*    background-color:#087a9c;*/
-    /*    border:1px solid #ccc;*/
-    /*    padding:6px 15px;*/
-    /*    margin: 8px 0;*/
-    /*    width:80px;*/
-    /*    border-radius: 4px;*/
-    /*}*/
+    button:hover{
+        color: white;
+        background-color:#087a9c;
+        border:1px solid #ccc;
+        padding:6px 15px;
+        margin: 8px 0;
+        width:80px;
+        border-radius: 4px;
+    }
 
     button.DeleteButton{
         color: white;
@@ -145,7 +145,7 @@
         transition: all 0.3s;
     }
 
-    .active{
+    button.active{
         color: white;
         background-color: #43acc2;
         border:1px solid #ccc;
@@ -156,7 +156,7 @@
         border-radius: 4px;
     }
 
-    .inactive{
+    button.inactive{
         color: #43acc2;
         background-color: white;
         border:1px solid #ccc;
