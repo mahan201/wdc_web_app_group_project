@@ -9,6 +9,9 @@
     <script src="javascripts/prep.js"></script>
     <script src="javascripts/check-in.js" defer></script>
     <link rel ="stylesheet" href="stylesheets/Project.css">
+    <meta name="google-signin-client_id" content="643500159151-uku04glmj95iqbq33mjq69pltc56lfiu.apps.googleusercontent.com">
+    <script src="https://apis.google.com/js/platform.js" async defer></script>
+
 </head>
 <body >
     <div id="app">
@@ -21,7 +24,7 @@
           <li v-else class="login">
             <div>
                 <a href="dashboard.html" v-on:mouseenter="showLogout = true;" v-on:mouseleave="showLogout = false;">{{firstName}}</a>
-                <a v-if="showLogout" v-on:mouseenter="showLogout = true;" v-on:mouseleave="showLogout = false;" href="users/logout.ajax">Logout</a>
+                <a v-if="showLogout" v-on:mouseenter="showLogout = true;" v-on:mouseleave="showLogout = false;" onClick="logout()">Logout</a>
             </div>
           </li>
       </ul>
@@ -56,6 +59,7 @@
 
 
      </div>
+     <script src="https://apis.google.com/js/platform.js?onload=onLoad" async defer></script>
 </body>
 
 </html>

@@ -2,6 +2,11 @@ var express = require('express');
 var argon2 = require('argon2');
 var router = express.Router();
 
+
+const CLIENT_ID = '643500159151-uku04glmj95iqbq33mjq69pltc56lfiu.apps.googleusercontent.com';
+const {OAuth2Client} = require('google-auth-library');
+const client = new OAuth2Client(CLIENT_ID);
+
 function queryDatabase(req, res, next, query, finish){
 
     req.pool.getConnection(function(err,connection){
@@ -52,6 +57,7 @@ function generateCheckInCode(email,bName){
     return part1 + hash.toString();
 }
 
+
 router.get('/details.ajax', function(req,res,next){
     var obj = {loggedIn: false};
     if(req.session.user){
@@ -95,6 +101,41 @@ router.get('/details.ajax', function(req,res,next){
 
 });
 
+router.post('/tokenLogin.ajax', async function(req,res,next){
+
+    if('idtoken' in req.body){
+
+        const ticket = await client.verifyIdToken({
+        idToken: req.body.idtoken,
+        audience: CLIENT_ID,  // Specify the CLIENT_ID of the app that accesses the backend
+        // Or, if multiple clients access the backend:
+        //[CLIENT_ID_1, CLIENT_ID_2, CLIENT_ID_3]
+        });
+        const payload = ticket.getPayload();
+        const userid = payload['sub'];
+        const email = payload['email'];
+
+        console.log("KEYS: " + Object.keys(payload).toString());
+        console.log(payload);
+        console.log(userid+" "+email);
+
+        var fake = {
+            json: function(result){
+                if(result.length > 0){
+                    req.session.user = email;
+                    req.session.accountType = result[0].accountType;
+                    res.sendStatus(200);
+                } else {
+                    res.sendStatus(404);
+                }
+            }
+        }
+       queryDatabase(req,fake,next,"SELECT DISTINCT * FROM Security WHERE user = '" + email + "';",true);
+    } else {
+        res.sendStatus(401);
+    }
+
+});
 
 router.post('/login.ajax', function(req,res,next){
 
@@ -146,7 +187,114 @@ router.post('/login.ajax', function(req,res,next){
 router.get('/logout.ajax', function(req,res,next){
     Object.keys(req.session).forEach((key) => (key !== "cookie") && (delete req.session[key]));
     console.log(req.session);
-    res.redirect("/");
+    res.sendStatus(200);
+});
+
+
+router.post("/token-user-signup.ajax", async function(req,res,next){
+
+    if('idtoken' in req.body){
+        const ticket = await client.verifyIdToken({
+        idToken: req.body.idtoken,
+        audience: CLIENT_ID,  // Specify the CLIENT_ID of the app that accesses the backend
+        // Or, if multiple clients access the backend:
+        //[CLIENT_ID_1, CLIENT_ID_2, CLIENT_ID_3]
+        });
+        const payload = ticket.getPayload();
+
+        const email = payload['email'];
+        var firstName = payload["given_name"];
+        var lastName = payload["family_name"];
+
+        var phoneNum = req.body.phoneNum;
+        var passport = req.body.passport;
+
+        req.pool.getConnection(function(err,connection){
+          if(err){
+              console.log(err);
+              res.sendStatus(500);
+              return;
+          }
+          var query1 = "INSERT INTO Security (user,password,accountType) VALUES ('" + email + "', ' ' ,'user');";
+          connection.query(query1, function(err, results){
+             connection.release();
+             if(err){
+                 if(err.code === "ER_DUP_ENTRY"){
+                     //We want to differentiate this from other server errors so that the client knows the user is trying to sign up with an existing email.
+                     res.sendStatus(400);
+                     return;
+                 }
+                 res.sendStatus(500);
+                 return;
+             }
+          });
+       });
+
+
+       req.pool.getConnection(function(err,connection){
+          if(err){
+              console.log(err);
+              res.sendStatus(500);
+              return;
+          }
+
+          if(res.headersSent){return;}
+
+          var query2 = "INSERT INTO BasicUser VALUES ('" + email + "','" + firstName + "','" + lastName + "','" + phoneNum + "','" + passport + "',1,1);";
+          connection.query(query2, function(err, results){
+             connection.release();
+
+             if(res.headersSent){return;}
+
+             if(err){
+                 if(err.code !== "ER_DUP_ENTRY"){
+                     res.sendStatus(500);
+                     return;
+                 }
+
+                 req.pool.getConnection(function(err,connection){
+                  if(err){
+                      console.log(err);
+                      res.sendStatus(500);
+                      return;
+                  }
+
+                  if(res.headersSent){return;}
+
+                  var query3 = "UPDATE BasicUser SET firstName = '" + firstName + "', lastName = '" + lastName + "', phoneNum = '" + phoneNum + "', icPsprt = '" + passport + "' WHERE email = '" + email + "';";
+                  connection.query(query3, function(err, results){
+                     connection.release();
+
+                     if(res.headersSent){return;}
+
+                     if(err){
+                         res.sendStatus(500);
+                         return;
+                     }
+
+                     req.session.user = email;
+                     req.session.accountType = "user";
+                     res.sendStatus(200);
+                     return;
+                  });
+               });
+
+             } else {
+                 req.session.user = email;
+                 req.session.accountType = "user";
+                 res.sendStatus(200);
+                return;
+             }
+          });
+       });
+
+
+    } else {
+        res.sendStatus(401);
+    }
+
+
+
 });
 
 router.post("/user-signup.ajax", async function(req,res,next){
@@ -221,7 +369,7 @@ router.post("/user-signup.ajax", async function(req,res,next){
                      return;
                  }
 
-                 res.redirect('/login.html');
+                 res.sendStatus(200);
                  return;
               });
            });
@@ -232,6 +380,128 @@ router.post("/user-signup.ajax", async function(req,res,next){
          }
       });
    });
+
+
+});
+
+router.post("/token-venue-signup.ajax", async function(req,res,next){
+
+    if("idtoken" in req.body){
+        const ticket = await client.verifyIdToken({
+        idToken: req.body.idtoken,
+        audience: CLIENT_ID,  // Specify the CLIENT_ID of the app that accesses the backend
+        // Or, if multiple clients access the backend:
+        //[CLIENT_ID_1, CLIENT_ID_2, CLIENT_ID_3]
+        });
+        const payload = ticket.getPayload();
+
+        const email = payload['email'];
+        var firstName = payload["given_name"];
+        var lastName = payload["family_name"];
+
+        if(firstName === undefined){firstName = " ";}
+        if(lastName === undefined){lastName = " ";}
+
+        var phoneNum = req.body.phoneNum;
+        var companyName = req.body.companyName;
+        var buildingName = req.body.buildingName;
+        var street = req.body.street;
+        var zipCode = req.body.zipCode;
+        var city = req.body.city;
+        var country = req.body.country;
+        var checkInCode = generateCheckInCode(email,companyName);
+        var lng = req.body.lng;
+        var lat = req.body.lat;
+
+
+        req.pool.getConnection(function(err,connection){
+          if(err){
+              console.log(err);
+              res.sendStatus(500);
+              return;
+          }
+          var query1 = "INSERT INTO Security (user,password,accountType) VALUES ('" + email + "', ' ' ,'venue');";
+          connection.query(query1, function(err, results){
+             connection.release();
+             if(err){
+                 if(err.code === "ER_DUP_ENTRY"){
+                     //We want to differentiate this from other server errors so that the client knows the user is trying to sign up with an existing email.
+                     res.sendStatus(400);
+                     return;
+                 }
+                 res.sendStatus(500);
+                 return;
+             }
+          });
+      });
+
+
+      req.pool.getConnection(function(err,connection){
+          if(err){
+              console.log(err);
+              res.sendStatus(500);
+              return;
+          }
+
+          if(res.headersSent){return;}
+
+          var query2 = "INSERT INTO VenueOwner VALUES ('" + email + "','" + firstName + "','" + lastName + "','" + phoneNum + "','" + companyName  + "','" + checkInCode + "'," + lat.toString() + "," + lng.toString() + ", 0);";
+          connection.query(query2, function(err, results){
+             connection.release();
+
+             if(res.headersSent){return;}
+
+             if(err){
+                 if(err.code === "ER_DUP_ENTRY"){
+                     //We want to differentiate this from other server errors so that the client knows the user is trying to sign up with an existing email.
+                     res.sendStatus(400);
+                     return;
+                 }
+                 res.sendStatus(500);
+                 return;
+
+             }
+          });
+      });
+
+      req.pool.getConnection(function(err,connection){
+          if(err){
+              console.log(err);
+              res.sendStatus(500);
+              return;
+          }
+
+          if(res.headersSent){return;}
+
+          var query3 = "INSERT INTO Address (venue,buildingName,streetName,zipCode,city,country) VALUES ('" + email + "','" + buildingName + "','" + street + "','" + zipCode+ "','" + city  + "','" + country + "');";
+          connection.query(query3, function(err, results){
+             connection.release();
+
+             if(res.headersSent){return;}
+
+             if(err){
+                 if(err.code === "ER_DUP_ENTRY"){
+                     //We want to differentiate this from other server errors so that the client knows the user is trying to sign up with an existing email.
+                     res.sendStatus(400);
+                     return;
+                 }
+                 res.sendStatus(500);
+                 return;
+
+             } else {
+                 req.session.user = email;
+                req.session.accountType = "venue";
+                res.sendStatus(200);
+                return;
+             }
+          });
+      });
+
+    } else {
+        res.sendStatus(401);
+    }
+
+
 
 
 });

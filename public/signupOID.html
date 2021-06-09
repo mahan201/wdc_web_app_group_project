@@ -8,23 +8,24 @@
         <script src="https://cdn.jsdelivr.net/npm/vue@2.6.12/dist/vue.js"></script>
         <script src="javascripts/prep.js"></script>
          <script src="javascripts/signupOpenID.js" defer></script>
+         <meta name="google-signin-client_id" content="643500159151-uku04glmj95iqbq33mjq69pltc56lfiu.apps.googleusercontent.com">
+        <script src="https://apis.google.com/js/platform.js" async defer></script>
     </head>
     <body class="background_Color">                               <!-- Set the whole page's background color -->
 
         <div class ="form_container" id="app">                             <!--Making a white container -->
-            <div class ="signup-page">
+            <div v-if="tokenId !== ''" class ="signup-page">
                 <h1> Create a new account</h1>
                 <div class="toggle">
                     <button v-bind:class="{'active': !venueSelected, 'inactive': venueSelected}" v-on:click="venueSelected = false">User</button>
                     <button v-bind:class="{'active': venueSelected, 'inactive': !venueSelected}"  v-on:click="venueSelected = true">Venue</button>
                 </div>
-                <div>
 
-                </div>
                 <h3 class = "invalid" v-bind:style="{'visibility': invalid}" >{{invalidMessage}}</h3>
                 <form v-if="!venueSelected" v-on:submit.prevent="signUpUser">                                                                                               <!--Creating signup inputs -->
                     <input type="text" id="ph" name="ph" placeholder="Phone number* : " v-model = "phoneNum" required ><br>
                     <input type="text" id="passport" name="passport" placeholder ="Passport/IC* : " v-model = "passport" required><br>
+                    <button id="signup_button" class="bold" onClick="logout()">Cancel</button>
                     <button id="signup_button" class="bold" type="submit" >Sign Up</button><br>                          <!--Signup button. After signup, go to the login page again-->
                 </form>
                 <form v-else v-on:submit.prevent="signUpVenue">                                                                                               <!--Creating signup inputs -->
@@ -35,18 +36,12 @@
                     <input type="text" id="zip" name="zip" placeholder="Zip Code* : " v-model="zipCode" required ><br>
                     <input type="text" id="city" name="city" placeholder="City* : " v-model="city" required >
                     <input type="text" id="country" name="country" placeholder="Country* : " v-model="country" required ><br>
+                    <button id="signup_button" class="bold" onClick="logout()">Cancel</button>
                     <button id="signup_button" class="bold" type="submit">Sign Up</button><br>                          <!--Signup button. After signup, go to th login page again -->
                 </form>
-                <br>
-                <div id="message" v-bind:style = "{'display': showRequirements}">
-                      <p id="validEmail" v-bind:class = "{'valid': emailValid , 'invalid': !emailValid}">Email must be <b>valid</b></p>                                                                           <!-- Info for Password validation -->
-                      <h3>Password must contain the following:</h3>
-                      <p id="letter" v-bind:class = "{'valid': lowerValid , 'invalid': !lowerValid}">A <b>lowercase</b> letter</p>
-                      <p id="capital" v-bind:class = "{'valid': capitalValid , 'invalid': !capitalValid}">A <b>capital (uppercase)</b> letter</p>
-                      <p id="number" v-bind:class = "{'valid': numberValid , 'invalid': !numberValid}">A <b>number</b></p>
-                      <p id="length" v-bind:class = "{'valid': lengthValid , 'invalid': !lengthValid}">Minimum <b>8 characters</b></p>
-                </div>
 
             </div>
         </div>
+
+        <div style="display: none" class="g-signin2" data-onsuccess="onGoogleSignIn"></div>
     </body>

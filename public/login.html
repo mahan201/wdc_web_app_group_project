@@ -5,8 +5,11 @@
         <meta charset ="UTF-8">
         <script src="https://kit.fontawesome.com/e45ce6bf31.js" crossorigin="anonymous"></script>
         <script src="https://cdn.jsdelivr.net/npm/vue@2.6.12/dist/vue.js"></script>
+        <script src="https://apis.google.com/js/platform.js" async defer></script>
         <script src="javascripts/login.js" defer></script>
         <link rel ="stylesheet" href="stylesheets/Project.css">
+        <meta name="google-signin-client_id" content="643500159151-uku04glmj95iqbq33mjq69pltc56lfiu.apps.googleusercontent.com">
+        <script src="https://apis.google.com/js/platform.js" async defer></script>
     </head>
     <body class="background_Color">
         <div class ="container" id="app" >                                       <!--Making a white container -->
@@ -27,17 +30,9 @@
                     <p><a class="bold" href="forgot_password.html">Forgot your password?</a></p>
                 </form>
 
-                 <div class="social_media">                                          <!-- Login through social medias -->
-                    <a href="#" class="facebook">
-                    <i class="fa fa-facebook fa-fw"></i> Login with Facebook
-                    </a>
-                    <a href="#" class="twitter">
-                    <i class="fa fa-twitter fa-fw"></i> Login with Twitter
-                    </a>
-                    <a href="#" class="google"><i class="fa fa-google fa-fw">
-                    </i> Login with Google+
-                    </a>
-                </div>
+                <p>or</p>
+                <div class="g-signin2" data-onsuccess="onGoogleSignIn"></div>
+
             </div>
         </div>
     </body>

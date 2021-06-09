@@ -43,6 +43,11 @@
         color:#329eb8;
         margin: 10px 10px;
     }
+
+    .login-page{
+        padding: 15px 0px;
+    }
+
     .login-page h1{
         color:black;
         margin: 0px 0px;
@@ -466,6 +471,8 @@
     .centered{
         text-align: center;
     }
+
+    .abcRioButton.abcRioButtonLightBlue { margin: 0 auto;}
 
     .pageHeader{
         width: 100%;

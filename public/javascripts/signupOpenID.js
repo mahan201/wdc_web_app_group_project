@@ -4,8 +4,7 @@ var appdiv = new Vue({
     el: "#app",
     data: {
         venueSelected: false,
-        firstName: "",
-        lastName: "",
+        tokenId: "",
         companyName: "",
         phoneNum: "",
         buildingName: "",
@@ -14,46 +13,21 @@ var appdiv = new Vue({
         city: "",
         country: "",
         passport: "",
-        email: "",
-        password: "",
-        confirmPassword: "",
         invalid: "hidden",
         invalidMessage: "",
         lng: 0,
         lat: 0,
 
-        showRequirements: "none"
 
-    },
-    computed: {
-        emailValid: function(){
-          return /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/.test(this.email);
-        },
-        lowerValid: function(){
-          return /[a-z]/g.test(this.password);
-        },
-        capitalValid: function(){
-          return /[A-Z]/g.test(this.password);
-        },
-        numberValid: function(){
-          return /[0-9]/g.test(this.password);
-        },
-        lengthValid: function(){
-          return (this.password.length >= 8);
-        }
     },
     methods: {
         signUpUser: function(){
-            if(this.password !== this.confirmPassword){
-              this.invalidMessage = "Password must match!";
-              this.invalid = "visible";
-            }
 
             xhttp = new XMLHttpRequest();
 
             xhttp.onreadystatechange = function(){
                 if(this.readyState == 4 && this.status == 200){
-                   window.location.replace('/login.html');
+                   window.location.replace('/');
                 } else if (this.readyState == 4 && this.status == 500){
                     alert("Internal Server Error. Please try again later.");
                 } else if (this.readyState == 4 && this.status == 400){
@@ -64,26 +38,18 @@ var appdiv = new Vue({
             };
 
 
-            xhttp.open("POST","/users/user-signup.ajax", true);
+            xhttp.open("POST","/users/token-user-signup.ajax", true);
 
             xhttp.setRequestHeader("Content-type", "application/json");
 
             xhttp.send(JSON.stringify({
-              firstName: this.firstName,
-              lastName: this.lastName,
+              idtoken: this.tokenId,
               phoneNum: this.phoneNum,
-              passport: this.passport,
-              email: this.email,
-              password: this.password
+              passport: this.passport
             }));
         },
 
         signUpVenue: function(){
-            if(this.password !== this.confirmPassword){
-              this.invalidMessage = "Password must match!";
-              this.invalid = "visible";
-              return;
-            }
 
             xhttp = new XMLHttpRequest();
 
@@ -124,16 +90,13 @@ var appdiv = new Vue({
             };
 
 
-            xhttp.open("POST","/users/venue-signup.ajax", true);
+            xhttp.open("POST","/users/toke-venue-signup.ajax", true);
 
             xhttp.setRequestHeader("Content-type", "application/json");
 
             xhttp.send(JSON.stringify({
-              firstName: this.firstName,
-              lastName: this.lastName,
+              idtoken: this.tokenId,
               phoneNum: this.phoneNum,
-              email: this.email,
-              password: this.password,
               companyName: this.companyName,
               buildingName: this.buildingName,
               street: this.street,
@@ -147,6 +110,16 @@ var appdiv = new Vue({
     }
 });
 
+function onGoogleSignIn(googleUser) {
+  console.log("RAN");
+  var profile = googleUser.getBasicProfile();
 
+  appdiv.tokenId = googleUser.getAuthResponse().id_token;
+}
 
-
+makeRequest("GET","users/details.ajax",{},function(result){
+    console.log(JSON.parse(result));
+    if(result.loggedIn){
+      window.location.replace('/');
+    }
+});
