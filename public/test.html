@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <title> Login page</title>
+        <meta charset ="UTF-8">
+        <script src="https://kit.fontawesome.com/e45ce6bf31.js" crossorigin="anonymous"></script>
+        <script src="https://cdn.jsdelivr.net/npm/vue@2.6.12/dist/vue.js"></script>
+        <script src="test.js" defer></script>
+        <link rel ="stylesheet" href="stylesheets/Project.css">
+    </head>
+    <body class="background_Color">
+        <div class ="container" id="app" >                                       <!--Making a white container -->
+            <div class="login-page">
+
+                
+
+
+                <div v-if="!venueSelected">
+                    <h2>User Sign Up</h2>
+                </div>
+
+                <div v-else>
+                    <h2>Venue Sign Up</h2>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>

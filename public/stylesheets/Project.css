@@ -3,7 +3,11 @@
     /*                                     Annie      Annie     Annie    Annie                                      */
     body{
         font-family: "Times New Roman", Helvetica, sans-serif;
+        margin: 0;
     }
+
+
+
     .background_Color{
        /* background-color: #fde7f9; */
         /*background-image: linear-gradient(315deg, #fde7f9 0%, #aacaef 74%); */
@@ -130,6 +134,37 @@
     }
     #signup_button:hover{
         background-color: #087a9c;
+    }
+
+    button {
+        transition: all 0.3s;
+    }
+
+    .active{
+        color: white;
+        background-color: #43acc2;
+        border:1px solid #ccc;
+        font-size: 1.17em;
+        padding:6px 15px;
+        margin: 10px 0px;
+        width:auto;
+        border-radius: 4px;
+    }
+
+    .inactive{
+        color: #43acc2;
+        background-color: white;
+        border:1px solid #ccc;
+        font-size: 1.17em;
+        padding:6px 15px;
+        margin: 10px 0px;
+        width:auto;
+        border-radius: 4px;
+    }
+
+    button:hover{
+        background-color: #087a9c;
+        color: white;
     }
 
     .login-page a {

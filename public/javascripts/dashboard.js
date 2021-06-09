@@ -567,7 +567,7 @@ var appdiv = new Vue({
                 id: hotspotData.length+1,
                 creator: this.user,
                 street: this.hsStreetEdit,
-                zip: this.hsZipEdit,
+                zipCode: this.hsZipEdit,
                 city: this.hsCityEdit,
                 country: this.hsCountryEdit,
                 lng: this.hsLng,

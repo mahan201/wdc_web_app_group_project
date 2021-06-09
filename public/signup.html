@@ -13,11 +13,16 @@
 
         <div class ="form_container" id="app">                             <!--Making a white container -->
             <div class ="signup-page">
-                <p><a class="bold Right"  href="Business_signup.html" id ="business_signup">Create a new business account?</a></p><br>
-                <hr>
                 <h1> Create a new account</h1>
+                <div class="toggle">
+                    <button v-bind:class="{'active': !venueSelected, 'inactive': venueSelected}" v-on:click="venueSelected = false">User</button>
+                    <button v-bind:class="{'active': venueSelected, 'inactive': !venueSelected}"  v-on:click="venueSelected = true">Venue</button>
+                </div>
+                <div>
+
+                </div>
                 <h3 class = "invalid" v-bind:style="{'visibility': invalid}" >{{invalidMessage}}</h3>
-                <form v-on:submit.prevent="signUpUser">                                                                                               <!--Creating signup inputs -->
+                <form v-if="!venueSelected" v-on:submit.prevent="signUpUser">                                                                                               <!--Creating signup inputs -->
                     <input type="text" id="fname" name="fname" placeholder="First Name* : " v-model = "firstName" required ><br>
                     <input type="text" id="lname" name="lname" placeholder ="Last Name* : " v-model = "lastName" required><br>
                     <input type="text" id="ph" name="ph" placeholder="Phone number* : " v-model = "phoneNum" required ><br>
@@ -26,6 +31,21 @@
                     <input type="password" id="Psw" name="Psw" placeholder ="Password* : " v-on:focus="showRequirements = 'block'" v-on:blur="showRequirements = 'none'" pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}" title="Must contain at least one number and one uppercase and lowercase letter, and at least 8 or more characters" v-model = "password" required><br>
                     <input type="password" id="CPsw" name="CPsw" placeholder ="Comfirm Password* : " v-model = "confirmPassword" required><br>
                     <button id="signup_button" class="bold" type="submit" >Sign Up</button><br>                          <!--Signup button. After signup, go to the login page again-->
+                </form>
+                <form v-else v-on:submit.prevent="signUpVenue">                                                                                               <!--Creating signup inputs -->
+                    <input type="text" id="fname" name="fname" placeholder="First name* : " v-model="firstName" required >
+                    <input type="text" id="lname" name="lname" placeholder ="Last name* : " v-model="lastName" required><br>
+                    <input type="text" id="company_name" name="company_name" v-model="companyName" placeholder="Company name* : " required >
+                    <input type="text" id="ph" name="ph" placeholder="Phone number* : " v-model="phoneNum" required ><br>
+                    <input type="text" id="building" name="building" placeholder="Building Name* : " v-model="buildingName" required >
+                    <input type="text" id="street" name="street" placeholder="Street* : " v-model="street" required ><br>
+                    <input type="text" id="zip" name="zip" placeholder="Zip Code* : " v-model="zipCode" required >
+                    <input type="text" id="city" name="city" placeholder="City* : " v-model="city" required ><br>
+                    <input type="text" id="country" name="country" placeholder="Country* : " v-model="country" required >
+                    <input type="text" id="Email" name="Email" placeholder="Email* : " v-model = "email" v-on:focus="showRequirements = 'block'" v-on:blur="showRequirements = 'none'" required ><br>
+                    <input type="password" id="Psw" name="Psw" placeholder ="Password* : " v-on:focus="showRequirements = 'block'" v-on:blur="showRequirements = 'none'" pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}" title="Must contain at least one number and one uppercase and lowercase letter, and at least 8 or more characters" v-model = "password" required>
+                    <input type="password" id="CPsw" name="CPsw" placeholder ="Comfirm Password* : " v-model="confirmPassword" required><br>
+                    <button id="signup_button" class="bold" type="submit">Sign Up</button><br>                          <!--Signup button. After signup, go to th login page again -->
                 </form>
                 <br>
                 <div id="message" v-bind:style = "{'display': showRequirements}">
@@ -36,17 +56,7 @@
                       <p id="number" v-bind:class = "{'valid': numberValid , 'invalid': !numberValid}">A <b>number</b></p>
                       <p id="length" v-bind:class = "{'valid': lengthValid , 'invalid': !lengthValid}">Minimum <b>8 characters</b></p>
                 </div>
-                <div class="social_media">                                          <!-- Login through social medias -->
-                    <a href="#" class="facebook">
-                    <i class="fa fa-facebook fa-fw"></i> Login with Facebook
-                    </a>
-                    <a href="#" class="twitter">
-                    <i class="fa fa-twitter fa-fw"></i> Login with Twitter
-                    </a>
-                    <a href="#" class="google"><i class="fa fa-google fa-fw">
-                    </i> Login with Google+
-                    </a>
-                </div>
+
             </div>
         </div>
     </body>

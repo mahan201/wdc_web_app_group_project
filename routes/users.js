@@ -645,7 +645,7 @@ router.post("/add-hotspot.ajax", function(req,res,next){
    var id = req.body.id;
    var creator = req.body.creator;
    var street = req.body.street;
-   var zipCode = req.body.zip;
+   var zipCode = req.body.zipCode;
    var city = req.body.city;
    var country = req.body.country;
    var lng = req.body.lng;

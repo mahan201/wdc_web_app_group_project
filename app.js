@@ -37,9 +37,7 @@ app.use(session({
 var prev = "";
 
 app.use(async function(req,res,next){
-    var b = await argon2.hash("Admin123");
-    console.log(b);
-    // console.log(req.session.user);
+    console.log(req.session.user);
    if((req.path == "/dashboard.html" || req.path == "/historyMapView.html") && req.session.user == undefined){
        res.redirect('login.html');
    } else { next(); }
