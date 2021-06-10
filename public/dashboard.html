@@ -22,8 +22,8 @@
           <li v-if="!loggedIn" class="login"><a href="login.html">Login</a></li>
           <li v-else class="login">
             <div>
-                <a href="dashboard.html" v-on:mouseenter="showLogout = true;" v-on:mouseleave="showLogout = false;">{{firstName}}</a>
-                <a v-if="showLogout" v-on:mouseenter="showLogout = true;" v-on:mouseleave="showLogout = false;" onClick="logout()">Logout</a>
+                <a href="dashboard.html" v-on:mouseenter="showLogout = true;" v-on:mouseleave="showLogout = false;"><i class="fas fa-users-cog" id="admin_logo"></i>{{firstName}}</a>
+                <a v-if="showLogout" v-on:mouseenter="showLogout = true;" v-on:mouseleave="showLogout = false;" onClick="logout()"><i class="fas fa-sign-out-alt" id="logout_logo"></i>Logout</a>
             </div>
           </li>
       </ul>
