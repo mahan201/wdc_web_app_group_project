@@ -86,3 +86,5 @@ PRIMARY KEY (user)
 INSERT INTO Security VALUES("admin@wdcproject.com","$argon2i$v=19$m=4096,t=3,p=1$LJG5Ew4PYpth0tVx9WHIwg$v5eEq1gk7RTXnLCMSAm4SPGmTc3jhO3Iy7JPvSFtl3k","admin");
 
 INSERT INTO Admin VALUES("admin@wdcproject.com","Admin","Admin");
+
+INSERT INTO Hotspots VALUES(1,"admin@wdcproject.com","Some Street","1230","Kuala Lumpur","Malaysia",130,20,CURRENT_TIMESTAMP() - INTERVAL 3 WEEK)

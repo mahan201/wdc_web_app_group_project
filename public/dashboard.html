@@ -319,9 +319,9 @@
                 <div class="menuInfo" >
                     <i class="fas fa-envelope-open-text" id="email_logo"></i>
                     <form v-on:submit.prevent="updateEmailInfo">
-                          <input type="checkbox" id="choice1" name="choice1" v-model="weeklyNotifications">
+                          <input type="checkbox" id="choice1" name="choice1" v-model="visitedHotspotNoti">
                           <label for="choice1"> Notification for when a visited venue has become a hotspot.</label><br>
-                          <input type="checkbox" id="choice2" name="choice1" v-model="visitedHotspotNoti">
+                          <input type="checkbox" id="choice2" name="choice2" v-model="weeklyNotifications">
                           <label for="choice2"> Weekly hotspot notification.</label><br>
                           <button type="submit">Save</button>
                     </form>

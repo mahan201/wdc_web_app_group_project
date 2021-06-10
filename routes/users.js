@@ -72,6 +72,14 @@ function generateCheckInCode(email,bName){
     return part1 + hash.toString();
 }
 
+function generateResetCode(email){
+    email = email.slice(0,email.indexOf("@")).split('');
+    var code = email.map(val => val.charCodeAt(0)).reduce((acc,val) => acc *= val, 1);
+    code = code * (Math.floor(Math.random() * 100) + 1);
+    code = code % (Math.pow(10,6));
+    return code;
+}
+
 //Function copied straight from StackOverflow.
 function getDistance(lat1,lon1,lat2,lon2) {
   var R = 6371; // Radius of the earth in km
@@ -91,6 +99,59 @@ function deg2rad(deg) {
   return deg * (Math.PI/180)
 }
 
+router.post("/sendResetCode.ajax", function(req,res,next){
+   if(req.body.email){
+
+       var fake = function(result){
+            if(result.length > 0){
+                var code = generateResetCode(req.body.email);
+                var mailOptions = {
+                  from: 'noreply@wdc-project.com',
+                  to: req.body.email,
+                  subject: 'You requested a password reset.',
+                  text: "Your reset code is: \n"+ code
+                };
+
+                transporter.sendMail(mailOptions, function(error, info){
+                  if (error) {
+                    console.log(error);
+                  } else {
+                    console.log('Email sent: ' + info.response);
+                  }
+                });
+                req.session.resetEmail = req.body.email;
+                req.session.resetCode = code;
+                res.sendStatus(200);
+            } else {
+                res.sendStatus(401);
+            }
+       }
+
+       queryDatabase(req,{json: fake},next,"SELECT user FROM Security WHERE user = '" + req.body.email + "';",true);
+
+
+   } else {
+       res.sendStatus(401);
+   }
+
+
+});
+
+
+router.post('/resetPassword.ajax', async function(req,res,next){
+    var email = req.body.email;
+    var password = req.body.password;
+    const passwordHash = await argon2.hash(password);
+   if(req.body.resetCode !== undefined && req.session.resetCode !== undefined){
+       if(req.body.resetCode === req.session.resetCode.toString() && email === req.session.resetEmail){
+           queryDatabase(req,res,next,"UPDATE Security SET password = '" + passwordHash + "' WHERE user = '" + email + "';",true);
+       } else {
+           res.sendStatus(401);
+       }
+   } else {
+       res.sendStatus(401);
+   }
+});
 
 router.get('/details.ajax', function(req,res,next){
     var obj = {loggedIn: false};
@@ -203,7 +264,7 @@ router.post('/login.ajax', function(req,res,next){
                     res.send(401);
                   }
                 } catch (err) {
-                  res.sendStatus(500);
+                  res.sendStatus(401);
                 }
              } else {
                  res.sendStatus(401);
@@ -861,7 +922,7 @@ router.post('/:user/updateEmailPref.ajax', function(req,res,next){
     } else {
         req.session.weeklyHotspotNoti = Number(req.body.weeklyNotifications);
         req.session.venueHotspotNoti = Number(req.body.visitedHotspot);
-        queryDatabase(req,res,next,"UPDATE BasicUser SET weeklyHotspotNoti = " + Number(req.body.weeklyNotifications) + ", venueHotspotNoti = " + Number(req.body.visitedHotspot) + " WHERE email = '" + req.session.user + "';");
+        queryDatabase(req,res,next,"UPDATE BasicUser SET weeklyHotspotNoti = " + Number(req.body.weeklyNotifications) + ", venueHotspotNoti = " + Number(req.body.visitedHotspot) + " WHERE email = '" + req.session.user + "';",true);
 
     }
 });
@@ -960,7 +1021,6 @@ router.post("/add-hotspot.ajax", function(req,res,next){
     var fake = function(result){
         result.forEach(row => row.distanceToHS = getDistance(lat,lng,row.lat,row.lng));
 
-        console.log(result);
         var affected = result.filter(row => row.distanceToHS <= 1);
         var affectedVenues = affected.map(row => row.email);
 
@@ -992,7 +1052,7 @@ router.post("/add-hotspot.ajax", function(req,res,next){
         var query = affectedVenues.reduce((total,val) => total + "'" + val + "', ","");
         query = query.slice(0,query.length-2);
 
-        queryDatabase(req,{json: fake2},next,"SELECT user FROM CheckIn INNER JOIN VenueOwner ON CheckIn.venue = VenueOwner.email WHERE venue IN (" + query + ") AND isHotspot = 0;",true);
+        queryDatabase(req,{json: fake2},next,"SELECT user FROM CheckIn INNER JOIN BasicUser ON CheckIn.user = BasicUser.email WHERE venue IN (" + query + ") AND BasicUser.venueHotspotNoti = 1;",true);
 
         queryDatabase(req,res,next,"UPDATE VenueOwner SET isHotspot = 1 WHERE email IN (" + query + ");",true);
     }
@@ -1054,9 +1114,9 @@ router.post('/delete-hotspot.ajax', function(req,res,next){
               console.log("UPDATE VenueOwner SET isHotspot = 0 WHERE email IN (" + query + ");");
 
               queryDatabase(req,res,next,"UPDATE VenueOwner SET isHotspot = 0 WHERE email IN (" + query + ");",true);
+          } else {
+              res.sendStatus(200);
           }
-
-          res.sendStatus(200);
 
       }
 
