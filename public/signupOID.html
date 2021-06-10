@@ -15,6 +15,7 @@
 
         <div class ="form_container" id="app">                             <!--Making a white container -->
             <div v-if="tokenId !== ''" class ="signup-page">
+
                 <h1> Create a new account</h1>
                 <div class="toggle">
                     <button v-bind:class="{'active': !venueSelected, 'inactive': venueSelected}" v-on:click="venueSelected = false">User</button>

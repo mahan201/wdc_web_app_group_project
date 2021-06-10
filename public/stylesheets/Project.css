@@ -516,6 +516,11 @@
     }
 
     /*                                          Check-in */
+    #Login_logo {
+        font-size: 20px;
+        color: white;
+        margin-right: 8px;
+    }
     .centered{
         text-align: center;
     }
