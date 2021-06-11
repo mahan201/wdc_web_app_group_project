@@ -217,6 +217,7 @@ router.post('/tokenLogin.ajax', async function(req,res,next){
         var fake = {
             json: function(result){
                 if(result.length > 0){
+                    req.session.OpenID = true;
                     req.session.user = email;
                     req.session.accountType = result[0].accountType;
                     res.sendStatus(200);

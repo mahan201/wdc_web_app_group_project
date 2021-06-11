@@ -21,10 +21,13 @@ function makeRequest(method,route, headers, onSuccess){
 }
 
 function logout(){
-    var auth2 = gapi.auth2.getAuthInstance();
-      auth2.signOut().then(function () {
-        console.log('User signed out.');
-      });
+    if(appdiv.session.OpenID){
+        var auth2 = gapi.auth2.getAuthInstance();
+          auth2.signOut().then(function () {
+            console.log('User signed out.');
+          });
+    }
+
 
       makeRequest("GET","/users/logout.ajax",{},function(res){
           window.location.replace('/');

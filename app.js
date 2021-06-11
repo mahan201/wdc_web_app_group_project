@@ -174,7 +174,9 @@ var prev = "";
 app.use(async function(req,res,next){
     console.log(req.session.user);
    if((req.path == "/dashboard.html" || req.path == "/historyMapView.html") && req.session.user == undefined){
-       res.redirect('login.html');
+       res.redirect('/login.html');
+   } else if ((req.path == "/login.html" || req.path == "/signup.html" || req.path == "/signupOID.html") && req.session.user !== undefined ){
+       res.redirect("/");
    } else { next(); }
 });
 
