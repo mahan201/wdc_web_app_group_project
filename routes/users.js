@@ -1050,12 +1050,17 @@ router.post("/add-hotspot.ajax", function(req,res,next){
 
         }
 
-        var query = affectedVenues.reduce((total,val) => total + "'" + val + "', ","");
-        query = query.slice(0,query.length-2);
+        if(affectedVenues.length > 0){
+            var query = affectedVenues.reduce((total,val) => total + "'" + val + "', ","");
+            query = query.slice(0,query.length-2);
 
-        queryDatabase(req,{json: fake2},next,"SELECT user FROM CheckIn INNER JOIN BasicUser ON CheckIn.user = BasicUser.email WHERE venue IN (" + query + ") AND BasicUser.venueHotspotNoti = 1;",true);
+            if(query.length)
 
-        queryDatabase(req,res,next,"UPDATE VenueOwner SET isHotspot = 1 WHERE email IN (" + query + ");",true);
+            queryDatabase(req,{json: fake2},next,"SELECT user FROM CheckIn INNER JOIN BasicUser ON CheckIn.user = BasicUser.email WHERE venue IN (" + query + ") AND BasicUser.venueHotspotNoti = 1;",true);
+
+            queryDatabase(req,res,next,"UPDATE VenueOwner SET isHotspot = 1 WHERE email IN (" + query + ");",true);
+        }
+
     }
 
     queryDatabase(req,{json: fake},next,"SELECT * FROM VenueOwner",true);

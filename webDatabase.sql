@@ -87,4 +87,6 @@ INSERT INTO Security VALUES("admin@wdcproject.com","$argon2i$v=19$m=4096,t=3,p=1
 
 INSERT INTO Admin VALUES("admin@wdcproject.com","Admin","Admin");
 
-INSERT INTO Hotspots VALUES(1,"admin@wdcproject.com","Some Street","1230","Kuala Lumpur","Malaysia",130,20,CURRENT_TIMESTAMP() - INTERVAL 3 WEEK)
+INSERT INTO Hotspots creator, street, zipCode, city, country, lat, lng VALUES("admin@wdcproject.com","Sunway Monash Residence","47500","Subang Jaya","Malaysia", 3.0632031, 101.599);
+
+INSERT INTO Hotspots creator, street, zipCode, city, country, lat, lng VALUES("admin@wdcproject.com","Sunway Pyramid","47500","Subang Jaya","Malaysia", 3.073222, 101.606767)

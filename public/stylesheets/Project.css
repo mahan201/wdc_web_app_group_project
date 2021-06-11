@@ -179,6 +179,7 @@
         color: #087a9c;
     }
 
+
     /*                                             Login                                               */
 
          /*                                 User- Signup                                       */
@@ -338,7 +339,7 @@
         border:1px solid #ccc;
         padding:6px 15px;
         margin: 10px 0;
-        width: auto;
+        width: 150px;
         border-radius: 4px;
     }
     #reset_button:hover{
@@ -392,6 +393,20 @@
         background-color: #087a9c;
     }
 
+    button {
+        color: white;
+        background-color: #43acc2;
+        border:2px solid yellow;
+        padding:6px 15px;
+        margin: 10px 0;
+        width: auto;
+        border-radius: 4px;
+        font-size: 15px;
+    }
+     button:hover{
+        background-color: #087a9c;
+    }
+
     .searchBar{
         background-color: #8a9bed;
         color: white;
@@ -427,7 +442,7 @@
 
     .menuInfo{
        padding: 30px;
-       height: 394px;
+       height: auto;
     }
 
 

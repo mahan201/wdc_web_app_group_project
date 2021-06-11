@@ -56,6 +56,7 @@ var appdiv = new Vue({
           if(this.password !== this.confirmPassword){
                 this.invalidMessage = "Passwords do not match.";
                 this.invalid = "visible";
+                return;
           }
 
           var xhttp = new XMLHttpRequest();

@@ -213,7 +213,7 @@ var appdiv = new Vue({
 
                 var obj = {
                     accountType: "admin",
-                    email: this.user,
+                    email: this.session.user,
                     firstName: this.firstName,
                     lastName: this.lastName
                 };

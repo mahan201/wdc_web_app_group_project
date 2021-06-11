@@ -103,7 +103,7 @@
                     <br>
                     <div>
 
-                        <button><a href="forgot_password.html" id="reset_button">Reset Password</a></button>
+                        <a href="forgot_password.html" id="reset_button">Reset Password</a>
                         <button v-if="editing" v-on:click="updateInfo" id = "save_button">Save</button>
                     </div>
 
@@ -144,20 +144,23 @@
                         <div>
                             <button v-if="!isAddingHot" v-on:click="updateHotspotInfo" class="Left">Save</button>
                             <button v-else-if="isAddingHot" v-on:click="finishAddingHotspot" class="Left">Add</button>
-                            <button v-on:click="editingDivOpen = false">Close</button>
+                            <button v-on:click="editingDivOpen = false; isAddingHot = false;">Close</button>
                             <button v-if="!isAddingHot" v-on:click="deleteHotspot" class="Right DeleteButton">Delete</button>
                         </div>
                     </div>
 
-                    <input class="searchBar Left" v-model="hotspotSearch" placeholder="Search..."/>
-                    <button class="dashboardButton Right" v-on:click="startAddingHotspot">+ Add</button>
-                    <br>
+                    <div v-else>
+                        <input class="searchBar Left" v-model="hotspotSearch" placeholder="Search..."/>
+                        <button class="dashboardButton Right" v-on:click="startAddingHotspot">+ Add</button>
+                        <br>
 
 
-                    <ul class="historyList">
-                        <li v-for="(hotspot,index) in hotspotDatabase">{{hotspot.street}} | {{hotspot.zipCode}} | {{hotspot.city}} | {{hotspot.country}} <span class="itemEdit Right" v-on:click="editHotspotAt(index)">Edit</span></li>
-                        <li v-if="hotspotDatabase.length == 0">No results</li>
-                    </ul>
+                        <ul class="historyList">
+                            <li v-for="(hotspot,index) in hotspotDatabase">{{hotspot.street}} | {{hotspot.zipCode}} | {{hotspot.city}} | {{hotspot.country}} <span class="itemEdit Right" v-on:click="editHotspotAt(index)">Edit</span></li>
+                            <li v-if="hotspotDatabase.length == 0">No results</li>
+                        </ul>
+                    </div>
+
 
                 </div>
             </div>
@@ -225,12 +228,14 @@
 
                     </div>
 
-                    <input class="searchBar" v-model="venueSearch" placeholder="Search..."/>
+                    <div v-else>
+                        <input class="searchBar" v-model="venueSearch" placeholder="Search..."/>
 
-                    <ul class="historyList">
-                        <li v-for="(venue,index) in venueDatabase">{{venue.checkInCode}} | {{venue.businessName}} | {{venue.email}} <span class="itemEdit Right" v-on:click="editVenueAt(index)">Edit</span></li>
-                        <li v-if="venueDatabase.length == 0">No results</li>
-                    </ul>
+                        <ul class="historyList">
+                            <li v-for="(venue,index) in venueDatabase">{{venue.checkInCode}} | {{venue.businessName}} | {{venue.email}} <span class="itemEdit Right" v-on:click="editVenueAt(index)">Edit</span></li>
+                            <li v-if="venueDatabase.length == 0">No results</li>
+                        </ul>
+                    </div>
 
                 </div>
             </div>
@@ -272,12 +277,14 @@
 
                     </div>
 
-                    <input class="searchBar" v-model="userSearch" placeholder="Search..."/>
+                    <div v-else>
+                        <input class="searchBar" v-model="userSearch" placeholder="Search..."/>
 
-                    <ul class="historyList">
-                        <li v-for="(user,index) in userDatabase">{{user.icPsprt}} | {{user.firstName}} | {{user.lastName}} | {{user.email}} <span class="itemEdit Right" v-on:click="editUserAt(index)">Edit</span></li>
-                        <li v-if="userDatabase.length == 0">No results</li>
-                    </ul>
+                        <ul class="historyList">
+                            <li v-for="(user,index) in userDatabase">{{user.icPsprt}} | {{user.firstName}} | {{user.lastName}} | {{user.email}} <span class="itemEdit Right" v-on:click="editUserAt(index)">Edit</span></li>
+                            <li v-if="userDatabase.length == 0">No results</li>
+                        </ul>
+                    </div>
 
                 </div>
             </div>
