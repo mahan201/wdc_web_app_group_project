@@ -327,7 +327,7 @@
         width: 40%;
     }
     .form_container .bold p{
-        color:#606ca6;
+        color:#087a9c;
         font-size: 15px;
     }
     .form_container #message p {
@@ -410,7 +410,7 @@
     .searchBar{
         background-color: #8a9bed;
         color: white;
-        border: 3px solid #606ca6;
+        border: 3px solid #087a9c;
         border-radius: 7px;
         font-size: 15px;
         margin: 10px 0px;
@@ -548,9 +548,7 @@
         width: 100%;
         text-align: center;
         font-size: 45px;
-        color: #606ca6;
-        text-decoration: underline;
-        text-decoration-color: #606ca6;
+        color: #087a9c;
     }
 
     .check_in input[type=text]{
