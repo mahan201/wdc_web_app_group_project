@@ -171,10 +171,12 @@ app.use(session({
 
 var prev = "";
 
-app.use(function(req,res,next){
-    
+app.use( function(req,res,next){
+    console.log(req.session.user);
    if((req.path == "/dashboard.html" || req.path == "/historyMapView.html") && req.session.user == undefined){
        res.redirect('/login.html');
+   } else if (req.path == "/historyMapView.html" && req.session.accountType !== "user"){
+       res.redirect('/');
    } else if ((req.path == "/login.html" || req.path == "/signup.html" || req.path == "/signupOID.html") && req.session.user !== undefined ){
        res.redirect("/");
    } else { next(); }

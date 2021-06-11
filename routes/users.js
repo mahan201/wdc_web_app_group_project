@@ -200,33 +200,35 @@ router.post('/tokenLogin.ajax', async function(req,res,next){
 
     if('idtoken' in req.body){
 
-        const ticket = await client.verifyIdToken({
-        idToken: req.body.idtoken,
-        audience: CLIENT_ID,  // Specify the CLIENT_ID of the app that accesses the backend
-        // Or, if multiple clients access the backend:
-        //[CLIENT_ID_1, CLIENT_ID_2, CLIENT_ID_3]
-        });
-        const payload = ticket.getPayload();
-        const userid = payload['sub'];
-        const email = payload['email'];
+        try{
+            const ticket = await client.verifyIdToken({
+            idToken: req.body.idtoken,
+            audience: CLIENT_ID,  // Specify the CLIENT_ID of the app that accesses the backend
+            // Or, if multiple clients access the backend:
+            //[CLIENT_ID_1, CLIENT_ID_2, CLIENT_ID_3]
+            });
+            const payload = ticket.getPayload();
+            const userid = payload['sub'];
+            const email = payload['email'];
 
-        console.log("KEYS: " + Object.keys(payload).toString());
-        console.log(payload);
-        console.log(userid+" "+email);
-
-        var fake = {
-            json: function(result){
-                if(result.length > 0){
-                    req.session.OpenID = true;
-                    req.session.user = email;
-                    req.session.accountType = result[0].accountType;
-                    res.sendStatus(200);
-                } else {
-                    res.sendStatus(404);
+            var fake = {
+                json: function(result){
+                    if(result.length > 0){
+                        req.session.OpenID = true;
+                        req.session.user = email;
+                        req.session.accountType = result[0].accountType;
+                        res.sendStatus(200);
+                    } else {
+                        res.sendStatus(404);
+                    }
                 }
             }
+           queryDatabase(req,fake,next,"SELECT DISTINCT * FROM Security WHERE user = '" + email + "';",true);
+        } catch(err){
+            res.sendStatus(401);
         }
-       queryDatabase(req,fake,next,"SELECT DISTINCT * FROM Security WHERE user = '" + email + "';",true);
+
+
     } else {
         res.sendStatus(401);
     }
@@ -282,7 +284,6 @@ router.post('/login.ajax', function(req,res,next){
 
 router.get('/logout.ajax', function(req,res,next){
     Object.keys(req.session).forEach((key) => (key !== "cookie") && (delete req.session[key]));
-    console.log(req.session);
     res.sendStatus(200);
 });
 
@@ -290,99 +291,104 @@ router.get('/logout.ajax', function(req,res,next){
 router.post("/token-user-signup.ajax", async function(req,res,next){
 
     if('idtoken' in req.body){
-        const ticket = await client.verifyIdToken({
-        idToken: req.body.idtoken,
-        audience: CLIENT_ID,  // Specify the CLIENT_ID of the app that accesses the backend
-        // Or, if multiple clients access the backend:
-        //[CLIENT_ID_1, CLIENT_ID_2, CLIENT_ID_3]
-        });
-        const payload = ticket.getPayload();
+        try{
+            const ticket = await client.verifyIdToken({
+            idToken: req.body.idtoken,
+            audience: CLIENT_ID,  // Specify the CLIENT_ID of the app that accesses the backend
+            // Or, if multiple clients access the backend:
+            //[CLIENT_ID_1, CLIENT_ID_2, CLIENT_ID_3]
+            });
+            const payload = ticket.getPayload();
 
-        const email = payload['email'];
-        var firstName = payload["given_name"];
-        var lastName = payload["family_name"];
+            const email = payload['email'];
+            var firstName = payload["given_name"];
+            var lastName = payload["family_name"];
 
-        var phoneNum = req.body.phoneNum;
-        var passport = req.body.passport;
+            var phoneNum = req.body.phoneNum;
+            var passport = req.body.passport;
 
-        req.pool.getConnection(function(err,connection){
-          if(err){
-              console.log(err);
-              res.sendStatus(500);
-              return;
-          }
-          var query1 = "INSERT INTO Security (user,password,accountType) VALUES ('" + email + "', ' ' ,'user');";
-          connection.query(query1, function(err, results){
-             connection.release();
-             if(err){
-                 if(err.code === "ER_DUP_ENTRY"){
-                     //We want to differentiate this from other server errors so that the client knows the user is trying to sign up with an existing email.
-                     res.sendStatus(400);
-                     return;
-                 }
-                 res.sendStatus(500);
-                 return;
-             }
-          });
-       });
-
-
-       req.pool.getConnection(function(err,connection){
-          if(err){
-              console.log(err);
-              res.sendStatus(500);
-              return;
-          }
-
-          if(res.headersSent){return;}
-
-          var query2 = "INSERT INTO BasicUser VALUES ('" + email + "','" + firstName + "','" + lastName + "','" + phoneNum + "','" + passport + "',1,1);";
-          connection.query(query2, function(err, results){
-             connection.release();
-
-             if(res.headersSent){return;}
-
-             if(err){
-                 if(err.code !== "ER_DUP_ENTRY"){
+            req.pool.getConnection(function(err,connection){
+              if(err){
+                  console.log(err);
+                  res.sendStatus(500);
+                  return;
+              }
+              var query1 = "INSERT INTO Security (user,password,accountType) VALUES ('" + email + "', ' ' ,'user');";
+              connection.query(query1, function(err, results){
+                 connection.release();
+                 if(err){
+                     if(err.code === "ER_DUP_ENTRY"){
+                         //We want to differentiate this from other server errors so that the client knows the user is trying to sign up with an existing email.
+                         res.sendStatus(400);
+                         return;
+                     }
                      res.sendStatus(500);
                      return;
                  }
+              });
+           });
 
-                 req.pool.getConnection(function(err,connection){
-                  if(err){
-                      console.log(err);
-                      res.sendStatus(500);
-                      return;
-                  }
 
-                  if(res.headersSent){return;}
+           req.pool.getConnection(function(err,connection){
+              if(err){
+                  console.log(err);
+                  res.sendStatus(500);
+                  return;
+              }
 
-                  var query3 = "UPDATE BasicUser SET firstName = '" + firstName + "', lastName = '" + lastName + "', phoneNum = '" + phoneNum + "', icPsprt = '" + passport + "' WHERE email = '" + email + "';";
-                  connection.query(query3, function(err, results){
-                     connection.release();
+              if(res.headersSent){return;}
 
-                     if(res.headersSent){return;}
+              var query2 = "INSERT INTO BasicUser VALUES ('" + email + "','" + firstName + "','" + lastName + "','" + phoneNum + "','" + passport + "',1,1);";
+              connection.query(query2, function(err, results){
+                 connection.release();
 
-                     if(err){
+                 if(res.headersSent){return;}
+
+                 if(err){
+                     if(err.code !== "ER_DUP_ENTRY"){
                          res.sendStatus(500);
                          return;
                      }
 
+                     req.pool.getConnection(function(err,connection){
+                      if(err){
+                          console.log(err);
+                          res.sendStatus(500);
+                          return;
+                      }
+
+                      if(res.headersSent){return;}
+
+                      var query3 = "UPDATE BasicUser SET firstName = '" + firstName + "', lastName = '" + lastName + "', phoneNum = '" + phoneNum + "', icPsprt = '" + passport + "' WHERE email = '" + email + "';";
+                      connection.query(query3, function(err, results){
+                         connection.release();
+
+                         if(res.headersSent){return;}
+
+                         if(err){
+                             res.sendStatus(500);
+                             return;
+                         }
+
+                         req.session.user = email;
+                         req.session.accountType = "user";
+                         res.sendStatus(200);
+                         return;
+                      });
+                   });
+
+                 } else {
                      req.session.user = email;
                      req.session.accountType = "user";
                      res.sendStatus(200);
-                     return;
-                  });
-               });
+                    return;
+                 }
+              });
+           });
+        } catch(err){
+            res.sendStatus(401)
+        }
 
-             } else {
-                 req.session.user = email;
-                 req.session.accountType = "user";
-                 res.sendStatus(200);
-                return;
-             }
-          });
-       });
 
 
     } else {
@@ -483,115 +489,119 @@ router.post("/user-signup.ajax", async function(req,res,next){
 router.post("/token-venue-signup.ajax", async function(req,res,next){
 
     if("idtoken" in req.body){
-        const ticket = await client.verifyIdToken({
-        idToken: req.body.idtoken,
-        audience: CLIENT_ID,  // Specify the CLIENT_ID of the app that accesses the backend
-        // Or, if multiple clients access the backend:
-        //[CLIENT_ID_1, CLIENT_ID_2, CLIENT_ID_3]
-        });
-        const payload = ticket.getPayload();
+        try{
+            const ticket = await client.verifyIdToken({
+            idToken: req.body.idtoken,
+            audience: CLIENT_ID,  // Specify the CLIENT_ID of the app that accesses the backend
+            // Or, if multiple clients access the backend:
+            //[CLIENT_ID_1, CLIENT_ID_2, CLIENT_ID_3]
+            });
+            const payload = ticket.getPayload();
 
-        const email = payload['email'];
-        var firstName = payload["given_name"];
-        var lastName = payload["family_name"];
+            const email = payload['email'];
+            var firstName = payload["given_name"];
+            var lastName = payload["family_name"];
 
-        if(firstName === undefined){firstName = " ";}
-        if(lastName === undefined){lastName = " ";}
+            if(firstName === undefined){firstName = " ";}
+            if(lastName === undefined){lastName = " ";}
 
-        var phoneNum = req.body.phoneNum;
-        var companyName = req.body.companyName;
-        var buildingName = req.body.buildingName;
-        var street = req.body.street;
-        var zipCode = req.body.zipCode;
-        var city = req.body.city;
-        var country = req.body.country;
-        var checkInCode = generateCheckInCode(email,companyName);
-        var lng = req.body.lng;
-        var lat = req.body.lat;
+            var phoneNum = req.body.phoneNum;
+            var companyName = req.body.companyName;
+            var buildingName = req.body.buildingName;
+            var street = req.body.street;
+            var zipCode = req.body.zipCode;
+            var city = req.body.city;
+            var country = req.body.country;
+            var checkInCode = generateCheckInCode(email,companyName);
+            var lng = req.body.lng;
+            var lat = req.body.lat;
 
 
-        req.pool.getConnection(function(err,connection){
-          if(err){
-              console.log(err);
-              res.sendStatus(500);
-              return;
-          }
-          var query1 = "INSERT INTO Security (user,password,accountType) VALUES ('" + email + "', ' ' ,'venue');";
-          connection.query(query1, function(err, results){
-             connection.release();
-             if(err){
-                 if(err.code === "ER_DUP_ENTRY"){
-                     //We want to differentiate this from other server errors so that the client knows the user is trying to sign up with an existing email.
-                     res.sendStatus(400);
+            req.pool.getConnection(function(err,connection){
+              if(err){
+                  console.log(err);
+                  res.sendStatus(500);
+                  return;
+              }
+              var query1 = "INSERT INTO Security (user,password,accountType) VALUES ('" + email + "', ' ' ,'venue');";
+              connection.query(query1, function(err, results){
+                 connection.release();
+                 if(err){
+                     if(err.code === "ER_DUP_ENTRY"){
+                         //We want to differentiate this from other server errors so that the client knows the user is trying to sign up with an existing email.
+                         res.sendStatus(400);
+                         return;
+                     }
+                     res.sendStatus(500);
                      return;
                  }
-                 res.sendStatus(500);
-                 return;
-             }
+              });
           });
-      });
 
 
-      req.pool.getConnection(function(err,connection){
-          if(err){
-              console.log(err);
-              res.sendStatus(500);
-              return;
-          }
+          req.pool.getConnection(function(err,connection){
+              if(err){
+                  console.log(err);
+                  res.sendStatus(500);
+                  return;
+              }
 
-          if(res.headersSent){return;}
+              if(res.headersSent){return;}
 
-          var query2 = "INSERT INTO VenueOwner VALUES ('" + email + "','" + firstName + "','" + lastName + "','" + phoneNum + "','" + companyName  + "','" + checkInCode + "'," + lat.toString() + "," + lng.toString() + ", 0);";
-          connection.query(query2, function(err, results){
-             connection.release();
+              var query2 = "INSERT INTO VenueOwner VALUES ('" + email + "','" + firstName + "','" + lastName + "','" + phoneNum + "','" + companyName  + "','" + checkInCode + "'," + lat.toString() + "," + lng.toString() + ", 0);";
+              connection.query(query2, function(err, results){
+                 connection.release();
 
-             if(res.headersSent){return;}
+                 if(res.headersSent){return;}
 
-             if(err){
-                 if(err.code === "ER_DUP_ENTRY"){
-                     //We want to differentiate this from other server errors so that the client knows the user is trying to sign up with an existing email.
-                     res.sendStatus(400);
+                 if(err){
+                     if(err.code === "ER_DUP_ENTRY"){
+                         //We want to differentiate this from other server errors so that the client knows the user is trying to sign up with an existing email.
+                         res.sendStatus(400);
+                         return;
+                     }
+                     res.sendStatus(500);
                      return;
+
                  }
-                 res.sendStatus(500);
-                 return;
-
-             }
+              });
           });
-      });
 
-      req.pool.getConnection(function(err,connection){
-          if(err){
-              console.log(err);
-              res.sendStatus(500);
-              return;
-          }
+          req.pool.getConnection(function(err,connection){
+              if(err){
+                  console.log(err);
+                  res.sendStatus(500);
+                  return;
+              }
 
-          if(res.headersSent){return;}
+              if(res.headersSent){return;}
 
-          var query3 = "INSERT INTO Address (venue,buildingName,streetName,zipCode,city,country) VALUES ('" + email + "','" + buildingName + "','" + street + "','" + zipCode+ "','" + city  + "','" + country + "');";
-          connection.query(query3, function(err, results){
-             connection.release();
+              var query3 = "INSERT INTO Address (venue,buildingName,streetName,zipCode,city,country) VALUES ('" + email + "','" + buildingName + "','" + street + "','" + zipCode+ "','" + city  + "','" + country + "');";
+              connection.query(query3, function(err, results){
+                 connection.release();
 
-             if(res.headersSent){return;}
+                 if(res.headersSent){return;}
 
-             if(err){
-                 if(err.code === "ER_DUP_ENTRY"){
-                     //We want to differentiate this from other server errors so that the client knows the user is trying to sign up with an existing email.
-                     res.sendStatus(400);
+                 if(err){
+                     if(err.code === "ER_DUP_ENTRY"){
+                         //We want to differentiate this from other server errors so that the client knows the user is trying to sign up with an existing email.
+                         res.sendStatus(400);
+                         return;
+                     }
+                     res.sendStatus(500);
                      return;
-                 }
-                 res.sendStatus(500);
-                 return;
 
-             } else {
-                 req.session.user = email;
-                req.session.accountType = "venue";
-                res.sendStatus(200);
-                return;
-             }
+                 } else {
+                     req.session.user = email;
+                    req.session.accountType = "venue";
+                    res.sendStatus(200);
+                    return;
+                 }
+              });
           });
-      });
+        } catch(err){
+            res.sendStatus(401);
+        }
 
     } else {
         res.sendStatus(401);
@@ -725,10 +735,10 @@ router.post('/check-in.ajax', function(req,res,next){
         //SIGNED IN USER;
         if(venue === undefined){
             res.sendStatus(400);
-            return;
+        } else {
+            queryDatabase(req,res,next,"INSERT INTO CheckIn (user,venue) VALUES ('" + req.session.user + "', '" + venue + "');", true);
         }
 
-        queryDatabase(req,res,next,"INSERT INTO CheckIn (user,venue) VALUES ('" + req.session.user + "', '" + venue + "');", true);
 
     } else {
         //NOT SIGNED IN USER;
@@ -740,7 +750,6 @@ router.post('/check-in.ajax', function(req,res,next){
 
          req.pool.getConnection(function(err,connection){
           if(err){
-              console.log(err)
               console.log(err);
               res.sendStatus(500);
               return;
@@ -802,7 +811,6 @@ router.post('/updateInfo.ajax', function(req,res,next){
     if(req.session.user !== req.body.email && req.session.accountType !== "admin"){
         res.sendStatus(401);
     } else {
-        console.log(req.body);
         var toChange = Object.keys(req.body).filter(val => val !== "email" && val !== "accountType" && val !== "lat" && val !== "lng");
         toChange.forEach(val => req.session[val] = req.body[val]);
 
@@ -853,7 +861,6 @@ router.post('/update-venueAddress.ajax', function(req,res,next){
     query2 = query2.slice(0,query2.length-2);
     req.pool.getConnection(function(err,connection){
           if(err){
-              console.log(err)
               res.sendStatus(500);
               return;
           }
@@ -891,13 +898,7 @@ router.post('/update-venueAddress.ajax', function(req,res,next){
     });
 });
 
-router.get('/:venueEmail/venueAddress.ajax', function(req,res,next){
-   if(req.session.accountType !== "admin" ){
-       res.sendStatus(401);
-   } else {
-       queryDatabase(req,res,next,"SELECT DISTINCT buildingName,streetName,zipCode,city,country FROM Address WHERE venue = '" + req.params.venueEmail + "';", true);
-   }
-});
+
 
 
 router.get('/venueHistory.ajax', function(req,res,next){
@@ -934,6 +935,10 @@ router.use(function(req,res,next){
    } else {
        next();
    }
+});
+
+router.get('/:venueEmail/venueAddress.ajax', function(req,res,next){
+    queryDatabase(req,res,next,"SELECT DISTINCT buildingName,streetName,zipCode,city,country FROM Address WHERE venue = '" + req.params.venueEmail + "';", true);
 });
 
 router.get('/user-details.ajax', function(req,res,next){
@@ -1056,7 +1061,7 @@ router.post("/add-hotspot.ajax", function(req,res,next){
 
             if(query.length)
 
-            queryDatabase(req,{json: fake2},next,"SELECT user FROM CheckIn INNER JOIN BasicUser ON CheckIn.user = BasicUser.email WHERE venue IN (" + query + ") AND BasicUser.venueHotspotNoti = 1;",true);
+            queryDatabase(req,{json: fake2},next,"SELECT user FROM CheckIn INNER JOIN BasicUser ON CheckIn.user = BasicUser.email WHERE venue IN (" + query + ") AND BasicUser.venueHotspotNoti = 1 AND CheckIn.time > CURRENT_TIMESTAMP() - INTERVAL 2 WEEK;",true);
 
             queryDatabase(req,res,next,"UPDATE VenueOwner SET isHotspot = 1 WHERE email IN (" + query + ");",true);
         }
@@ -1071,7 +1076,6 @@ router.post("/add-hotspot.ajax", function(req,res,next){
 
 router.post("/update-hotspot.ajax", function(req,res,next){
    var id = req.body.id;
-   var creator = req.body.creator;
 
    var exclude = ["id","creator","lng","lat","dateAdded"];
    var toChange = Object.keys(req.body).filter(key => !exclude.includes(key));
@@ -1084,7 +1088,7 @@ router.post("/update-hotspot.ajax", function(req,res,next){
     query2 += ",lng = " + req.body.lng;
     query2 += " , lat = " + req.body.lat;
 
-  queryDatabase(req,res,next,"UPDATE Hotspots SET " + query2 + " ;", true);
+  queryDatabase(req,res,next,"UPDATE Hotspots SET " + query2 + " WHERE id = " + id + " ;", true);
 
 
 
@@ -1103,21 +1107,17 @@ router.post('/delete-hotspot.ajax', function(req,res,next){
           venues.filter(venue => venue.isHotspot === 1).forEach(function(venue){
              var flag = true;
              hotspots.filter(hotspot => hotspot.id !== id).forEach(function(hotspot){
-                 console.log(venue.email + " VS " + hotspot.street);
+
                  if(getDistance(venue.lat,venue.lng,hotspot.lat,hotspot.lng) <= 1){
-                     console.log("CLEARED");
                      flag = false;
                  }
              });
              if(flag){toChange.push(venue.email);}
           });
-          console.log(toChange);
 
           if(toChange.length > 0){
               var query = toChange.reduce((total,val) => total + "'" + val + "', ","");
               query = query.slice(0,query.length-2);
-
-              console.log("UPDATE VenueOwner SET isHotspot = 0 WHERE email IN (" + query + ");");
 
               queryDatabase(req,res,next,"UPDATE VenueOwner SET isHotspot = 0 WHERE email IN (" + query + ");",true);
           } else {
