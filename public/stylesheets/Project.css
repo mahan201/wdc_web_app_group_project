@@ -663,3 +663,7 @@
         position: relative;
         left: 41%;
     }
+
+    ul li img{
+        margin: 0px 10px;
+    }
