@@ -353,7 +353,7 @@
     }
 
     ul{
-        border: 3px solid green;
+        border: 1px solid grey;
         list-style-type: none;
         margin: 0;
         padding: 0;
@@ -422,10 +422,10 @@
     }
 
     #dashboardNav{
-        border-radius: 10px;
-        border: 3px solid green;
-        width: 100px;
-        height: 458px;
+        border-radius: 6px;
+        border: 1px solid grey;
+        width: 130px;
+        height: 656px;
         float: left;
         margin-right: 20px;
         color: white;
@@ -433,16 +433,18 @@
     }
 
     .dashboardMenuTitle, .menuInfo{
-        border: 3px solid green;
+        border: 1px solid grey;
         color: white;
         background-color: #1485a5;
         border-radius: 20px;
-        margin-left: 87px;
+        padding: 9px;
+        margin-left: 120px;
+        margin-right: 5px;
     }
 
     .menuInfo{
-       padding: 30px;
-       height: auto;
+        padding: 30px;
+        height: 578px;
     }
 
 
@@ -611,6 +613,7 @@
 
    #email_logo{
        font-size: 150px;
+       margin: 60px;
    }
 
     .passed{
