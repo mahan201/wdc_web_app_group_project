@@ -486,6 +486,8 @@ var appdiv = new Vue({
                 appdiv.hotspotDatabase[appdiv.editingMenuIndex].lng = result[0].lon;
                 appdiv.hotspotDatabase[appdiv.editingMenuIndex].lat = result[0].lat;
                 appdiv.updateHotspotInfoSend();
+              } else if (this.readyState == 4 && this.status == 404){
+                  alert("Could not find the location of the hotspot. Please change the address and try again.");
               }
             };
 

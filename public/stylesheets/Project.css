@@ -382,7 +382,7 @@
     .dashboardButton{
         color: white;
         background-color: #43acc2;
-        border:2px solid yellow;
+        border:2px solid white;
         padding:6px 15px;
         margin: 10px 0;
         width: auto;
@@ -396,7 +396,7 @@
     button {
         color: white;
         background-color: #43acc2;
-        border:2px solid yellow;
+        border:2px solid white;
         padding:6px 15px;
         margin: 10px 0;
         width: auto;
@@ -408,7 +408,7 @@
     }
 
     .searchBar{
-        background-color: #8a9bed;
+        background-color: #43acc2;
         color: white;
         border: 3px solid #087a9c;
         border-radius: 7px;
@@ -451,7 +451,7 @@
     #save_button{
         color: white;
         background-color: #43acc2;
-        border:2px solid yellow;
+        border:2px solid white;
         padding:6px 15px;
         margin: 10px 0;
         width: auto;
@@ -575,14 +575,13 @@
     #submit_button:hover{
         background-color: #087a9c;
     }
-    }
 
     .profileItem{
         margin-right: 10%;
     }
 
     #checkinInput{
-        background-color: #8a9bed;
+        background-color: #43acc2;
         border: 2px solid #606ca6;
         font-size: 20px;
         padding: 7px 5px;
