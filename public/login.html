@@ -12,9 +12,9 @@
 
     </head>
     <body class="background_Color">
-        <img src="heart_6.png" alt="Italian Trulli"  width="80" height="70">
-        <div class ="container" >                                       <!--Making a white container -->
-            <div id="app" class="login-page">
+        <a href="check-in.html"><img src="heart_6.png" alt="Italian Trulli"  width="80" height="70"></a>
+        <div class ="container" id="app" >                                       <!--Making a white container -->
+            <div class="login-page">
                 <i id="login_logo" class="fas fa-user-circle"></i>             <!-- Making log-in logo  -->
                 <h1>Log into the app</h1>
                 <h3 class="invalid" v-bind:style="{'visibility' : invalid}">Incorrect email or password!</h3>
@@ -32,9 +32,9 @@
                 </form>
 
                 <p>or</p>
+                <div class="g-signin2" data-onsuccess="onGoogleSignIn"></div>
 
             </div>
-            <div class="g-signin2" data-onsuccess="onGoogleSignIn"></div><br><br>
         </div>
     </body>
 </html>

@@ -658,7 +658,8 @@
 
     #checkInDrop{
         position: relative;
-        left: 41%;
+        left: 12%;
+        width: 600px;
     }
 
     ul li img{
