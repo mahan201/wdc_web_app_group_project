@@ -33,7 +33,6 @@ var appdiv = new Vue({
 
 
 function onGoogleSignIn(googleUser) {
-    console.log("RAN");
   var id_token = googleUser.getAuthResponse().id_token;
 
   var xhr = new XMLHttpRequest();
@@ -42,6 +41,8 @@ function onGoogleSignIn(googleUser) {
   xhr.onreadystatechange = function() {
     if (this.readyState == 4 && this.status == 200) {
       window.location.replace('/');
+    } else if (this.readyState == 4 && this.status == 500){
+        alert("Internal Server Error. Please try again later.");
     } else  if (this.readyState == 4 && this.status == 404) {
       window.location.replace('/signupOID.html');
     }

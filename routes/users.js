@@ -771,7 +771,7 @@ router.post('/check-in.ajax', function(req,res,next){
                           return;
                       }
 
-                      var query2 = "UPDATE BasicUser SET firstName = '" + firstName + "', lastName = '" + lastName + "', phoneNum = '" + phoneNum + "', icPsprt = '" + passport + "' WHERE email = '" + email + "';";
+                      var query2 = "SELECT user FROM Security WHERE user = '" + email + "';";
                       connection.query(query2, function(err, results){
                          connection.release();
                          if(err){
@@ -779,7 +779,31 @@ router.post('/check-in.ajax', function(req,res,next){
                              res.sendStatus(500);
                              return;
                          }
-                         return;
+
+                         if(results.length == 0){
+
+                            req.pool.getConnection(function(err,connection){
+                              if(err){
+                                  console.log(err);
+                                  res.sendStatus(500);
+                                  return;
+                              }
+
+                              var query2 = "UPDATE BasicUser SET firstName = '" + firstName + "', lastName = '" + lastName + "', phoneNum = '" + phoneNum + "', icPsprt = '" + passport + "' WHERE email = '" + email + "';";
+                              connection.query(query2, function(err, results){
+                                 connection.release();
+                                 if(err){
+                                     console.log(err);
+                                     res.sendStatus(500);
+                                     return;
+                                 }
+                                 return;
+                              });
+                           });
+
+                         } else {
+                             return;
+                         }
                       });
                    });
 

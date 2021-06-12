@@ -26,7 +26,7 @@
                 <form v-if="!venueSelected" v-on:submit.prevent="signUpUser">                                                                                               <!--Creating signup inputs -->
                     <input type="text" id="ph" name="ph" placeholder="Phone number* : " v-model = "phoneNum" required ><br>
                     <input type="text" id="passport" name="passport" placeholder ="Passport/IC* : " v-model = "passport" required><br>
-                    <button id="signup_button" class="bold" onClick="logout()">Cancel</button>
+                    <button id="signup_button" class="bold" type="button" onClick="cancel()">Cancel</button>
                     <button id="signup_button" class="bold" type="submit" >Sign Up</button><br>                          <!--Signup button. After signup, go to the login page again-->
                 </form>
                 <form v-else v-on:submit.prevent="signUpVenue">                                                                                               <!--Creating signup inputs -->
@@ -37,7 +37,7 @@
                     <input type="text" id="zip" name="zip" placeholder="Zip Code* : " v-model="zipCode" required ><br>
                     <input type="text" id="city" name="city" placeholder="City* : " v-model="city" required >
                     <input type="text" id="country" name="country" placeholder="Country* : " v-model="country" required ><br>
-                    <button id="signup_button" class="bold" onClick="logout()">Cancel</button>
+                    <button id="signup_button" class="bold" type="button" onClick="cancel()">Cancel</button>
                     <button id="signup_button" class="bold" type="submit">Sign Up</button><br>                          <!--Signup button. After signup, go to th login page again -->
                 </form>
 

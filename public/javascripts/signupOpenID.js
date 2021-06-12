@@ -119,6 +119,14 @@ function onGoogleSignIn(googleUser) {
   appdiv.tokenId = googleUser.getAuthResponse().id_token;
 }
 
+function cancel(){
+    var auth2 = gapi.auth2.getAuthInstance();
+      auth2.signOut().then(function () {
+        console.log('User signed out.');
+        window.location.replace('/login.html');
+      });
+}
+
 makeRequest("GET","users/details.ajax",{},function(result){
     var res = JSON.parse(result);
     if(res.loggedIn){

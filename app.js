@@ -107,10 +107,10 @@ cron.schedule('0 10 * * 1', function() {
                   queryDatabase({pool: dbConnectionPool},{sendStatus: console.log},{},"UPDATE VenueOwner SET isHotspot = 0 WHERE email IN (" + query + ");",false);
               }
 
-          }
+          };
 
           queryDatabase({pool: dbConnectionPool},{json: fake2, sendStatus: console.log},{},"SELECT * FROM Hotspots",true);
-      }
+      };
 
       queryDatabase({pool: dbConnectionPool},{json: fake, sendStatus: console.log},{},"SELECT * FROM VenueOwner",true);
 
@@ -139,12 +139,12 @@ cron.schedule('0 10 * * 1', function() {
                         });
                     }
                  });
-              }
+              };
 
               queryDatabase({pool: dbConnectionPool},{json: fake4, sendStatus: console.log},{},"SELECT email FROM BasicUser WHERE weeklyHotspotNoti = 1",true);
 
           }
-      }
+      };
 
       queryDatabase({pool: dbConnectionPool},{json: fake3, sendStatus: console.log},{},"SELECT street, zipCode, city, country FROM Hotspots WHERE dateAdded > CURRENT_TIMESTAMP() - INTERVAL 1 WEEK;",true);
 
