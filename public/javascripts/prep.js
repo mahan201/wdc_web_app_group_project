@@ -1,3 +1,10 @@
+/*
+This javascript file contacts functions and code that is
+used by nearly all pages on our website.
+*/
+
+//A function to simply making requests to the server.
+//
 function makeRequest(method,route, headers, onSuccess){
     var xhttp = new XMLHttpRequest();
 

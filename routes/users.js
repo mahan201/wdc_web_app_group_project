@@ -23,6 +23,7 @@ const {OAuth2Client} = require('google-auth-library');
 const client = new OAuth2Client(CLIENT_ID);
 
 function queryDatabase(req, res, next, query, finish){
+    //Function to minimize repetition of code. This function is enough for most database queries that are not complex.
 
     req.pool.getConnection(function(err,connection){
       if(err){
@@ -31,11 +32,14 @@ function queryDatabase(req, res, next, query, finish){
           return;
       }
 
+      //Since this function is re-useable within a single route, we have to make sure headers havent already been sent.
+      //Usually if headers are sent it is because of errors
       if(res.headersSent){return;}
 
       connection.query(query, function(err, rows, fields){
          connection.release();
 
+        //Another header check just to be safe
          if(res.headersSent){return;}
 
          if(err){
@@ -43,6 +47,8 @@ function queryDatabase(req, res, next, query, finish){
              res.sendStatus(500);
              return;
          }
+         //We only send the result to res.json if the caller asked for it. Otherwise, we do nothing,
+         //This is useful for entering data in multiple tables.
          if(finish){
              res.json(rows);
          }
@@ -50,28 +56,44 @@ function queryDatabase(req, res, next, query, finish){
    });
 }
 
+//Algorithm to generate a unique check-in code for a venue.
+//We want to not only make a unique code, but also a code that is visually similar to the business name.
+//So instead of 21987623 we want MCDNLD9860
+//Code consists of 2 segments. Text (MCDNL) and number (9860) totally 10 characters.
 function generateCheckInCode(email,bName){
+    //We remove any vowels from the business name.
     var excludeCharacters = ['.',' ',',','A','E','I','O','U'];
+
+    //Slice the email up to the @
     email = email.slice(0,email.indexOf("@")).split('');
+
+    //strip the business name to just consonants
     bName =  bName.toUpperCase().split('').filter(val => /[A-Z]/);
     var strippedName = bName.filter(val => !excludeCharacters.includes(val));
 
+    //If it ends up too short, revert to original name.
     if(strippedName.length <= 3){
-        //Revert back. Stripped version is too short.
         strippedName = bName;
     }
 
+    //Randomly choose the size of text segment (3 to 6)
     var size = Math.floor(Math.random() * 4) + 3;
 
+    //Slice the to the random size. If length is lower than random size then slice all the way.
     var part1 = strippedName.slice(0,Math.min(size,strippedName.length));
     part1 = part1.reduce((acc,val) => acc += val);
 
+    //Number segment's size is whatever is left of 10 characters.
     var part2Size = 10 - part1.length;
+    //Number segment is calculated by multiplying the ascii value of each letter of the email.
+    //Then modulus by 10^n where n is the length we need.
     var hash = email.map(val => val.charCodeAt(0)).reduce((acc,val) => acc *= val, 1);
     hash = hash % (Math.pow(10,part2Size));
     return part1 + hash.toString();
 }
 
+//Generating a reset code for forgotten passwords. Calculated using email so the
+//chances of two reset codes being the same is nex to none
 function generateResetCode(email){
     email = email.slice(0,email.indexOf("@")).split('');
     var code = email.map(val => val.charCodeAt(0)).reduce((acc,val) => acc *= val, 1);
@@ -81,6 +103,7 @@ function generateResetCode(email){
 }
 
 //Function copied straight from StackOverflow.
+//Calculates the distance between two pairs of long lat coordinates using Harvensine Formula.
 function getDistance(lat1,lon1,lat2,lon2) {
   var R = 6371; // Radius of the earth in km
   var dLat = deg2rad(lat2-lat1);  // deg2rad below
@@ -95,6 +118,7 @@ function getDistance(lat1,lon1,lat2,lon2) {
   return d;
 }
 
+//Helper function for getDistance()
 function deg2rad(deg) {
   return deg * (Math.PI/180)
 }
