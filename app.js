@@ -102,7 +102,7 @@ cron.schedule('0 10 * * 1', function() {
 
     //Code from delete-hotspot.ajax Have to update every venue's hotspot status.
     //a fake res.json function to run on the database results from queryDatabase();
-    var fake = function(venues)
+    var fake = function(venues){
 
           var fake2 = function(hotspots){
               //Go through every venue that is currently a hotspot. Compare its distance to hotspots and if there

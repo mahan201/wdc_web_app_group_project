@@ -16,7 +16,6 @@ var appdiv = new Vue({
                 } else if (this.readyState == 4 && this.status == 500){
                     alert("Internal Server Error. Please try again later.");
                 } else if (this.readyState == 4 && this.status == 401){
-                    console.log("FAILED LOGIN");
                     appdiv.invalid = "visible";
                 }
             };

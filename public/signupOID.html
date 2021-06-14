@@ -24,10 +24,10 @@
 
                 <h3 class = "invalid" v-bind:style="{'visibility': invalid}" >{{invalidMessage}}</h3>
                 <form v-if="!venueSelected" v-on:submit.prevent="signUpUser">                                                                                               <!--Creating signup inputs -->
-                    <input type="text" id="ph" name="ph" placeholder="Phone number* : " v-model = "phoneNum" required ><br>
+                    <input type="text" id="USph" name="ph" placeholder="Phone number* : " v-model = "phoneNum" required ><br>
                     <input type="text" id="passport" name="passport" placeholder ="Passport/IC* : " v-model = "passport" required><br>
-                    <button id="signup_button" class="bold" type="button" onClick="cancel()">Cancel</button>
-                    <button id="signup_button" class="bold" type="submit" >Sign Up</button><br>                          <!--Signup button. After signup, go to the login page again-->
+                    <button id="USsignup_button" class="bold" type="button" onClick="cancel()">Cancel</button>
+                    <button id="UScancelSignUp" class="bold" type="submit" >Sign Up</button><br>                          <!--Signup button. After signup, go to the login page again-->
                 </form>
                 <form v-else v-on:submit.prevent="signUpVenue">                                                                                               <!--Creating signup inputs -->
                     <input type="text" id="company_name" name="company_name" v-model="companyName" placeholder="Company name* : " required ><br>
@@ -38,7 +38,7 @@
                     <input type="text" id="city" name="city" placeholder="City* : " v-model="city" required >
                     <input type="text" id="country" name="country" placeholder="Country* : " v-model="country" required ><br>
                     <button id="signup_button" class="bold" type="button" onClick="cancel()">Cancel</button>
-                    <button id="signup_button" class="bold" type="submit">Sign Up</button><br>                          <!--Signup button. After signup, go to th login page again -->
+                    <button id="cancelSignUp" class="bold" type="submit">Sign Up</button><br>                          <!--Signup button. After signup, go to th login page again -->
                 </form>
 
             </div>

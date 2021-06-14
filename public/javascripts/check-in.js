@@ -1,18 +1,20 @@
+//Load the dropdown library for the searchable dropdown.
 Vue.use(Dropdown);
 
 var appdiv = new Vue({
     el: "#app",
     data: {
+        //Session details
         session: {},
         showLogout: false,
 
-
+        //Valid checkin codes
         codes: [],
         codeSearchTerm: "",
         failed: false,
         passed: false,
 
-
+        //Selected check-in code
         code: "",
         email: "",
         fName: "",

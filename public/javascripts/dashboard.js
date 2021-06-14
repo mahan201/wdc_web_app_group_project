@@ -208,7 +208,6 @@ var appdiv = new Vue({
 
         updateInfo: function(){
             if(!this.anyEmpty()){
-                console.log("SENT");
                 this.editing = false;
 
                 var obj = {
@@ -257,7 +256,6 @@ var appdiv = new Vue({
 
             xhttp.onreadystatechange = function(){
                 if(this.readyState == 4 && this.status == 200){
-                    console.log("UPDATED");
                    appdiv.emailUpdateFlag = true;
                    appdiv.session.weeklyHotspotNoti = Number(appdiv.weeklyNotifications);
                    appdiv.session.venueHotspotNoti = Number(appdiv.visitedHotspotNoti);
@@ -594,7 +592,6 @@ var appdiv = new Vue({
         deleteHotspot: function(){
             this.editingDivOpen = false;
             var idDelete = this.hotspotDatabase[this.editingMenuIndex].id;
-            console.log(idDelete);
             var indexDelete = 0;
             hotspotData.forEach( function(hotspot,index){
               if (hotspot.id === idDelete){
